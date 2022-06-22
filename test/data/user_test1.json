@@ -1,0 +1,1601 @@
+{
+  "record_type": {
+    "value": "STAFF",
+    "desc": "Staff"
+  },
+  "primary_id": "TestUser1",
+  "first_name": "Test",
+  "middle_name": "",
+  "last_name": "TestName",
+  "full_name": "Test TestName",
+  "user_title": {
+    "value": "",
+    "desc": ""
+  },
+  "job_category": {
+    "value": "",
+    "desc": ""
+  },
+  "job_description": "",
+  "gender": {
+    "value": "",
+    "desc": ""
+  },
+  "user_group": {
+    "value": "99",
+    "desc": " Staff User"
+  },
+  "campus_code": {
+    "value": null,
+    "desc": ""
+  },
+  "web_site_url": "",
+  "cataloger_level": {
+    "value": "00",
+    "desc": "[00] view only"
+  },
+  "preferred_language": {
+    "value": "en",
+    "desc": "English"
+  },
+  "account_type": {
+    "value": "INTERNAL",
+    "desc": "Internal"
+  },
+  "external_id": "",
+  "password": "",
+  "force_password_change": "",
+  "status": {
+    "value": "ACTIVE",
+    "desc": "Active"
+  },
+  "status_date": "2022-06-18Z",
+  "requests": null,
+  "loans": null,
+  "fees": null,
+  "contact_info": {
+    "address": [],
+    "email": [
+      {
+        "email_address": "test.test@test.ch",
+        "description": null,
+        "preferred": true,
+        "segment_type": "Internal",
+        "email_type": [
+          {
+            "value": "work",
+            "desc": "Work"
+          }
+        ]
+      }
+    ],
+    "phone": []
+  },
+  "pref_first_name": "",
+  "pref_middle_name": "",
+  "pref_last_name": "",
+  "pref_name_suffix": "",
+  "is_researcher": false,
+  "researcher": null,
+  "link": null,
+  "user_identifier": [],
+  "user_role": [
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "225",
+        "desc": "Physical Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "428",
+        "desc": "Printout Queue Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "247",
+        "desc": "Purchase Request Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "248",
+        "desc": "Purchase Request Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "55",
+        "desc": "Purchasing Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "54",
+        "desc": "Purchasing Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "47",
+        "desc": "Purchasing Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "37",
+        "desc": "Receiving Operator"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "ServiceUnit",
+            "desc": null
+          },
+          "scope": {
+            "value": "A140",
+            "desc": "Basel - UB Medizin"
+          },
+          "value": {
+            "value": "AcqDeptA140",
+            "desc": "A140 Acquisitions Department"
+          }
+        },
+        {
+          "type": {
+            "value": "ServiceUnit",
+            "desc": null
+          },
+          "scope": {
+            "value": "A100",
+            "desc": "Basel - UB Hauptbibliothek"
+          },
+          "value": {
+            "value": "AcqDeptA100",
+            "desc": "A100 Acquisitions Department"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "51",
+        "desc": "Requests Operator"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "A100",
+            "desc": "Basel - UB Hauptbibliothek"
+          },
+          "value": {
+            "value": "A100_KUR",
+            "desc": "Ausleihe A100"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "51",
+        "desc": "Requests Operator"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "A140",
+            "desc": "Basel - UB Medizin"
+          },
+          "value": {
+            "value": "A140_KUR",
+            "desc": "Ausleihe A140"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "244",
+        "desc": "Usage Data Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "228",
+        "desc": "Collection Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "33",
+        "desc": "Vendor Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "250",
+        "desc": "Vendor Account Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "54",
+        "desc": "Purchasing Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "229",
+        "desc": "Collection Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "0",
+        "desc": "Deposit Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "1",
+        "desc": "Deposit Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "2",
+        "desc": "Deposit Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "48",
+        "desc": "Invoice Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "210",
+        "desc": "Physical Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "225",
+        "desc": "Physical Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "247",
+        "desc": "Purchase Request Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "224",
+        "desc": "Electronic Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "29",
+        "desc": "Repository Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "228",
+        "desc": "Collection Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "229",
+        "desc": "Collection Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "0",
+        "desc": "Deposit Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "34",
+        "desc": "Ledger Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "36",
+        "desc": "Fund Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "34",
+        "desc": "Ledger Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "227",
+        "desc": "Cataloger Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "12",
+        "desc": "Digital Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "226",
+        "desc": "Digital Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "209",
+        "desc": "Electronic Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "248",
+        "desc": "Purchase Request Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "55",
+        "desc": "Purchasing Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "54",
+        "desc": "Purchasing Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "47",
+        "desc": "Purchasing Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "37",
+        "desc": "Receiving Operator"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "ServiceUnit",
+            "desc": null
+          },
+          "scope": {
+            "value": "A100",
+            "desc": "Basel - UB Hauptbibliothek"
+          },
+          "value": {
+            "value": "AcqDeptA100",
+            "desc": "A100 Acquisitions Department"
+          }
+        },
+        {
+          "type": {
+            "value": "ServiceUnit",
+            "desc": null
+          },
+          "scope": {
+            "value": "A140",
+            "desc": "Basel - UB Medizin"
+          },
+          "value": {
+            "value": "AcqDeptA140",
+            "desc": "A140 Acquisitions Department"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "221",
+        "desc": "Circulation Desk Manager"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "RES_SHARE",
+            "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+          },
+          "value": {
+            "value": "RES_DESK",
+            "desc": "Resource Sharing Desk"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "51",
+        "desc": "Requests Operator"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "RES_SHARE",
+            "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+          },
+          "value": {
+            "value": "RES_DESK",
+            "desc": "Resource Sharing Desk"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "215",
+        "desc": "Fulfillment Services Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "239",
+        "desc": "Resource Sharing Partners Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "250",
+        "desc": "Vendor Account Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "29",
+        "desc": "Repository Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "221",
+        "desc": "Circulation Desk Manager"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "A100",
+            "desc": "Basel - UB Hauptbibliothek"
+          },
+          "value": {
+            "value": "A100_KUR",
+            "desc": "Ausleihe A100"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "221",
+        "desc": "Circulation Desk Manager"
+      },
+      "parameter": [
+        {
+          "type": {
+            "value": "CirculationDesk",
+            "desc": null
+          },
+          "scope": {
+            "value": "A140",
+            "desc": "Basel - UB Medizin"
+          },
+          "value": {
+            "value": "A140_KUR",
+            "desc": "Ausleihe A140"
+          }
+        }
+      ]
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "231",
+        "desc": "Course Reserves Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "215",
+        "desc": "Fulfillment Services Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "58",
+        "desc": "License Viewer"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "231",
+        "desc": "Course Reserves Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "215",
+        "desc": "Fulfillment Services Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "231",
+        "desc": "Course Reserves Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "208",
+        "desc": "CDI Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "41",
+        "desc": "License Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "46",
+        "desc": "Selector"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "12",
+        "desc": "Digital Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "226",
+        "desc": "Digital Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "224",
+        "desc": "Electronic Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "210",
+        "desc": "Physical Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "225",
+        "desc": "Physical Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "47",
+        "desc": "Purchasing Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "204",
+        "desc": "Cataloger"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "48",
+        "desc": "Invoice Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "217",
+        "desc": "Trial Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "1",
+        "desc": "Deposit Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "2",
+        "desc": "Deposit Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "228",
+        "desc": "Collection Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "229",
+        "desc": "Collection Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "0",
+        "desc": "Deposit Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "1",
+        "desc": "Deposit Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "2",
+        "desc": "Deposit Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "48",
+        "desc": "Invoice Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "301",
+        "desc": "Known issues operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_UBS",
+        "desc": "Bibliotheksnetz Region Basel "
+      },
+      "role_type": {
+        "value": "200",
+        "desc": "Patron"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "210",
+        "desc": "Physical Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "250",
+        "desc": "Vendor Account Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "44",
+        "desc": "Invoice Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "44",
+        "desc": "Invoice Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "44",
+        "desc": "Invoice Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "36",
+        "desc": "Fund Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "34",
+        "desc": "Ledger Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "36",
+        "desc": "Fund Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "224",
+        "desc": "Electronic Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "role_type": {
+        "value": "29",
+        "desc": "Repository Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "12",
+        "desc": "Digital Inventory Operator"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "A140",
+        "desc": "Basel - UB Medizin"
+      },
+      "role_type": {
+        "value": "226",
+        "desc": "Digital Inventory Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "247",
+        "desc": "Purchase Request Manager"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "248",
+        "desc": "Purchase Request Operator Extended"
+      },
+      "parameter": []
+    },
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "RES_SHARE",
+        "desc": "Basel - UB Hauptbibliothek - Fernleihe"
+      },
+      "role_type": {
+        "value": "55",
+        "desc": "Purchasing Manager"
+      },
+      "parameter": []
+    }
+  ],
+  "user_block": [],
+  "user_note": [],
+  "user_statistic": [],
+  "proxy_for_user": []
+}
