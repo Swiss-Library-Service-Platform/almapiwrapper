@@ -1,0 +1,17 @@
+[project]
+name = "almapiwrapper"
+version = "0.3"
+authors = [
+  { name="Raphaël Rey", email="raphael.rey@slsp.ch" },
+]
+description = "This python module is a tool to use Alma APIs. it manages the logs and the backup of the records."
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Swiss-Library-Service-Platform/almapiwrapper"
+"Bug Tracker" = "https://github.com/Swiss-Library-Service-Platform/almapiwrapper/issues"

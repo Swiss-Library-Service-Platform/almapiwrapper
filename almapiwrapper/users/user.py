@@ -11,7 +11,7 @@ class User(Record):
     :param primary_id: primary id of the user
     :ivar zone: zone where the user should be created
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar data: :class:`almapi.record.JsonData` of the user (useful for new created users)
+    :ivar data: :class:`almapiwrapper.record.JsonData` of the user (useful for new created users)
     """
 
     api_base_url: ClassVar[str] = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users'
@@ -51,7 +51,7 @@ class User(Record):
         When saved, a suffix is added to the file path with the version.
         Example: records/NZ_991170519490005501/bib991170519490005501_01.xml
 
-        :return: object :class:`almapi.users.User`
+        :return: object :class:`almapiwrapper.users.User`
         """
         filepath = f'records/{self.zone}/user_{self.primary_id}.json'
         self._save_from_path(filepath)
@@ -62,7 +62,7 @@ class User(Record):
         """update() -> 'User'
         Update the user through api
 
-        :return: object :class:`almapi.users.User`
+        :return: object :class:`almapiwrapper.users.User`
 
         .. note::
             If the record encountered an error, this
@@ -130,7 +130,7 @@ class User(Record):
         Set a new password to a user
 
         :param password: password string, default is '123pw123'
-        :return: object :class:`almapi.users.User`
+        :return: object :class:`almapiwrapper.users.User`
 
         .. note::
             If the record encountered an error, this
@@ -147,7 +147,7 @@ class NewUser(User):
 
     :ivar zone: zone where the user should be created
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar data: :class:`almapi.record.JsonData` of the user to create
+    :ivar data: :class:`almapiwrapper.record.JsonData` of the user to create
     """
 
     def __init__(self, zone: str, env: Literal['P', 'S'], data: JsonData):
@@ -163,7 +163,7 @@ class NewUser(User):
 
         :param password: optional string with the password, if not provided,
             the password will be set at the default value
-        :return: object :class:`almapi.users.User` or object :class:`almapi.users.NewUser` (in case of error)
+        :return: object :class:`almapiwrapper.users.User` or object :class:`almapiwrapper.users.NewUser` (in case of error)
 
         .. note::
             If the record encountered an error, this
@@ -187,7 +187,7 @@ class NewUser(User):
         Set the password of a new user
 
         :param password: string containing the new password.
-        :return: object :class:`almapi.users.NewUser`
+        :return: object :class:`almapiwrapper.users.NewUser`
         .. note::
             If the record encountered an error, this
             method will be skipped.

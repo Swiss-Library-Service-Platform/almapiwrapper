@@ -12,7 +12,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
     :param q: request in API syntax. "user_group~06" will search every linked account
     :param zone: code of the IZ, NZ or "all" for all IZs NZ excepted.
     :param env: "P" for production, "S" for sandbox. Default is production
-    :return: list of :class:`almapi.users.User`
+    :return: list of :class:`almapiwrapper.users.User`
     """
     error = False
     users = []

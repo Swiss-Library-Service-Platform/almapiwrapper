@@ -11,7 +11,7 @@ class ApiKeys:
 
     :Example:
 
-    >>> from almapi import ApiKeys
+    >>> from almapiwrapper import ApiKeys
     >>> k = ApiKeys()
     >>> api_key_1 = k.get_key('NZ', 'Users', 'RW', 'P')
 

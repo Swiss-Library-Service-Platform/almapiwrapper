@@ -1,13 +1,13 @@
 ``JsonData`` class
 ------------------
-.. autoclass:: almapi.record.JsonData
+.. autoclass:: almapiwrapper.record.JsonData
     :members:
     :undoc-members:
     :show-inheritance:
 
 ``XmlData`` class
 ------------------
-.. autoclass:: almapi.record.XmlData
+.. autoclass:: almapiwrapper.record.XmlData
     :members:
     :undoc-members:
     :show-inheritance:

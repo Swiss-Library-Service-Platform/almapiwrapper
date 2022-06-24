@@ -1,6 +1,6 @@
 ``User`` class
 --------------
-.. autoclass:: almapi.users.User
+.. autoclass:: almapiwrapper.users.User
     :members:
     :undoc-members:
     :show-inheritance:

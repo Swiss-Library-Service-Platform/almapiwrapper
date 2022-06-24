@@ -1,3 +1,3 @@
 ``Fetch_users`` function
 ------------------------
-.. autofunction:: almapi.users.fetch_users
+.. autofunction:: almapiwrapper.users.fetch_users

@@ -2,9 +2,9 @@ import unittest
 import sys
 import os
 import time
-from almapi.users import User, NewUser, fetch_users
-from almapi.record import JsonData
-from almapi import config_log
+from almapiwrapper.users import User, NewUser, fetch_users
+from almapiwrapper.record import JsonData
+from almapiwrapper import config_log
 
 config_log("test.log")
 

@@ -1,5 +1,6 @@
-from distutils.core import setup
-setup(name='almapi',
-      version='1.0',
-      py_modules=['almapi'],
+from setuptools import find_packages, setup
+setup(name='almapiwrapper',
+      version='0.3',
+      packages = find_packages(),
+      py_modules=['almapiwrapper'],
       )

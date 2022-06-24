@@ -194,7 +194,7 @@ class JsonData:
 
     :Example:
 
-    >>> from almapi.record import JsonData
+    >>> from almapiwrapper.record import JsonData
     >>> data = JsonData(filepath='path_to_some_json_file')
     >>> print(data)
 
