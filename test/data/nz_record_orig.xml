@@ -1,0 +1,133 @@
+<bib>
+  <mms_id>991043825829705501</mms_id>
+  <record_format>marc21</record_format>
+  <linked_record_id/>
+  <title>Je veux un python pour mon anniversaire</title>
+  <author>Frier, Rapha&#235;le</author>
+  <isbn>9782355042157</isbn>
+  <network_numbers>
+    <network_number>(RERO)R007146142-41slsp</network_number>
+    <network_number>116426411</network_number>
+    <network_number>(swissbib)116426411-41slsp_network</network_number>
+  </network_numbers>
+  <place_of_publication>[Voisins-le-Bretonneux]</place_of_publication>
+  <date_of_publication>2012</date_of_publication>
+  <publisher_const>Rue du monde</publisher_const>
+  <holdings link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/991043825829705501/holdings"/>
+  <created_by>import</created_by>
+  <created_date>2020-11-09Z</created_date>
+  <last_modified_by>System</last_modified_by>
+  <last_modified_date>2021-09-05Z</last_modified_date>
+  <suppress_from_publishing>false</suppress_from_publishing>
+  <suppress_from_external_search>false</suppress_from_external_search>
+  <suppress_from_metadoor>false</suppress_from_metadoor>
+  <sync_with_oclc>NONE</sync_with_oclc>
+  <sync_with_libraries_australia>NONE</sync_with_libraries_australia>
+  <originating_system>ILS</originating_system>
+  <originating_system_id>116426411-41slsp_network</originating_system_id>
+  <cataloging_level desc="BIB cataloger">20</cataloging_level>
+  <brief_level desc="01">01</brief_level>
+  <record>
+    <leader>02114nam a2200349 c 4500</leader>
+    <controlfield tag="001">991043825829705501</controlfield>
+    <controlfield tag="005">20210207115959.0</controlfield>
+    <controlfield tag="008">120921s2012    fr ||||| |||| 00| ||fre d</controlfield>
+    <datafield ind1=" " ind2=" " tag="020">
+      <subfield code="a">9782355042157</subfield>
+    </datafield>
+    <datafield ind1="7" ind2=" " tag="024">
+      <subfield code="a">http://catalogue.bnf.fr/ark:/12148/cb42713553v</subfield>
+      <subfield code="2">uri</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="035">
+      <subfield code="a">(swissbib)116426411-41slsp_network</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="035">
+      <subfield code="a">116426411</subfield>
+      <subfield code="9">ExL</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="035">
+      <subfield code="a">(RERO)R007146142-41slsp</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="040">
+      <subfield code="a">RERO vdvall</subfield>
+      <subfield code="d">CH-ZuSLS</subfield>
+    </datafield>
+    <datafield ind1=" " ind2="7" tag="072">
+      <subfield code="a">fr</subfield>
+      <subfield code="2">rero</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="100">
+      <subfield code="a">Frier, Rapha&#235;le</subfield>
+      <subfield code="0">(RERO)A018696398</subfield>
+      <subfield code="4">cre</subfield>
+    </datafield>
+    <datafield ind1="1" ind2="0" tag="245">
+      <subfield code="a">Je veux un python pour mon anniversaire</subfield>
+      <subfield code="c">Rapha&#235;le Frier ; images de Solenn Larnicol</subfield>
+    </datafield>
+    <datafield ind1=" " ind2="1" tag="264">
+      <subfield code="a">[Voisins-le-Bretonneux]</subfield>
+      <subfield code="b">Rue du monde</subfield>
+      <subfield code="c">2012</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="300">
+      <subfield code="a">111 p.</subfield>
+      <subfield code="b">ill.</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="336">
+      <subfield code="b">txt</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="337">
+      <subfield code="b">n</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="338">
+      <subfield code="b">nc</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="385">
+      <subfield code="a">Enfants (6-9 ans)</subfield>
+      <subfield code="2">rero</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="385">
+      <subfield code="a">Enfants (9-12 ans)</subfield>
+      <subfield code="2">rero</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="490">
+      <subfield code="a">Roman du monde</subfield>
+      <subfield code="v">24</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="490">
+      <subfield code="a">La famille Python / Rapha&#235;le Frier</subfield>
+      <subfield code="v">1</subfield>
+    </datafield>
+    <datafield ind1="8" ind2=" " tag="520">
+      <subfield code="a">Pablo en est s&#251;r : pour ses neuf ans, il va enfin avoir le python de ses r&#234;ves ! Mais le jour J, d&#233;ception ! l'animal qu'il d&#233;couvre a des poils et ne mesurera jamais 1,50 m de long... Heureusement, ce curieux "Python" se r&#233;v&#232;le tr&#232;s attachant, voire un peu magique ! C'est le d&#233;but d'une aventure palpitante pour Pablo et son copain Baptiste. De nombreux heureux &#233;v&#233;nements vont m&#234;me illuminer leur quotidien ! (4e de couv.)</subfield>
+      <subfield code="5">RERO/njhep-/10.2013/3804</subfield>
+    </datafield>
+    <datafield ind1="8" ind2=" " tag="520">
+      <subfield code="a">Pablo en est s&#251;r : pour ses neuf ans, il va enfin avoir le python ?de ses r&#234;ves ! Mais le jour J, d&#233;ception ! l'animal qu'il ?d&#233;couvre a des poils et ne mesurera jamais 1,50 m de long... ?Heureusement, ce curieux "Python" se r&#233;v&#232;le tr&#232;s attachant, ?voire un peu magique ! C'est le d&#233;but d'une aventure palpitante pour Pablo et son copain Baptiste. De nombreux heureux &#233;v&#233;nements vont m&#234;me illuminer leur quotidien ! Un moment de lecture dr&#244;le et tr&#233;pidant.</subfield>
+      <subfield code="5">RERO/vdcopp/01.2015</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="700">
+      <subfield code="a">Larnicol, Solenn</subfield>
+      <subfield code="d">1986-....</subfield>
+      <subfield code="0">(IDREF)157216845</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="800">
+      <subfield code="a">Frier, Rapha&#235;le</subfield>
+      <subfield code="t">&lt;&lt;La&gt;&gt; famille Python</subfield>
+      <subfield code="v">1</subfield>
+    </datafield>
+    <datafield ind1=" " ind2="0" tag="830">
+      <subfield code="a">Roman du monde</subfield>
+      <subfield code="v">24</subfield>
+      <subfield code="w">(RERO)R003219204-41slsp</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="900">
+      <subfield code="a">REROnoselfmerge</subfield>
+    </datafield>
+  </record>
+</bib>

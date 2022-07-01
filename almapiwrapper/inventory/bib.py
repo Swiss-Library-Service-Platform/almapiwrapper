@@ -16,10 +16,10 @@ class Bib(Record, metaclass=abc.ABCMeta):
     This abstract class groups common methods to "IzBib" and
     "NzBib". Only these two classes should be instanced.
 
-    :ivar mms_id: initial value: record mms_id
-    :ivar zone: initial value: zone of the record
-    :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar data: initial value: :class:`almapiwrapper.record.XmlData`
+    :ivar mms_id: record mms_id
+    :ivar zone: zone of the record
+    :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar data: :class:`almapiwrapper.record.XmlData`
         object, useful to force update a record from a backup
     """
 
@@ -148,14 +148,14 @@ class IzBib(Bib):
 
     It inherits from Bib for common methods with NzBib.
 
-    :ivar mms_id: initial value: record mms_id
-    :ivar zone: initial value: zone of the record
-    :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar mms_id: record mms_id
+    :ivar zone: zone of the record
+    :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar from_nz_mms_id: if this parameter is True the system assume that the provided MMS ID is a network ID
         and fetch data from it
-    :ivar copy_nz_rec: initial value: if this parameter is True, if no record exists in the IZ for the provided
+    :ivar copy_nz_rec: if this parameter is True, if no record exists in the IZ for the provided
         NZ ID, the CZ record is copied from NZ
-    :ivar data: initial value: :class:`almapiwrapper.record.XmlData`
+    :ivar data: :class:`almapiwrapper.record.XmlData`
         object, useful to force update a record from a backup
     """
     def __init__(self, mms_id: str,
@@ -338,9 +338,9 @@ class NzBib(Bib):
 
     It inherits from Bib for common methods with IzBib.
 
-    :ivar mms_id: initial value: record mms_id
-    :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar data: initial value: :class:`almapiwrapper.record.XmlData` object, useful to
+    :ivar mms_id: record mms_id
+    :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to
         force update a record from a backup
     """
     def __init__(self, mms_id: str, env: Literal['P', 'S'] = 'P', data: Optional[XmlData] = None) -> None:

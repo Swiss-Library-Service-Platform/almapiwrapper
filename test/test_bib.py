@@ -3,7 +3,7 @@ import sys
 import os
 
 from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
-from almapiwrapper.record import JsonData
+from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
 config_log("test.log")
@@ -89,6 +89,38 @@ class TestBib(unittest.TestCase):
 
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
 
+    def test_update_bib_record(self):
+
+        # Get some bib record
+        bib = NzBib('991043825829705501', 'S')
+
+        # Change the title
+        bib.data.find('.//datafield[@tag="245"]/subfield[@code="a"]') \
+                .text = 'Je ne veux plus de python pour mon anniversaire'
+
+        bib.update()
+
+        bib = NzBib('991043825829705501', 'S')
+        title = bib.data.find('.//datafield[@tag="245"]/subfield[@code="a"]').text
+
+        self.assertFalse(bib.error, 'No error when updating an item in NZ')
+        self.assertEqual(title,
+                         'Je ne veux plus de python pour mon anniversaire',
+                         'Le titre ne correspond pas à la modification')
+
+        # Load the original record from disk to restore the title
+        data = XmlData(filepath='test/data/nz_record_orig.xml')
+        bib = NzBib('991043825829705501', 'S', data=data)
+        bib.update()
+
+        # Check if the record have been updated
+        bib = NzBib('991043825829705501', 'S')
+        title = bib.data.find('.//datafield[@tag="245"]/subfield[@code="a"]').text
+
+        self.assertFalse(bib.error, 'No error when updating an item in NZ')
+        self.assertEqual(title,
+                         'Je veux un python pour mon anniversaire',
+                         'Original title not restored')
 
     @classmethod
     def tearDownClass(cls):

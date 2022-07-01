@@ -13,8 +13,8 @@ backup of the records.
 Introduction
 ============
 
-How to import libraries
------------------------
+How to import modules
+---------------------
 
 .. code-block:: python
 

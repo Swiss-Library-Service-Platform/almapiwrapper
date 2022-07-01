@@ -19,14 +19,14 @@ class Item(Record):
 
         Instead of providing the item_id it is possible to provide the barcode.
 
-    :ivar mms_id: initial value: bib record mms_id
-    :ivar holding_id: initial value: holding record ID
+    :ivar mms_id: bib record mms_id
+    :ivar holding_id: holding record ID
     :ivar item_id: numerical ID of the item
-    :ivar zone: initial value: zone of the record
-    :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar zone: zone of the record
+    :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar holding: :class:`almapiwrapper.inventory.Holding` object
     :ivar barcode: string with barcode of the item
-    :ivar data: initial value: :class:`almapiwrapper.record.XmlData` object, useful to force
+    :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to force
         update a record from a backup
     :ivar create_item: when True, create a new item
     """
