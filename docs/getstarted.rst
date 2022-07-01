@@ -1,0 +1,134 @@
+Get started
+===========
+
+Installation
+------------
+
+.. code-block:: bash
+
+    pip install almapiwrapper
+
+You will then configure the API keys. You have to store them in a json file.
+Here is a sample without the complete API keys:
+
+.. code-block:: json
+
+    {
+      "NZ": [
+        {
+          "API_Key": "l8xxkey1",
+          "Name": "User management - Correction",
+          "Supported_APIs": [
+            {
+              "Area": "Users",
+              "Env": "S",
+              "Permissions": "RW"
+            }
+          ]
+        },
+        {
+          "API_Key": "l8xxkey2",
+          "Name": "Get Analytics",
+          "Supported_APIs": [
+            {
+              "Area": "Analytics",
+              "Env": "P",
+              "Permissions": "R"
+            }
+          ]
+        }
+      ],
+      "BFH": [
+        {
+          "API_Key": "l8xxkey3",
+          "Name": "User management - Correction",
+          "Supported_APIs": [
+            {
+              "Area": "Users",
+              "Env": "P",
+              "Permissions": "RW"
+            }
+          ]
+        }
+      ]
+    }
+
+The API keys are grouped by IZ. Env can be either "p" for production or "S"
+for sandbox. Permissions are either "RW" (read and write) or "R" (read). This file
+can be stored anyway on the machine.
+
+.. note::
+    You have to create a new environment variable **`alma_api_keys`** with the absolute path
+    to this file.
+
+Logs
+----
+It is possible to configure the logs. The log files are stored in the
+`./log` folder.
+
+.. code-block:: python
+
+    from almapiwrapper import config_log
+
+    # Will store the logs in the `./log/test.log` file
+    config_log("test.log")
+
+Records backups
+---------------
+The `save` method of all records creates a backup of the record in the
+`./records` folder.
+
+Inventory
+---------
+This mudule can use Alma APIs to manage bib records, holdings and items.
+
+.. code-block:: python
+
+    # Get bib record
+    bib = IzBib('991000975799705520', 'HPH', 'S')
+
+    # print XML data
+    print(bib)
+
+By changing the data of the `data` property, it is possible to make update
+to the record.
+
+.. code-block:: python
+
+    # get item from barcode
+    item = Item(barcode='03124510', zone='HPH', env='S')
+
+
+Users
+-----
+This module can use alma APIs to create, update and delete users. The data itself
+are on json format stored in the :attr:`~.User.data` property of the :class:`almapi.users.User`
+object.
+
+.. code-block:: python
+
+    # Load user data
+    data = JsonData(filepath='test/data/user_test1.json')
+
+    # Create object
+    u = NewUser('UBS', 'S', data)
+
+    # Create the user in Alma
+    u.create()
+
+    # Backup the record
+    u.save()
+
+    # Delete the record
+    u.delete()
+
+It is possible to chain all the methods.
+
+.. code-block:: python
+
+    data = JsonData(filepath='test/data/user_test1.json')
+
+    NewUser('UBS', 'S', data).create().save().delete()
+
+If there is any error, most methods are simply skipped. This way there is no
+corruption, and the script should not encounter an interrupting exception.
