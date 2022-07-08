@@ -127,6 +127,8 @@ class User(Record):
 
         When a new value is set and json data is available, it changes the primary ID
         at the data level.
+
+        :return: primary ID of the user
         """
         if self._data is not None:
             return self.data['primary_id']
@@ -149,7 +151,9 @@ class User(Record):
 
     @property
     def fees(self) -> Optional[List['users.Fee']]:
-        """Property returning the list of the fees of the user"""
+        """Property returning the list of the fees of the user
+
+        :return: list of :class:`almapiwrapper.users.Fee` objects"""
         if self._fees is None:
             self._fees = self._fetch_fees()
 
