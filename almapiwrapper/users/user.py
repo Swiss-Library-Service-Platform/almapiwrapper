@@ -1,9 +1,10 @@
 """This module allows getting information and changing Alma users"""
 
-from typing import Optional, ClassVar, Literal, Union
+from typing import Optional, ClassVar, Literal, Union, List
 import logging
 import requests
 from ..record import Record, check_error, JsonData
+import almapiwrapper.users as users
 
 
 class User(Record):
@@ -28,6 +29,7 @@ class User(Record):
         super().__init__(zone, env, data)
         self.primary_id = primary_id
         self.area = 'Users'
+        self._fees = None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -47,15 +49,34 @@ class User(Record):
         else:
             self._handle_error(r, f'unable to fetch user data')
 
+    def _fetch_fees(self) -> Optional[List['users.Fee']]:
+        """Fetch fee data of the current user
+        :return: list of :class:`almapiwrapper.users.Fee` objects"""
+
+        r = requests.get(f'{self.api_base_url}/{self.primary_id}/fees', headers=self._get_headers())
+        if r.ok is True:
+
+            logging.info(f'{repr(self)}: fees data available')
+            fees_data = r.json()
+            if 'fee' not in fees_data:
+                logging.warning(f'{repr(self)}: no fee in the account')
+                return []
+            fees = []
+            for fee_data in fees_data['fee']:
+                fees.append(users.Fee(user=self, data=JsonData(fee_data)))
+            return fees
+        else:
+            self._handle_error(r, f'unable to fetch user fees')
+
     def save(self) -> 'User':
         """Save a user record in the 'records' folder
 
         When saved, a suffix is added to the file path with the version.
-        Example: records/NZ_991170519490005501/bib991170519490005501_01.xml
+        Example: records/<primary_id>/user_<IZ>_<primary_id>_<version>.xml
 
         :return: object :class:`almapiwrapper.users.User`
         """
-        filepath = f'records/{self.zone}/user_{self.primary_id}.json'
+        filepath = f'records/{self.primary_id}/user_{self.zone}_{self.primary_id}.json'
         self._save_from_path(filepath)
         return self
 
@@ -126,6 +147,14 @@ class User(Record):
         if self._data is not None:
             self.data['primary_id'] = self._primary_id
 
+    @property
+    def fees(self) -> Optional[List['users.Fee']]:
+        """Property returning the list of the fees of the user"""
+        if self._fees is None:
+            self._fees = self._fetch_fees()
+
+        return self._fees
+
     @check_error
     def set_password(self, password: Optional[str] = '123pw123') -> 'User':
         """set_password(password: Optional[str] = '123pw123') -> 'User'
@@ -165,7 +194,8 @@ class NewUser(User):
 
         :param password: optional string with the password, if not provided,
             the password will be set at the default value
-        :return: object :class:`almapiwrapper.users.User` or object :class:`almapiwrapper.users.NewUser` (in case of error)
+        :return: object :class:`almapiwrapper.users.User` or object :class:`almapiwrapper.users.NewUser`
+            (in case of error)
 
         .. note::
             If the record encountered an error, this

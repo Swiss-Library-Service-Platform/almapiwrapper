@@ -1,0 +1,18 @@
+{
+  "type": {
+    "value": "OTHER"
+  },
+  "status": {
+    "value": "ACTIVE"
+  },
+  "balance": 20.0,
+  "original_amount": 20.0,
+  "original_vat_amount": 0.0,
+  "comment": null,
+  "owner": {
+    "value": "A100"
+  },
+  "title": null,
+  "barcode": null,
+  "transaction": []
+}

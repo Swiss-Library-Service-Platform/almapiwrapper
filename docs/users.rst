@@ -6,4 +6,5 @@ Users submodule
 
    user
    newuser
+   fee
    fetchusers

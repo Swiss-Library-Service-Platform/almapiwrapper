@@ -1,4 +1,4 @@
-from .user import User
+import almapiwrapper.users as userslib
 from typing import List, Optional, Literal, Dict
 from ..apikeys import ApiKeys
 from ..record import JsonData
@@ -6,7 +6,7 @@ import requests
 import logging
 
 
-def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> List[User]:
+def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> List[userslib.User]:
     """Search users in IZ according to a request
 
     :param q: request in API syntax. "user_group~06" will search every linked account
@@ -31,7 +31,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
         while offset == 0 or offset < nb_total_records:
 
             # Make request
-            r = requests.get(f'{User.api_base_url}',
+            r = requests.get(f'{userslib.User.api_base_url}',
                              params={'q': q, 'limit': 100, 'offset': offset},
                              headers=_get_headers(z, 'RW', env))
 
@@ -41,7 +41,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
                 nb_total_records = int(users_list.content['total_record_count'])
 
                 if 'user' in users_list.content:
-                    users += [User(user['primary_id'], z, env) for user in users_list.content['user']]
+                    users += [userslib.User(user['primary_id'], z, env) for user in users_list.content['user']]
                     nb_users = len(users_list.content['user'])
                 else:
                     nb_users = 0
@@ -58,7 +58,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
     return users
 
 
-def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P') -> List[User]:
+def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P') -> List[userslib.User]:
     """Fetch by primary ID a user in all IZ
 
     :param primary_id: primary ID of the user to search across all IZs
@@ -69,7 +69,7 @@ def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P'
     list_iz = ApiKeys().get_iz_codes()
     users = []
     for iz in list_iz:
-        user = User(primary_id, iz, env)
+        user = userslib.User(primary_id, iz, env)
 
         _ = user.data
 
