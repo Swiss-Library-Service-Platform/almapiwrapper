@@ -1,6 +1,7 @@
-****************************
-Almapi wrapper documentation
-****************************
+**********************************
+Almapi wrapper documentation |doc|
+**********************************
+
 
 This python module is a tool to use Alma APIs. it manages the logs and the
 backup of the records.
@@ -53,3 +54,7 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
+
+.. |doc| image:: https://readthedocs.org/projects/almapi-wrapper/badge/?version=latest
+    :target: https://almapi-wrapper.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
