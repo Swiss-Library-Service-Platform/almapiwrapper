@@ -5,6 +5,7 @@ import logging
 import requests
 from ..record import Record, check_error, JsonData
 import almapiwrapper.users as users
+from datetime import datetime
 
 
 class User(Record):
@@ -81,9 +82,11 @@ class User(Record):
         return self
 
     @check_error
-    def update(self) -> 'User':
+    def update(self, override: Optional[str] = None) -> 'User':
         """update() -> 'User'
         Update the user through api
+
+        :param override: string containing the list of the fields to override
 
         :return: object :class:`almapiwrapper.users.User`
 
@@ -91,11 +94,18 @@ class User(Record):
             If the record encountered an error, this
             method will be skipped.
         """
+        if override is not None:
+            params = {'override': override}
+        else:
+            params = {}
+
         r = requests.put(f'{self.api_base_url}/{self.primary_id}',
                          data=bytes(self),
+                         params=params,
                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: user updated.')
+            self.data = JsonData(r.json())
         else:
             self._handle_error(r, 'failed to delete user')
 
@@ -175,6 +185,57 @@ class User(Record):
         self.data['force_password_change'] = "TRUE"
 
         return self
+
+    @check_error
+    def add_synchro_note(self) -> 'User':
+        """Add a test synchronization notes
+
+        :return: object :class:`almapiwrapper.users.User`"""
+
+        note = {"note_type": {"value": "OTHER"},
+                "note_text": f"SLSP Test-synchronisation {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                "user_viewable": False,
+                "popup_note": False,
+                "segment_type": "Internal"}
+        self.data['user_note'].append(note)
+        self.update()
+        if self.error is False:
+            logging.info(f'{repr(self)}: synchronization test note added')
+
+        return self
+
+    @check_error
+    def remove_synchro_note(self) -> 'User':
+        """Remove all test synchronization notes
+
+        :return: object :class:`almapiwrapper.users.User`"""
+        nb_notes = len(self.data['user_note'])
+        self.data['user_note'] = [note for note in self.data['user_note']
+                                  if not note['note_text'].startswith('SLSP Test-synchronisation')]
+        nb_sup_notes = nb_notes - len(self.data['user_note'])
+
+        if nb_sup_notes > 0:
+            self.update()
+            if self.error is False:
+                logging.info(f'{repr(self)}: {nb_sup_notes} synchronization test note(s) suppressed')
+        else:
+            logging.warning(f'{repr(self)}: NO synchronization test note suppressed')
+
+        return self
+
+    @check_error
+    def check_synchro_note(self) -> bool:
+        """Test if the user has a synchronization test note
+
+        :return: True if a synchronization test note is found else False
+        """
+        has_synchro_note = len([note for note in self.data['user_note']
+                                if note['note_text'].startswith('SLSP Test-synchronisation')]) > 0
+        if has_synchro_note is True:
+            logging.info(f'{repr(self)}: a synchronization test note exists')
+        else:
+            logging.warning(f'{repr(self)}: NO synchronization test note exists')
+        return has_synchro_note
 
 
 class NewUser(User):

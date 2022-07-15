@@ -1,9 +1,10 @@
 import almapiwrapper.users as userslib
-from typing import List, Optional, Literal, Dict
+from typing import List, Optional, Literal, Dict, Union
 from ..apikeys import ApiKeys
 from ..record import JsonData
 import requests
 import logging
+import time
 
 
 def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> List[userslib.User]:
@@ -77,6 +78,48 @@ def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P'
             users.append(user)
 
     return users
+
+
+def check_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> Optional[List[userslib.User]]:
+    """Test if a NZ user is synchronized with copies of the account across IZs.
+    :param nz_users: list of :class:`almapiwrapper.users.User` or only one :class:`almapiwrapper.users.User`
+    :return: list of :class:`almapiwrapper.users.User` with not synchronized IZ user accounts
+    """
+
+    not_synchro_iz_users = []
+    if type(nz_users) is not list:
+        nz_users = [nz_users]
+
+    nb_users = len(nz_users)
+    nz_users = [user for user in nz_users if user.zone == 'NZ']
+
+    if len(nz_users) < nb_users:
+        logging.error(f'Impossible to check synchronization on not NZ account')
+        return None
+
+    for nz_user in nz_users:
+        nz_user.add_synchro_note()
+
+    # time.sleep(300)
+
+    for nz_user in nz_users:
+        nz_user.save()
+        iz_users = fetch_user_in_all_iz(nz_user.primary_id, nz_user.env)
+
+        for iz_user in iz_users:
+            iz_user.save()
+            if iz_user.check_synchro_note() is False:
+                not_synchro_iz_users.append(iz_user)
+
+    for nz_user in nz_users:
+        nz_user.remove_synchro_note()
+
+    if len(not_synchro_iz_users) > 0:
+        logging.warning(f'Count of not synchronized users: {len(not_synchro_iz_users)}')
+    else:
+        logging.info(f'Count of not synchronized users: {len(not_synchro_iz_users)}')
+
+    return not_synchro_iz_users
 
 
 def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env: str):

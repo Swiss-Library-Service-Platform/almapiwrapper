@@ -25,6 +25,10 @@ class TestCreateUser(unittest.TestCase):
         if u.data is not None:
             u.delete()
 
+        u = User('TestUser5', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
     def test_create_user1(self):
 
         # Create new user
@@ -77,6 +81,24 @@ class TestCreateUser(unittest.TestCase):
         u = User('TestUser_not_existing', 'UBS', 'S')
         self.assertIsNone(u.data, 'Unable to fetch data with api of a not existing record')
         self.assertTrue(u.error, 'No error when fetching not existing user')
+
+    def test_synchro_note(self):
+        # Create new user
+        data = JsonData(filepath='test/data/user_test5.json')
+        u = NewUser('UBS', 'S', data).create()
+
+        self.assertFalse(u.check_synchro_note(), 'User has already synchronization note')
+        u.add_synchro_note()
+
+        u = User('TestUser5', 'UBS', 'S')
+        self.assertTrue(u.check_synchro_note(), 'User has no synchronization note')
+
+        u.remove_synchro_note()
+
+        u = User('TestUser5', 'UBS', 'S')
+        self.assertFalse(u.check_synchro_note(), 'User has still a synchronization note')
+
+        u.delete()
 
     @classmethod
     def tearDownClass(cls):
