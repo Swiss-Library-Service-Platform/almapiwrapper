@@ -70,12 +70,9 @@ def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P'
     list_iz = ApiKeys().get_iz_codes()
     users = []
     for iz in list_iz:
-        user = userslib.User(primary_id, iz, env)
-
-        _ = user.data
-
-        if user.error is False:
-            users.append(user)
+        users_temp = fetch_users(f'primary_id~{primary_id}', iz, env)
+        if len(users_temp) == 1:
+            users += users_temp
 
     return users
 
@@ -100,7 +97,7 @@ def check_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> Option
     for nz_user in nz_users:
         nz_user.add_synchro_note()
 
-    # time.sleep(300)
+    time.sleep(300)
 
     for nz_user in nz_users:
         nz_user.save()

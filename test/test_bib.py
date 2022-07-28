@@ -54,7 +54,7 @@ class TestBib(unittest.TestCase):
 
         # Get items
         items = hols[0].get_items()
-
+        print(items)
         self.assertEqual(items[0].barcode, '03124510', "Error, barcode item should be '03124510'")
 
     def test_get_from_barcode(self):
