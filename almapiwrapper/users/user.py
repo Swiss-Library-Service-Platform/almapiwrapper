@@ -107,7 +107,7 @@ class User(Record):
             logging.info(f'{repr(self)}: user updated.')
             self.data = JsonData(r.json())
         else:
-            self._handle_error(r, 'failed to delete user')
+            self._handle_error(r, 'failed to update user')
 
         return self
 
@@ -258,7 +258,7 @@ class NewUser(User):
         Create the user with API.
 
         :param password: optional string with the password, if not provided,
-            the password will be set at the default value
+            the password will be set at the default value (if not available in the data)
         :return: object :class:`almapiwrapper.users.User` or object :class:`almapiwrapper.users.NewUser`
             (in case of error)
 
@@ -289,7 +289,7 @@ class NewUser(User):
             If the record encountered an error, this
             method will be skipped.
         """
-        if password is None:
+        if password is None and self.data['password'] == '':
             password = '123pw123'
         self.data['password'] = password
 

@@ -151,7 +151,7 @@ class IzBib(Bib):
     :ivar mms_id: record mms_id
     :ivar zone: zone of the record
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar from_nz_mms_id: if this parameter is True the system assume that the provided MMS ID is a network ID
+    :ivar from_nz_mms_id: if this parameter is True the system assumes that the provided MMS ID is a network ID
         and fetch data from it
     :ivar copy_nz_rec: if this parameter is True, if no record exists in the IZ for the provided
         NZ ID, the CZ record is copied from NZ

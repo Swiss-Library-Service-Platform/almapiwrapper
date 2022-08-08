@@ -1,6 +1,7 @@
 Tests
 =====
-The module has unittest test cases.
+The module has unittest test cases. These tests will only work in
+SLSP environment.
 
 To launch them all:
 
