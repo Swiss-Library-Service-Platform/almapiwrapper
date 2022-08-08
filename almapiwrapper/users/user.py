@@ -291,7 +291,9 @@ class NewUser(User):
         """
         if password is None and self.data['password'] == '':
             password = '123pw123'
-        self.data['password'] = password
+
+        if password is not None:
+            self.data['password'] = password
 
         return self
 
