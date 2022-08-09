@@ -1,6 +1,6 @@
 """This module allows getting information and changing Alma holding records"""
 
-from typing import Optional, Literal, List, ClassVar
+from typing import Optional, Literal, List, ClassVar, Union
 import logging
 import requests
 from ..record import Record, check_error, XmlData
@@ -21,8 +21,8 @@ class Holding(Record):
                  zone: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
                  bib: Optional[inventory.IzBib] = None,
-                 data: etree.Element = None,
-                 create_holding: bool = False) -> None:
+                 data: Optional[Union['XmlData', etree.Element]] = None,
+                 create_holding: Optional[bool] = False) -> None:
         """
         Construct a holding record. Several possibilities for building holdings:
         - 'get_holdings' method of IzBib object
@@ -37,8 +37,8 @@ class Holding(Record):
         :ivar zone: zone of the record
         :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
         :ivar bib: class:`almapiwrapper.inventory.IzBib` object
-        :ivar data: :class:`almapiwrapper.record.XmlData`
-        object, useful to force update a record from a backup
+        :ivar data: :class:`almapiwrapper.record.XmlData` or `etree.Element` object,
+        useful to force update a record from a backup
         :ivar create_holding: boolean, if True try to create a new holding (if no 'holding_id' is provided)
         """
         self._items = None
@@ -51,6 +51,7 @@ class Holding(Record):
         if self.bib is not None:
             self.zone = self.bib.zone
             self.env = self.bib.env
+
         else:
             self.zone = zone
             self.env = env
@@ -61,6 +62,8 @@ class Holding(Record):
                 self.error = True
         # Create a new holding if 'create_holding' is True
         if self.holding_id is None and data is not None and create_holding is True:
+            if data.__class__.__name__ == '_Element':
+                data = XmlData(etree.tostring(data))
             self._create_holding(data)
 
     def __repr__(self) -> str:
@@ -82,7 +85,6 @@ class Holding(Record):
         else:
             self._handle_error(r, 'unable to fetch holding data')
 
-    @check_error
     def _create_holding(self, data: etree.Element) -> None:
         """Create a holding and link it to the provided bibliographic record
 
@@ -91,10 +93,10 @@ class Holding(Record):
         """
         r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings',
                           headers=self._get_headers(data_format='xml'),
-                          data=etree.tostring(data))
+                          data=bytes(data))
 
         if r.ok is True:
-            self.data = etree.fromstring(r.content, parser=self.parser)
+            self.data = XmlData(r.content)
             self.holding_id = self.get_holding_id()
             logging.info(f'{repr(self)}: holding created')
         else:

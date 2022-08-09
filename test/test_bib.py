@@ -76,7 +76,7 @@ class TestBib(unittest.TestCase):
 
     def test_duplicate_item(self):
 
-        # Get the data from NZ id of a not existing record in IZ
+        # Get the item data
         item1 = Item(barcode='03124510', zone='HPH', env='S')
 
         # Change barcode
@@ -88,6 +88,18 @@ class TestBib(unittest.TestCase):
         self.assertEqual(item2.barcode, '03124510_NEW', 'Barcode of the duplicated item is not "03124510_NEW"')
 
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
+
+    def test_create_holding(self):
+        # Get the item data
+        holding1 = Holding('991000975799705520', '2234409340005520', 'HPH', 'S')
+
+        # Duplicate holding
+        holding2 = Holding(bib=holding1.bib, data=holding1.data, create_holding=True)
+
+        self.assertEqual(holding2.data.find('.//datafield[@tag="852"]/subfield[@code="b"]').text, 'hph_bjnbe')
+
+        # Delete duplicated holding
+        holding2.delete()
 
     def test_update_bib_record(self):
 
