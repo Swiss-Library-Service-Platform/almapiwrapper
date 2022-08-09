@@ -11,6 +11,23 @@ from lxml import etree
 class Holding(Record):
     """
     Class representing a holding object. Holdings are only in the IZ.
+
+    Several possibilities for building holdings:
+    - 'get_holdings' method of IzBib object
+    - Holding(mms_id, holding_id, zone, env)
+    - Holding(bib=BibIz, holding_id=holding_id)
+
+    if no 'holding_id' is provided, but 'data' is provided and create_holding is True, then
+    it creates a new holding.
+
+    :ivar mms_id: record mms_id
+    :ivar holding_id: holding ID
+    :ivar zone: zone of the record
+    :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar bib: class:`almapiwrapper.inventory.IzBib` object
+    :ivar data: :class:`almapiwrapper.record.XmlData` or `etree.Element` object,
+    useful to force update a record from a backup
+    :ivar create_holding: boolean, if True try to create a new holding (if no 'holding_id' is provided)
     """
 
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'
@@ -31,15 +48,6 @@ class Holding(Record):
 
         if no 'holding_id' is provided, but 'data' is provided and create_holding is True, then
         it creates a new holding.
-
-        :ivar mms_id: record mms_id
-        :ivar holding_id: holding ID
-        :ivar zone: zone of the record
-        :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
-        :ivar bib: class:`almapiwrapper.inventory.IzBib` object
-        :ivar data: :class:`almapiwrapper.record.XmlData` or `etree.Element` object,
-        useful to force update a record from a backup
-        :ivar create_holding: boolean, if True try to create a new holding (if no 'holding_id' is provided)
         """
         self._items = None
         self.error = False
