@@ -2,5 +2,5 @@
 -----------------
 .. autoclass:: almapiwrapper.users.NewUser
     :members:
-    :undoc-members:
+    :inherited-members:
     :show-inheritance:

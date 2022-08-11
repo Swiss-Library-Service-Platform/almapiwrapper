@@ -2,5 +2,5 @@
 -----------------
 .. autoclass:: almapiwrapper.inventory.Item
     :members:
-    :undoc-members:
     :show-inheritance:
+    :inherited-members:

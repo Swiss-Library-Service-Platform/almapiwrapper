@@ -356,3 +356,24 @@ class NzBib(Bib):
         :return: string
         """
         return f"{self.__class__.__name__}('{self.mms_id}', '{self.env}')"
+
+    @check_error
+    def delete(self) -> None:
+        """delete(self) -> None
+        Suppress bibliographic record in the IZ
+
+        To suppress locally a record,
+        it needs to be unlinked from the NZ and without holdings and items.
+
+        :param force: when True delete also holdings and items
+        :return: None
+        """
+
+        # Suppress record
+        r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
+                            headers=self._get_headers(data_format='xml'))
+        if r.ok is True:
+            logging.info(f'{repr(self)} deleted')
+            return
+
+        self._handle_error(r, 'unable to delete the NZ record')

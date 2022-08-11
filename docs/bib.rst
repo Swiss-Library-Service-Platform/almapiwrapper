@@ -2,12 +2,10 @@
 ---------------
 .. autoclass:: almapiwrapper.inventory.IzBib
     :members:
-    :undoc-members:
-    :show-inheritance:
+    :inherited-members:
 
 ``NzBib`` class
 ---------------
 .. autoclass:: almapiwrapper.inventory.NzBib
     :members:
-    :undoc-members:
-    :show-inheritance:
+    :inherited-members:

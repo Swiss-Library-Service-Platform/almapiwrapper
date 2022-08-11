@@ -7,7 +7,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.rst").read_text()
 
 setup(name='almapiwrapper',
-      version='0.5.5',
+      version='0.5.6',
       long_description=long_description,
       long_description_content_type='text/reST',
       packages=find_packages(),
