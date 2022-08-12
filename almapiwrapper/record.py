@@ -47,6 +47,7 @@ class Record(metaclass=abc.ABCMeta):
     # Using this parser avoids some problems with 'tostring' method
     parser: ClassVar[etree.XMLParser] = etree.XMLParser(remove_blank_text=True)
 
+    @abc.abstractmethod
     def __init__(self, zone: str,
                  env: Literal['P', 'S'] = 'P',
                  data: Optional[Union['JsonData', 'XmlData']] = None) -> None:

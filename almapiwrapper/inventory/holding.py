@@ -252,11 +252,11 @@ class Holding(Record):
 
         :return: library code
         """
-        library = self.data.find('.//datafield[@tag="852"]/subfield[@code="c"]')
-        if library is None:
-            logging.warning(f'{repr(self)}: no library in the holding')
+        location = self.data.find('.//datafield[@tag="852"]/subfield[@code="c"]')
+        if location is None:
+            logging.warning(f'{repr(self)}: no location in the holding')
             return
-        return library.text
+        return location.text
 
     @location.setter
     @check_error

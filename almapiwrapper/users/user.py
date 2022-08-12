@@ -217,9 +217,9 @@ class User(Record):
         if nb_sup_notes > 0:
             self.update()
             if self.error is False:
-                logging.info(f'{repr(self)}: {nb_sup_notes} synchronization test note(s) suppressed')
+                logging.info(f'{repr(self)}: {nb_sup_notes} synchronization test note(s) deleted')
         else:
-            logging.warning(f'{repr(self)}: NO synchronization test note suppressed')
+            logging.warning(f'{repr(self)}: NO synchronization test note deleted')
 
         return self
 

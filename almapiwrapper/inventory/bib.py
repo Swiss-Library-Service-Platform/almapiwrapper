@@ -242,9 +242,9 @@ class IzBib(Bib):
     @check_error
     def delete(self, force: Optional[bool] = False) -> None:
         """delete(self, force: Optional[bool] = False) -> None
-        Suppress bibliographic record in the IZ
+        Delete bibliographic record in the IZ
 
-        To suppress locally a record,
+        To delete locally a record,
         it needs to be unlinked from the NZ and without holdings and items.
 
         :param force: when True delete also holdings and items
@@ -261,7 +261,7 @@ class IzBib(Bib):
                           data='<bib/>',
                           headers=self._get_headers(data_format='xml'))
 
-        # Suppress record
+        # Delete record
         if r.ok is True:
             logging.info(f'{repr(self)} unlinked from NZ')
 
@@ -360,16 +360,16 @@ class NzBib(Bib):
     @check_error
     def delete(self) -> None:
         """delete(self) -> None
-        Suppress bibliographic record in the IZ
+        Delete bibliographic record in the IZ
 
-        To suppress locally a record,
+        To delete locally a record,
         it needs to be unlinked from the NZ and without holdings and items.
 
         :param force: when True delete also holdings and items
         :return: None
         """
 
-        # Suppress record
+        # Delete record
         r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
                             headers=self._get_headers(data_format='xml'))
         if r.ok is True:

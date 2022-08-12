@@ -16,6 +16,13 @@ class TestBib(unittest.TestCase):
         IzBib('991043825829705501', 'UBS', 'S', from_nz_mms_id=True).delete()
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
 
+        _ = [hol.delete() for hol in IzBib('991000975799705520', zone='HPH', env='S').get_holdings()
+             if hol.holding_id != '2234409340005520']
+
+        item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
+        if item.error is False:
+            item.holding.delete(force=True)
+
     def test_get_bib(self):
 
         # Get the data
@@ -50,12 +57,12 @@ class TestBib(unittest.TestCase):
         # Get holdings
         hols = IzBib('991043825829705501', 'HPH', 'S', from_nz_mms_id=True).get_holdings()
 
-        self.assertEqual(len(hols), 2, "Error, not two holdings found")
+        self.assertGreater(len(hols), 1, "Error, not at least two holdings found")
 
         # Get items
         items = hols[0].get_items()
-        print(items)
-        self.assertEqual(items[0].barcode, '03124510', "Error, barcode item should be '03124510'")
+
+        self.assertTrue('03124510' in items[0].barcode, "Error, barcode item should start with '03124510'")
 
     def test_get_from_barcode(self):
 
@@ -88,6 +95,27 @@ class TestBib(unittest.TestCase):
         self.assertEqual(item2.barcode, '03124510_NEW', 'Barcode of the duplicated item is not "03124510_NEW"')
 
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
+
+    def test_change_library_item(self):
+        # Get the item data
+        item1 = Item(barcode='03124510', zone='HPH', env='S')
+
+        # Change barcode
+        item1.barcode = '03124510_NEW_2'
+        item1.library = 'hph_bjnju'
+        item1.location = 'bjnjudoc'
+
+        hol1 = item1.holding
+        hol1.library = 'hph_bjnju'
+        hol1.location = 'bjnjudoc'
+
+        hol2 = Holding(bib=item1.bib, data=hol1.data, create_holding=True)
+        item2 = Item(holding=hol2, data=item1.data, create_item=True)
+
+        self.assertFalse(item2.error, 'No error when duplicating an item in IZ')
+        self.assertEqual(item2.barcode, '03124510_NEW_2', 'Barcode of the duplicated item is not "03124510_NEW_2"')
+
+        Item(barcode='03124510_NEW_2', zone='HPH', env='S').holding.delete(force=True)
 
     def test_create_holding(self):
         # Get the item data
@@ -138,6 +166,12 @@ class TestBib(unittest.TestCase):
     def tearDownClass(cls):
         IzBib('991043825829705501', 'UBS', 'S', from_nz_mms_id=True).delete()
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
+        item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
+        if item.error is False:
+            item.holding.delete(force=True)
+
+        _ = [hol.delete() for hol in IzBib('991000975799705520', zone='HPH', env='S').get_holdings()
+             if hol.holding_id != '2234409340005520']
 
 
 if __name__ == '__main__':

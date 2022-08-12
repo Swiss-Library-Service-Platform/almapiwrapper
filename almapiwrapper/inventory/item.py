@@ -167,8 +167,8 @@ class Item(Record):
             return self.holding.bib
 
     @property
-    def holding(self) -> inventory.Holding:
-        """holding(self) -> 'inventory.Holding'
+    def holding(self) -> Optional[inventory.Holding]:
+        """holding(self) -> Optional[inventory.Holding]
         Property of the item returning the :class:`almapiwrapper.inventory.Holding` object
         related to the item
         :return: :class:`almapiwrapper.inventory.Holding`
@@ -255,7 +255,7 @@ class Item(Record):
     @check_error
     def delete(self) -> None:
         """delete(self) -> None
-        Suppress an item.
+        Delete an item.
         :return: None
         """
         r = requests.delete(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
@@ -265,3 +265,64 @@ class Item(Record):
             logging.info(f'{repr(self)} deleted')
         else:
             self._handle_error(r, 'unable to delete the item')
+
+    @property
+    @check_error
+    def library(self) -> Optional[str]:
+        """library(self) -> Optional[str]
+        Property of the holding returning the library code
+        :return: library code
+        """
+        library = self.data.find('.//item_data/library')
+        if library is None:
+            logging.warning(f'{repr(self)}: no library in the item')
+            return
+        return library.text
+
+    @library.setter
+    @check_error
+    def library(self, library_code: str) -> None:
+        """library(self, library_code: str) -> None
+        This setter is able to update the 852$b of the holding. But the field should already exist.
+        :param library_code: code of the library to insert in 852$b field
+        :return: None
+        """
+        library = self.data.find('.//item_data/library')
+        if library is None:
+            logging.error(f'{repr(self)}: no library field -> not possible to update it')
+            self.error = True
+        else:
+            logging.info(f'{repr(self)}: library changed from "{library.text}" to "{library_code}"')
+            library.text = library_code
+            library.attrib.pop('desc', None)
+
+    @property
+    @check_error
+    def location(self) -> Optional[str]:
+        """location(self) -> Optional[str]
+        Property of the holding returning the library code
+
+        :return: library code
+        """
+        location = self.data.find('.//item_data/location')
+        if location is None:
+            logging.warning(f'{repr(self)}: no location in the item')
+            return
+        return location.text
+
+    @location.setter
+    @check_error
+    def location(self, location_code: str) -> None:
+        """location(self, location_code: str) -> None
+        This setter is able to update the 852$c of the holding. But the field should already exist.
+
+        :param location_code:
+        :return: None
+        """
+        location = self.data.find('.//item_data/location')
+        if location is None:
+            logging.error(f'{repr(self)}: no location field -> not possible to update it')
+        else:
+            logging.info(f'{repr(self)}: location changed from "{location.text}" to "{location_code}"')
+            location.text = location_code
+            location.attrib.pop('desc', None)
