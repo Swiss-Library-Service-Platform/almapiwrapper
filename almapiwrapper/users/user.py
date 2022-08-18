@@ -40,6 +40,7 @@ class User(Record):
 
     def _fetch_data(self) -> Optional[JsonData]:
         """Use API to fetch user data
+
         :return: json data or None if no data is available
         """
 
@@ -52,9 +53,12 @@ class User(Record):
 
     def _fetch_fees(self) -> Optional[List['users.Fee']]:
         """Fetch fee data of the current user
+
         :return: list of :class:`almapiwrapper.users.Fee` objects"""
 
-        r = requests.get(f'{self.api_base_url}/{self.primary_id}/fees', headers=self._get_headers())
+        r = requests.get(f'{self.api_base_url}/{self.primary_id}/fees',
+                         # params={'status': 'EXPORTED'},
+                         headers=self._get_headers())
         if r.ok is True:
 
             logging.info(f'{repr(self)}: fees data available')
@@ -70,7 +74,8 @@ class User(Record):
             self._handle_error(r, f'unable to fetch user fees')
 
     def save(self) -> 'User':
-        """Save a user record in the 'records' folder
+        """save() -> 'User'
+        Save a user record in the 'records' folder
 
         When saved, a suffix is added to the file path with the version.
         Example: records/<primary_id>/user_<IZ>_<primary_id>_<version>.xml
@@ -188,7 +193,8 @@ class User(Record):
 
     @check_error
     def add_synchro_note(self) -> 'User':
-        """Add a test synchronization notes
+        """add_synchro_note() -> 'User'
+        Add a test synchronization notes
 
         :return: object :class:`almapiwrapper.users.User`"""
 
@@ -206,7 +212,8 @@ class User(Record):
 
     @check_error
     def remove_synchro_note(self) -> 'User':
-        """Remove all test synchronization notes
+        """remove_synchro_note() -> 'User'
+        Remove all test synchronization notes
 
         :return: object :class:`almapiwrapper.users.User`"""
         nb_notes = len(self.data['user_note'])
@@ -225,7 +232,8 @@ class User(Record):
 
     @check_error
     def check_synchro_note(self) -> bool:
-        """Test if the user has a synchronization test note
+        """check_synchro_note() -> bool
+        Test if the user has a synchronization test note
 
         :return: True if a synchronization test note is found else False
         """

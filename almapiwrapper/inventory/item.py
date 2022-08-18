@@ -90,6 +90,7 @@ class Item(Record):
 
     def __repr__(self):
         """Get a string representation of the object. Useful for logs.
+
         :return: string
         """
         if self._holding is None and self._barcode is not None:
@@ -102,6 +103,7 @@ class Item(Record):
         """
         Fetch item data and store it in 'data' attribute
         :param barcode: barcode of the item
+
         :return: None
         """
         if barcode is not None:
@@ -138,6 +140,7 @@ class Item(Record):
         """
         Create an item to the holding with the provided data.
         :param data: item data
+
         :return: Item
         """
         r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
@@ -161,6 +164,7 @@ class Item(Record):
     def bib(self) -> inventory.IzBib:
         """
         Property of the item returning the bibliographic record
+
         :return: IzBib
         """
         if self.holding is not None:
@@ -171,6 +175,7 @@ class Item(Record):
         """holding(self) -> Optional[inventory.Holding]
         Property of the item returning the :class:`almapiwrapper.inventory.Holding` object
         related to the item
+
         :return: :class:`almapiwrapper.inventory.Holding`
         """
         if self._holding is None and self.error is False:
@@ -190,6 +195,7 @@ class Item(Record):
     @holding.setter
     def holding(self, holding: inventory.Holding) -> None:
         """Property of the item containing the holding
+
         :return: None"""
         self._holding = holding
 
@@ -198,6 +204,7 @@ class Item(Record):
     def barcode(self) -> Optional[str]:
         """barcode(self) -> Optional[str]
         Property of the item returning the barcode
+
         :return: library code
         """
         barcode_field = self.data.find('.//barcode')
@@ -211,7 +218,9 @@ class Item(Record):
     def barcode(self, barcode: str) -> None:
         """barcode(self, barcode: str) -> None
         This setter is able to update the barcode of the item. But the field should already exist.
+
         :param barcode: barcode of the item
+
         :return: None
         """
         barcode_field = self.data.find('.//barcode')
@@ -224,9 +233,10 @@ class Item(Record):
 
     @check_error
     def save(self) -> 'Item':
-        """
+        """save(self) -> 'Item'
         Save a record item in the 'records' folder. Versioning is supported. A suffix is added to the file path.
         Example: records/UBS_9963486250105504/item_22314215800005504_23314215790005504_01.xml
+
         :return: Item
         """
         filepath = f'records/{self.zone}_{self.bib.mms_id}/item_{self.holding.holding_id}_{self.item_id}.xml'
@@ -237,6 +247,7 @@ class Item(Record):
     def update(self) -> 'Item':
         """update(self) -> 'Item'
         Update items data.
+
         :return: Item
         """
         r = requests.put(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
@@ -256,6 +267,7 @@ class Item(Record):
     def delete(self) -> None:
         """delete(self) -> None
         Delete an item.
+
         :return: None
         """
         r = requests.delete(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
@@ -271,6 +283,7 @@ class Item(Record):
     def library(self) -> Optional[str]:
         """library(self) -> Optional[str]
         Property of the holding returning the library code
+
         :return: library code
         """
         library = self.data.find('.//item_data/library')
@@ -284,7 +297,9 @@ class Item(Record):
     def library(self, library_code: str) -> None:
         """library(self, library_code: str) -> None
         This setter is able to update the 852$b of the holding. But the field should already exist.
+
         :param library_code: code of the library to insert in 852$b field
+
         :return: None
         """
         library = self.data.find('.//item_data/library')
@@ -317,6 +332,7 @@ class Item(Record):
         This setter is able to update the 852$c of the holding. But the field should already exist.
 
         :param location_code:
+
         :return: None
         """
         location = self.data.find('.//item_data/location')

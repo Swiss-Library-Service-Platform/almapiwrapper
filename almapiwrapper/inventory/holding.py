@@ -76,12 +76,14 @@ class Holding(Record):
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
+
         :return: string
         """
         return f"{self.__class__.__name__}('{self.bib.mms_id}', '{self.holding_id}', '{self.zone}', '{self.env}')"
 
     def _fetch_data(self) -> Optional[XmlData]:
         """Fetch holding data via API. Store the data in the 'data' attribute.
+
         :return: None
         """
         r = requests.get(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
@@ -97,6 +99,7 @@ class Holding(Record):
         """Create a holding and link it to the provided bibliographic record
 
         :param data: data used to create the holding
+
         :return: None
         """
         r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings',
@@ -116,6 +119,8 @@ class Holding(Record):
         Fetch holding ID in the data of 'data' attribute.
 
         Useful for creating a new holding.
+
+        :return: str with holding id
         """
         return self.data.find('.//holding_id').text
 
@@ -124,6 +129,7 @@ class Holding(Record):
         """save(self) -> 'Holding'
         Save holding in a folder for each MMS ID.
         Example: records/UBS_9963486250105504/hol_22314215780005504_01.xml
+
         :return: Holding
         """
         filepath = f'records/{self.zone}_{self.bib.mms_id}/hol_{self.holding_id}.xml'
@@ -134,6 +140,7 @@ class Holding(Record):
     def update(self) -> 'Holding':
         """update(self) -> 'Holding'
         Update data of a holding.
+
         :return: Holding
         """
         r = requests.put(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
@@ -152,6 +159,8 @@ class Holding(Record):
     def delete(self, force: Optional[bool] = False) -> None:
         """delete(self, force: Optional[bool] = False) -> None
         Delete holding
+
+        :return: None
         """
         if force is True:
             self.delete_items()
@@ -169,7 +178,8 @@ class Holding(Record):
         This method is used to retrieve the list of items and loads
         the xml data of these items. To avoid reloading this information,
         the items references are stored in the private attribute '_items'.
-        :return: liste d'objets de type "Item"
+
+        :return: list of :class:`almapiwrapper.bib.Item` objects
         """
         # Check if items have been already fetched
         if self._items is not None:
@@ -210,6 +220,7 @@ class Holding(Record):
     def delete_items(self) -> None:
         """delete_items(self) -> None
         Delete all items of the holding
+
         :return: None
         """
         for item in self.get_items():
@@ -220,7 +231,8 @@ class Holding(Record):
     def library(self) -> Optional[str]:
         """library(self) -> Optional[str]
         Property of the holding returning the library code
-        :return: library code
+
+        :return: str containing library code
         """
         library = self.data.find('.//datafield[@tag="852"]/subfield[@code="b"]')
         if library is None:
@@ -233,7 +245,9 @@ class Holding(Record):
     def library(self, library_code: str) -> None:
         """library(self, library_code: str) -> None
         This setter is able to update the 852$b of the holding. But the field should already exist.
+
         :param library_code: code of the library to insert in 852$b field
+
         :return: None
         """
         library = self.data.find('.//datafield[@tag="852"]/subfield[@code="b"]')
@@ -250,7 +264,7 @@ class Holding(Record):
         """location(self) -> Optional[str]
         Property of the holding returning the library code
 
-        :return: library code
+        :return: str containing library code
         """
         location = self.data.find('.//datafield[@tag="852"]/subfield[@code="c"]')
         if location is None:
@@ -264,7 +278,8 @@ class Holding(Record):
         """location(self, location_code: str) -> None
         This setter is able to update the 852$c of the holding. But the field should already exist.
 
-        :param location_code:
+        :param location_code: location code to set to the holding
+
         :return: None
         """
         location = self.data.find('.//datafield[@tag="852"]/subfield[@code="c"]')
