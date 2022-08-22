@@ -34,7 +34,7 @@ with open('docs/index.rst', 'w') as f:
 
 os.system(f'{os.getcwd()}/docs/make.bat html')
 os.system(f'{os.getcwd()}/docs/make.bat html')
-
+os.system('python -m build')
 os.system('git add .')
 os.system(f'git commit -m "Create version {version}"')
 os.system(f'git push')
