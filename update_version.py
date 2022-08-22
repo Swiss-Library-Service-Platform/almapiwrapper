@@ -37,6 +37,6 @@ os.system(f'{os.getcwd()}/docs/make.bat html')
 
 os.system('git add .')
 os.system(f'git commit -m "Create version {version}"')
-# os.system(f'git push')
+os.system(f'git push')
 #
 # os.system('twine upload dist/*')
