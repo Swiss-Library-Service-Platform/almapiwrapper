@@ -162,6 +162,16 @@ class TestBib(unittest.TestCase):
                          'Je veux un python pour mon anniversaire',
                          'Original title not restored')
 
+    def test_create_bib_record(self):
+        bib = NzBib('991060046869705501', 'S')
+
+        new_bib = NzBib(data=bib.data, env='S', create_bib=True)
+
+        self.assertNotEqual(bib.mms_id, new_bib.mms_id, 'MMS ID of new record must be different of source record')
+
+        new_bib.delete()
+        self.assertFalse(new_bib.error, 'No error when deleting record in NZ')
+
     @classmethod
     def tearDownClass(cls):
         IzBib('991043825829705501', 'UBS', 'S', from_nz_mms_id=True).delete()

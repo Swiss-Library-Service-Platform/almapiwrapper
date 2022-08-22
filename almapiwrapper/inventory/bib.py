@@ -36,7 +36,6 @@ class Bib(Record, metaclass=abc.ABCMeta):
         by the "IzBib" and "NzBib" classes to initialize the common elements.
         """
         super().__init__(zone, env, data)
-        self.error = False
         self.mms_id = mms_id
         self.area = 'Bibs'
 
@@ -342,14 +341,26 @@ class NzBib(Bib):
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to
         force update a record from a backup
+    :ivar create_bib: bool, if True, create a new bib record in the NZ
     """
-    def __init__(self, mms_id: str, env: Literal['P', 'S'] = 'P', data: Optional[XmlData] = None) -> None:
+    def __init__(self, mms_id: Optional[str] = None,
+                 env: Literal['P', 'S'] = 'P',
+                 data: Optional[XmlData] = None,
+                 create_bib: Optional[bool] = False) -> None:
         """
         Construct a bibliographic record of the NZ
         :param mms_id: record MMS ID
         :param env: environment of the entity: 'P' for production and 'S' for sandbox
+        :param
         """
+        if data is not None:
+            if data.__class__.__name__ == '_Element':
+                data = XmlData(etree.tostring(data))
+
         super().__init__(mms_id, 'NZ', env, data)
+
+        if create_bib is True:
+            self._create_bib()
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -358,7 +369,7 @@ class NzBib(Bib):
         return f"{self.__class__.__name__}('{self.mms_id}', '{self.env}')"
 
     @check_error
-    def delete(self) -> None:
+    def delete(self, force: Optional[bool] = False) -> None:
         """delete(self) -> None
         Delete bibliographic record in the IZ
 
@@ -371,9 +382,31 @@ class NzBib(Bib):
 
         # Delete record
         r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
+                            params={'override': force},
                             headers=self._get_headers(data_format='xml'))
+
         if r.ok is True:
             logging.info(f'{repr(self)} deleted')
             return
 
+        print(r.url)
         self._handle_error(r, 'unable to delete the NZ record')
+
+    @check_error
+    def _create_bib(self) -> None:
+        """Create a new NZ bib record with API.
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+        """
+
+        r = requests.post(f'{self.api_base_url_bibs}', headers=self._get_headers(data_format='xml'), data=bytes(self))
+
+        if r.ok is True:
+            self.data = XmlData(r.content)
+            self.mms_id = self.get_mms_id()
+            logging.info(f'{repr(self)}: NZ bib record created')
+
+        else:
+            self._handle_error(r, f'unable to create NZ bib record')
