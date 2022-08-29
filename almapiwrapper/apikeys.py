@@ -65,7 +65,8 @@ class ApiKeys:
                     api['Permissions'] == permissions and \
                         api['Env'] == env:
                     return k['API_Key']
-        raise KeyError('No corresponding API key found.')
+        raise KeyError(f'No corresponding API key found: zone "{zone}", area "{area}",'
+                       f' permission "{permissions}", environment "{env}".')
 
     def get_iz_codes(self) -> List[str]:
         """

@@ -10,15 +10,16 @@ import re
 
 
 class Item(Record):
-    """Class representing an item
+    """Class representing an item.
 
-    There are several possibilities to build an item:
+    There are several possibilities to get item information:
         - 'get_items' method of :class:`almapiwrapper.inventory.Holding` object
         - Item(mms_id, holding_id, item_id, zone, env)
-        - Item(holding=Holding, item_id=item_id)
+        - Item(holding=:class:`almapiwrapper.inventory.Holding`, item_id=item_id)
         - Item(barcode='barcode', zone='zone', env='env')
 
-        Instead of providing the item_id it is possible to provide the barcode.
+    Create an item:
+        - Item(holding=:class:`almapiwrapper.inventory.Holding`, data=`almapiwrapper.record.XmlData`, create_item=True)
 
     :ivar mms_id: bib record mms_id
     :ivar holding_id: holding record ID
