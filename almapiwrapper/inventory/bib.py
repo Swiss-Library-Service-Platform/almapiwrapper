@@ -8,6 +8,7 @@ from ..record import Record, check_error, XmlData
 from lxml import etree
 from copy import deepcopy
 import almapiwrapper.inventory as inventory
+import os
 
 
 class Bib(Record, metaclass=abc.ABCMeta):
@@ -104,11 +105,11 @@ class Bib(Record, metaclass=abc.ABCMeta):
 
         Versioning is supported. A suffix is added to the file path.
 
-        Example: records/NZ_991170519490005501/bib991170519490005501_01.xml
+        Example: records/NZ_991170519490005501/bib_991170519490005501_01.xml
 
         :return: Bib
         """
-        filepath = f'records/{self.zone}_{self.mms_id}/bib{self.mms_id}.xml'
+        filepath = f'records/{self.zone}_{self.mms_id}/bib_{self.mms_id}.xml'
         self._save_from_path(filepath)
         return self
 
@@ -140,6 +141,28 @@ class Bib(Record, metaclass=abc.ABCMeta):
         _ = self.sort_fields()
 
         return self
+
+    @staticmethod
+    def get_data_from_disk(mms_id: str, zone: str) -> Optional[XmlData]:
+        """get_data_from_disk(mms_id, holding_id, item_id, zone)
+        Fetch the data of the described record
+
+        :param mms_id: bib record mms_id
+        :param zone: zone of the record
+
+        :return: :class:`almapiwrapper.record.XmlData` or None
+        """
+        if os.path.isdir(f'records/{zone}_{mms_id}') is False:
+            return
+
+        # Fetch all available filenames related to this record
+        file_names = sorted([file_name for file_name in os.listdir(f'records/{zone}_{mms_id}')
+                             if file_name.startswith(f'bib_{mms_id}') is True])
+
+        if len(file_names) == 0:
+            return
+
+        return XmlData(filepath=f'records/{zone}_{mms_id}/{file_names[-1]}')
 
 
 class IzBib(Bib):
@@ -240,7 +263,7 @@ class IzBib(Bib):
 
     @check_error
     def delete(self, force: Optional[bool] = False) -> None:
-        """delete(self, force: Optional[bool] = False) -> None
+        """delete(force: Optional[bool] = False) -> None
         Delete bibliographic record in the IZ
 
         To delete locally a record,
@@ -265,7 +288,7 @@ class IzBib(Bib):
             logging.info(f'{repr(self)} unlinked from NZ')
 
             r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
-                                headers=self._get_headers(data_format='xml'))
+                                headers=self._get_headers(data_format='xml'), params={'override': 'true'})
             if r.ok is True:
                 logging.info(f'{repr(self)} deleted')
                 return
@@ -382,14 +405,13 @@ class NzBib(Bib):
 
         # Delete record
         r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
-                            params={'override': force},
+                            params={'override': 'true' if force is True else 'false'},
                             headers=self._get_headers(data_format='xml'))
 
         if r.ok is True:
             logging.info(f'{repr(self)} deleted')
             return
 
-        print(r.url)
         self._handle_error(r, 'unable to delete the NZ record')
 
     @check_error

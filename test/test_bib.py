@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+import shutil
 
 from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
 from almapiwrapper.record import JsonData, XmlData
@@ -22,6 +23,13 @@ class TestBib(unittest.TestCase):
         item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
         if item.error is False:
             item.holding.delete(force=True)
+
+        shutil.rmtree('records/UBS_9966145550105504', ignore_errors=True)
+        item1 = Item(barcode='DSVN8068436', zone='UBS', env='S')
+
+        if item1.data.find('.//internal_note_3').text is not None:
+            item1.data.find('.//internal_note_3').text = None
+            item1.update()
 
     def test_get_bib(self):
 
@@ -171,6 +179,69 @@ class TestBib(unittest.TestCase):
 
         new_bib.delete()
         self.assertFalse(new_bib.error, 'No error when deleting record in NZ')
+
+    def test_get_records_id(self):
+        item = Item(barcode='03124510', zone='HPH', env='S')
+
+        self.assertEqual(item.get_nz_mms_id(),
+                         item.bib.get_nz_mms_id(),
+                         'NZ MMS id different if fetched from item and from bib record')
+
+        self.assertEqual(item.get_mms_id(),
+                         item.bib.get_mms_id(),
+                         'IZ MMS id different if fetched from item and from bib record')
+
+        self.assertEqual(item.get_holding_id(),
+                         item.holding.get_holding_id(),
+                         'Holding id different if fetched from item and from holding record')
+
+    def test_get_from_disk(self):
+        item1 = Item(barcode='DSVN8068436', zone='UBS', env='S')
+        item1.save()
+        item1.data.find('.//internal_note_3').text = 'changed on disk'
+        item1.save()
+
+        data_item2 = Item.get_data_from_disk(item1.get_mms_id(), item1.get_holding_id(), item1.get_item_id(), 'UBS')
+        item2 = Item(item1.get_mms_id(), item1.get_holding_id(), item1.get_item_id(), zone='UBS', env='S', data=data_item2)
+        self.assertEqual(item2.data.find('.//internal_note_3').text,
+                         'changed on disk',
+                         'Internal note present on disk data')
+        item2.update()
+
+        self.assertFalse(item2.error, 'No error when updating record from disk (1)')
+
+        data_item3 = XmlData(filepath='records/UBS_9966145550105504/item_22224723340005504_23224723290005504_01.xml')
+
+        item3 = Item(item1.get_mms_id(),
+                     item1.get_holding_id(),
+                     item1.get_item_id(),
+                     zone='UBS', env='S',
+                     data=data_item3)
+
+        item3.update()
+        self.assertFalse(item3.error, 'No error when updating record from disk (2)')
+
+        self.assertIsNone(item3.data.find('.//internal_note_3').text,
+                          'Internal note removed from item')
+
+        self.assertIsNone(Holding.get_data_from_disk(item1.get_mms_id(),
+                                                     item1.holding.get_holding_id(),
+                                                     'UBS'),
+                          'No holding data saved on the disk')
+
+        self.assertIsNone(IzBib.get_data_from_disk(item1.get_mms_id(), 'UBS'),
+                          'No bib data saved on the disk')
+
+        item1.holding.save()
+        item1.bib.save()
+
+        self.assertIsNotNone(Holding.get_data_from_disk(item1.get_mms_id(),
+                                                        item1.holding.get_holding_id(),
+                                                        'UBS'),
+                             'Holding data available on the disk')
+
+        self.assertIsNotNone(IzBib.get_data_from_disk(item1.get_mms_id(), 'UBS'),
+                             'Bib data available on the disk')
 
     @classmethod
     def tearDownClass(cls):

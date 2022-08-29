@@ -6,6 +6,7 @@ import requests
 from ..record import Record, check_error, XmlData
 import almapiwrapper.inventory as inventory
 from lxml import etree
+import os
 
 
 class Holding(Record):
@@ -288,3 +289,26 @@ class Holding(Record):
         else:
             logging.info(f'{repr(self)}: location changed from "{location.text}" to "{location_code}"')
             location.text = location_code
+
+    @staticmethod
+    def get_data_from_disk(mms_id: str, holding_id: str, zone: str) -> Optional[XmlData]:
+        """get_data_from_disk(mms_id, holding_id, zone)
+        Fetch the data of the described record
+
+        :param mms_id: bib record mms_id
+        :param holding_id: holding record ID
+        :param zone: zone of the record
+
+        :return: :class:`almapiwrapper.record.XmlData` or None
+        """
+        if os.path.isdir(f'records/{zone}_{mms_id}') is False:
+            return
+
+        # Fetch all available filenames related to this record
+        file_names = sorted([file_name for file_name in os.listdir(f'records/{zone}_{mms_id}')
+                             if file_name.startswith(f'hol_{holding_id}') is True])
+
+        if len(file_names) == 0:
+            return
+
+        return XmlData(filepath=f'records/{zone}_{mms_id}/{file_names[-1]}')

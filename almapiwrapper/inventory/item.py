@@ -1,11 +1,12 @@
 """This module allows getting information and changing Alma item records"""
-
+import os
 from typing import Optional, ClassVar, Literal
 import logging
 import requests
 from ..record import Record, check_error, XmlData
 import almapiwrapper.inventory as inventory
 from lxml import etree
+import re
 
 
 class Item(Record):
@@ -66,25 +67,25 @@ class Item(Record):
             self._create_item(data)
 
         # Fetch the item from the barcode, zone and env must be available
-        elif barcode is not None and create_item is False:
+        elif barcode is not None and create_item is False and data is None:
             data = self._fetch_data(barcode)
             if data is not None:
                 self.data = data
                 self.item_id = self.get_item_id()
 
         # Fetch the item from IDs of item, holding and bibliographic record
-        elif self.item_id is not None and mms_id is not None and holding_id is not None:
+        elif self.item_id is not None and mms_id is not None and holding_id is not None and data is None:
             self.holding = inventory.Holding(mms_id, holding_id, self.zone, self.env)
             if self.holding.error is True:
                 self.error = True
             self.data = self._fetch_data()
 
         # Fetch item through 'item_id' and holding
-        elif self.item_id is not None and holding is not None:
+        elif self.item_id is not None and holding is not None and data is None:
             self.data = self._fetch_data()
 
         # The data provided does not allow to initialize an item
-        else:
+        elif data is None:
             logging.error('Missing information to construct an Item')
             self.error = True
 
@@ -154,11 +155,50 @@ class Item(Record):
         else:
             self._handle_error(r, 'unable to create the new item')
 
+    @check_error
     def get_item_id(self) -> str:
-        """
+        """get_item_id() -> str
         Fetch the item ID in the xml data of 'data' attribute. Useful for creating a new item.
+
+        :return: item id
         """
         return self.data.find('.//pid').text
+
+    @check_error
+    def get_holding_id(self) -> str:
+        """get_holding_id() -> str:
+        Fetch holding ID
+
+        :return: holding ID
+        """
+
+        return self.data.find('.//holding_id').text
+
+    @check_error
+    def get_mms_id(self) -> str:
+        """get_mms_id(self) -> str
+        Fetch IZ MMS ID
+
+        :return: IZ MMS ID
+        """
+
+        return self.data.find('.//mms_id').text
+
+    @check_error
+    def get_nz_mms_id(self) -> Optional[str]:
+        """get_mms_id(self) -> Optional[str]
+        Fetch NZ MMS ID
+
+        :return: NZ MMS ID
+        """
+
+        nz_number_fields = self.data.findall('.//network_number')
+        for field in nz_number_fields:
+            m = re.match(r'\(EXLNZ.+?\)(\d+)', field.text)
+            if m is not None:
+                return m.group(1)
+
+        logging.warning('{repr(self)}: Record not linked with NZ, no NZ MMS ID available')
 
     @property
     def bib(self) -> inventory.IzBib:
@@ -179,12 +219,12 @@ class Item(Record):
         :return: :class:`almapiwrapper.inventory.Holding`
         """
         if self._holding is None and self.error is False:
-            holding_id = self.data.find('.//holding_id').text
-            mms_id = self.data.find('.//mms_id').text
+            holding_id = self.get_holding_id()
+            mms_id = self.get_mms_id()
             self._holding = inventory.Holding(mms_id, holding_id, self.zone, self.env)
 
         # To force fetching holding data
-        _ = self._holding.data
+        # _ = self._holding.data
 
         if self._holding.error is True:
             self.error = True
@@ -342,3 +382,27 @@ class Item(Record):
             logging.info(f'{repr(self)}: location changed from "{location.text}" to "{location_code}"')
             location.text = location_code
             location.attrib.pop('desc', None)
+
+    @staticmethod
+    def get_data_from_disk(mms_id: str, holding_id: str, item_id: str, zone: str) -> Optional[XmlData]:
+        """get_data_from_disk(mms_id, holding_id, item_id, zone)
+        Fetch the data of the described record
+
+        :param mms_id: bib record mms_id
+        :param holding_id: holding record ID
+        :param item_id: numerical ID of the item
+        :param zone: zone of the record
+
+        :return: :class:`almapiwrapper.record.XmlData` or None
+        """
+        if os.path.isdir(f'records/{zone}_{mms_id}') is False:
+            return
+
+        # Fetch all available filenames related to this record
+        file_names = sorted([file_name for file_name in os.listdir(f'records/{zone}_{mms_id}')
+                             if file_name.startswith(f'item_{holding_id}_{item_id}') is True])
+
+        if len(file_names) == 0:
+            return
+
+        return XmlData(filepath=f'records/{zone}_{mms_id}/{file_names[-1]}')
