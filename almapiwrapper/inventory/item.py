@@ -63,9 +63,14 @@ class Item(Record):
             self.zone = zone
             self.env = env
 
-        # Create a new item if 'create_item' parameter is True
+        # Create a new item if 'create_item' parameter is True and holding provided
         if self.item_id is None and data is not None and holding is not None and create_item is True:
             self._create_item(data)
+
+        # Create a new item if 'create_item' parameter is True and holding_id and mms_id provided
+        if self.item_id is None and data is not None and holding_id is not None \
+                and mms_id is not None and create_item is True:
+            self._create_item(data, mms_id=mms_id, holding_id=holding_id)
 
         # Fetch the item from the barcode, zone and env must be available
         elif barcode is not None and create_item is False and data is None:
@@ -138,14 +143,22 @@ class Item(Record):
             else:
                 self._handle_error(r, 'unable to fetch item data')
 
-    def _create_item(self, data: etree.Element):
+    def _create_item(self, data: etree.Element, mms_id: Optional[str] = None, holding_id: Optional[str] = None):
         """
         Create an item to the holding with the provided data.
         :param data: item data
+        :param mms_id: related bib record mms_id
+        :param holding_id: related holding record ID
 
         :return: Item
         """
-        r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
+        if mms_id is None:
+            mms_id = self.bib.mms_id
+
+        if holding_id is None:
+            holding_id = self.holding.holding_id
+
+        r = requests.post(f'{self.api_base_url_bibs}/{mms_id}/holdings/{holding_id}/items',
                           headers=self._get_headers(data_format='xml'),
                           data=etree.tostring(data))
 
