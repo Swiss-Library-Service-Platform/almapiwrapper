@@ -202,7 +202,10 @@ class TestBib(unittest.TestCase):
         item1.save()
 
         data_item2 = Item.get_data_from_disk(item1.get_mms_id(), item1.get_holding_id(), item1.get_item_id(), 'UBS')
-        item2 = Item(item1.get_mms_id(), item1.get_holding_id(), item1.get_item_id(), zone='UBS', env='S', data=data_item2)
+        item2 = Item(item1.get_mms_id(),
+                     item1.get_holding_id(),
+                     item1.get_item_id(),
+                     zone='UBS', env='S', data=data_item2)
         self.assertEqual(item2.data.find('.//internal_note_3').text,
                          'changed on disk',
                          'Internal note present on disk data')
