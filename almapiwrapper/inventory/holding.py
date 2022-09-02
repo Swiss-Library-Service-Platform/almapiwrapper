@@ -54,6 +54,7 @@ class Holding(Record):
         self.error = False
         self._data = None
         self.area = 'Bibs'
+        self.format = 'xml'
         self.bib = bib
         self.holding_id = holding_id
 
@@ -88,7 +89,7 @@ class Holding(Record):
         :return: None
         """
         r = requests.get(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             logging.info(f'{repr(self)}: holding data available')
@@ -104,7 +105,7 @@ class Holding(Record):
         :return: None
         """
         r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings',
-                          headers=self._get_headers(data_format='xml'),
+                          headers=self._get_headers(),
                           data=bytes(data))
 
         if r.ok is True:
@@ -146,7 +147,7 @@ class Holding(Record):
         """
         r = requests.put(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
                          data=etree.tostring(self.data),
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             self.data = XmlData(etree.fromstring(r.content, parser=self.parser))
@@ -167,7 +168,7 @@ class Holding(Record):
             self.delete_items()
 
         r = requests.delete(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
-                            headers=self._get_headers(data_format='xml'))
+                            headers=self._get_headers())
         if r.ok is True:
             logging.info(f'{repr(self)} deleted')
         else:
@@ -189,7 +190,7 @@ class Holding(Record):
         # Fetch the item's data through apis
         r = requests.get(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}/items',
                          params={'limit': '100'},
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             root = etree.fromstring(r.content, parser=self.parser)

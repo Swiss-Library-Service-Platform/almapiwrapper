@@ -1,7 +1,7 @@
 import almapiwrapper.users as userslib
-from typing import List, Optional, Literal, Dict, Union
+from typing import List, Optional, Literal, Union
 from ..apikeys import ApiKeys
-from ..record import JsonData
+from ..record import Record, JsonData
 import requests
 import logging
 import time
@@ -34,7 +34,8 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
             # Make request
             r = requests.get(f'{userslib.User.api_base_url}',
                              params={'q': q, 'limit': 100, 'offset': offset},
-                             headers=_get_headers(z, 'RW', env))
+                             headers=Record.build_headers(data_format='json', env=env,
+                                                          zone=z, rights='RW', area='Users'))
 
             # Check result
             if r.ok is True:
@@ -47,7 +48,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
                 else:
                     nb_users = 0
 
-                logging.info(f'fetch_users({q}, {z}, {env}): '
+                logging.info(f'fetch_users("{q}", "{z}", "{env}"): '
                              f'{offset + nb_users} / '
                              f'{nb_total_records} users data available')
                 offset += 100
@@ -131,23 +132,6 @@ def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env:
 
     logging.error(f'fetch_users({q}, {zone}, {env}) - {r.status_code}: '
                   f'{msg} / {error_message}')
-
-
-def _get_headers(zone: Optional[str],
-                 rights: Literal['R', 'RW'] = 'RW',
-                 env: Optional[Literal['P', 'S']] = 'P') -> Dict:
-    """
-    Build the headers for the API calls.
-    :param zone: optional, if indicated allow to make the query in an other IZ
-    que celle de l'objet courant
-    :param env: environment of the api call: 'P' for production, 'S' for sandbox
-    :return: dict with the header
-    """
-
-    # Build header dict
-    return {'content-type': f'application/json',
-            'accept': f'application/json',
-            'Authorization': 'apikey ' + ApiKeys().get_key(zone, 'Users', rights, env)}
 
 
 if __name__ == "__main__":

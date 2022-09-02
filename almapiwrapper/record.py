@@ -57,12 +57,34 @@ class Record(metaclass=abc.ABCMeta):
         self.zone = zone
         self.env = env
         self.area = None
+        self.format = None
         self._data = data
 
     @abc.abstractmethod
     def _fetch_data(self) -> None:
         """Abstract method. This method is different according to the type of record"""
         return None
+
+    @staticmethod
+    def build_headers(data_format: Literal['json', 'xml'],
+                      zone: str,
+                      area: str,
+                      rights: Literal['R', 'RW'] = 'RW',
+                      env: Optional[Literal['P', 'S']] = 'P') -> Dict:
+        """
+        Build the headers for the API calls.
+        :param data_format: "json" or "xml"
+        :param zone: optional, if indicated allow to make the query in an other IZ
+        :param area: area of the record, bibs, users for example
+        :param rights: "R" for read only or "RW" for write and read rights
+        :param env: environment of the api call: 'P' for production, 'S' for sandbox
+        :return: dict with the headers
+        """
+
+        # Build header dict
+        return {'content-type': f'application/{data_format}',
+                'accept': f'application/{data_format}',
+                'Authorization': 'apikey ' + ApiKeys().get_key(zone, area, rights, env)}
 
     @property
     def data(self) -> Optional[Union[Dict, etree.Element]]:
@@ -129,13 +151,14 @@ class Record(metaclass=abc.ABCMeta):
         logging.info(f'{repr(self)}: record saved: {final_path}')
 
     def _get_headers(self,
-                     data_format: Literal['json', 'xml'] = 'json',
+                     data_format: Optional[Literal['json', 'xml']] = None,
                      zone: Optional[str] = None,
+                     area: Optional[str] = None,
                      rights: Literal['R', 'RW'] = 'RW',
                      env: Optional[Literal['P', 'S']] = None) -> Dict:
         """Build the headers for the API calls
 
-        :param data_format: "json" ou "xml" en fonction du format souhaité
+        :param data_format: "json" or "xml" according to the format of the record
         :param zone: optional, if indicated allow to make the query in another IZ
         que celle de l'objet courant
         :param env: environment of the api call: 'P' for production, 'S' for sandbox
@@ -143,15 +166,17 @@ class Record(metaclass=abc.ABCMeta):
         """
 
         # If values are not provided, fetch values of the current entity
+
         if zone is None:
             zone = self.zone
         if env is None:
             env = self.env
+        if area is None:
+            area = self.area
+        if data_format is None:
+            data_format = self.format
 
-        # Build header dict
-        return {'content-type': f'application/{data_format}',
-                'accept': f'application/{data_format}',
-                'Authorization': 'apikey ' + self.k.get_key(zone, self.area, rights, env)}
+        return self.build_headers(data_format, zone, area, rights, env)
 
     def _handle_error(self, r: requests.models.Response, msg: str):
         """Set the record error attribute to True and write the logs about the error

@@ -30,6 +30,7 @@ class User(Record):
         super().__init__(zone, env, data)
         self.primary_id = primary_id
         self.area = 'Users'
+        self.format = 'json'
         self._fees = None
 
     def __repr__(self) -> str:
@@ -259,6 +260,7 @@ class NewUser(User):
         """
         super(User, self).__init__(zone, env, data)
         self.area = 'Users'
+        self.format = 'json'
 
     @check_error
     def create(self, password: Optional[str] = None) -> Union['NewUser', User]:

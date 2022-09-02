@@ -58,6 +58,7 @@ class Item(Record):
         self.item_id = item_id
         self._barcode = barcode
         self.area = 'Bibs'
+        self.format = 'xml'
 
         # Set 'env' and 'zone' either from holding data either from parameters
         if holding is not None:
@@ -100,7 +101,7 @@ class Item(Record):
         :return: string
         """
         if self._holding is None and self._barcode is not None:
-            return f"{self.__class__.__name__}(barcode='{self._barcode}' " \
+            return f"{self.__class__.__name__}(barcode='{self._barcode}', " \
                    f"zone='{self.zone}', env='{self.env}')"
         return f"{self.__class__.__name__}('{self.bib.mms_id}', '{self.holding.holding_id}'," \
                f"'{self.item_id}', '{self.zone}', '{self.env}')"
@@ -115,7 +116,7 @@ class Item(Record):
         if barcode is not None:
             r = requests.get(self.api_base_url_items,
                              params={'item_barcode': barcode},
-                             headers=self._get_headers(data_format='xml'))
+                             headers=self._get_headers())
             if r.ok is True:
                 logging.info(f"{repr(self)}: item data fetched with barcode '{barcode}'")
                 return XmlData(r.content)
@@ -133,7 +134,7 @@ class Item(Record):
         else:
             r = requests.get(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
                              f'/items/{self.item_id}',
-                             headers=self._get_headers(data_format='xml'))
+                             headers=self._get_headers())
 
             if r.ok is True:
 
@@ -150,7 +151,7 @@ class Item(Record):
         :return: Item
         """
         r = requests.post(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
-                          headers=self._get_headers(data_format='xml'),
+                          headers=self._get_headers(),
                           data=etree.tostring(data))
 
         if r.ok is True:
@@ -298,7 +299,7 @@ class Item(Record):
         r = requests.put(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
                          f'items/{self.item_id}',
                          data=bytes(self),
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             self.data = XmlData(r.content)
@@ -317,7 +318,7 @@ class Item(Record):
         """
         r = requests.delete(f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
                             f'/items/{self.item_id}',
-                            headers=self._get_headers(data_format='xml'))
+                            headers=self._get_headers())
         if r.ok is True:
             logging.info(f'{repr(self)} deleted')
         else:

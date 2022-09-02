@@ -35,6 +35,7 @@ class Fee(Record):
 
         super().__init__(zone, env, data)
         self.area = 'Users'
+        self.format = 'json'
         self._fee_id = fee_id
         if primary_id is not None:
             self.user = userslib.User(primary_id, self.zone, self.env)
@@ -86,7 +87,7 @@ class Fee(Record):
         :return: object :class:`almapiwrapper.users.Fee`
         """
         r = requests.post(f'{self.api_base_url_users}/{self.user.primary_id}/fees',
-                          headers=self._get_headers(data_format='json'),
+                          headers=self._get_headers(),
                           data=bytes(self))
         if r.ok is True:
             self.data = JsonData(r.json())
@@ -139,7 +140,7 @@ class Fee(Record):
             reason = 'OTHER'
 
         r = requests.post(f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
-                          headers=self._get_headers(data_format='json'),
+                          headers=self._get_headers(),
                           data=None,
                           params={'op': op,
                                   'amount': str(amount),

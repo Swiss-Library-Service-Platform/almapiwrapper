@@ -39,13 +39,14 @@ class Bib(Record, metaclass=abc.ABCMeta):
         super().__init__(zone, env, data)
         self.mms_id = mms_id
         self.area = 'Bibs'
+        self.format = 'xml'
 
     def _fetch_data(self) -> Optional[XmlData]:
         """Fetch bibliographic data and store it in the "data" attribute as an Etree element
 
         :return: None or :class:`almapiwrapper.record.XmlData` object
         """
-        r = requests.get(f'{self.api_base_url_bibs}/{self.mms_id}', headers=self._get_headers(data_format='xml'))
+        r = requests.get(f'{self.api_base_url_bibs}/{self.mms_id}', headers=self._get_headers())
 
         if r.ok is True:
             logging.info(f'{repr(self)}: bib data available')
@@ -87,7 +88,7 @@ class Bib(Record, metaclass=abc.ABCMeta):
         """
         r = requests.put(f'{self.api_base_url_bibs}/{self.mms_id}',
                          data=bytes(self),
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             self.data = XmlData(r.content)
@@ -213,7 +214,7 @@ class IzBib(Bib):
         # Fetch data from nz mms_id
         r = requests.get(f'{self.api_base_url_bibs}',
                          params={'nz_mms_id': nz_mms_id},
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
 
         if r.ok is True:
             # Data found in the IZ for the NZ MMS ID provided
@@ -238,7 +239,7 @@ class IzBib(Bib):
         r = requests.post(f'{self.api_base_url_bibs}',
                           params={'from_nz_mms_id': nz_mms_id},
                           data='<bib/>',
-                          headers=self._get_headers(data_format='xml'))
+                          headers=self._get_headers())
 
         if r.ok is True:
             logging.info(f'Record {repr(self)} copied from NZ record {nz_mms_id}')
@@ -281,14 +282,14 @@ class IzBib(Bib):
         r = requests.post(f'{self.api_base_url_bibs}/{self.mms_id}',
                           params={'op': 'unlink_from_nz'},
                           data='<bib/>',
-                          headers=self._get_headers(data_format='xml'))
+                          headers=self._get_headers())
 
         # Delete record
         if r.ok is True:
             logging.info(f'{repr(self)} unlinked from NZ')
 
             r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
-                                headers=self._get_headers(data_format='xml'), params={'override': 'true'})
+                                headers=self._get_headers(), params={'override': 'true'})
             if r.ok is True:
                 logging.info(f'{repr(self)} deleted')
                 return
@@ -309,7 +310,7 @@ class IzBib(Bib):
             return self._holdings
 
         r = requests.get(f'{self.api_base_url_bibs}/{self.mms_id}/holdings',
-                         headers=self._get_headers(data_format='xml'))
+                         headers=self._get_headers())
         root = etree.fromstring(r.content, parser=self.parser)
         holdings_data = root.findall('.//holding')
 
@@ -406,7 +407,7 @@ class NzBib(Bib):
         # Delete record
         r = requests.delete(f'{self.api_base_url_bibs}/{self.mms_id}',
                             params={'override': 'true' if force is True else 'false'},
-                            headers=self._get_headers(data_format='xml'))
+                            headers=self._get_headers())
 
         if r.ok is True:
             logging.info(f'{repr(self)} deleted')
@@ -423,7 +424,7 @@ class NzBib(Bib):
             method will be skipped.
         """
 
-        r = requests.post(f'{self.api_base_url_bibs}', headers=self._get_headers(data_format='xml'), data=bytes(self))
+        r = requests.post(f'{self.api_base_url_bibs}', headers=self._get_headers(), data=bytes(self))
 
         if r.ok is True:
             self.data = XmlData(r.content)
@@ -432,3 +433,17 @@ class NzBib(Bib):
 
         else:
             self._handle_error(r, f'unable to create NZ bib record')
+
+
+def fetch_bib(q: str, zone=str, env: Literal['P', 'S'] = 'P') -> List[Union[IzBib, NzBib]]:
+    """
+
+    :param q:
+    :param zone:
+    :param env:
+    :return:
+    """
+    r = requests.get(f'{Bib.api_base_url_bibs}',
+                     params={'q': q},
+                     headers=Record._build_headers(data_format='xml', area='Bibs', zone=zone, env=env))
+    return r.text
