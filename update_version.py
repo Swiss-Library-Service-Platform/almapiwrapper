@@ -1,6 +1,5 @@
 import almapiwrapper
 import re
-import subprocess
 import os
 
 version = almapiwrapper.__version__
