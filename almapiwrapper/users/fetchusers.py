@@ -32,10 +32,11 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
         while offset == 0 or offset < nb_total_records:
 
             # Make request
-            r = requests.get(f'{userslib.User.api_base_url}',
-                             params={'q': q, 'limit': 100, 'offset': offset},
-                             headers=Record.build_headers(data_format='json', env=env,
-                                                          zone=z, rights='RW', area='Users'))
+            r = Record._api_call('get',
+                                  f'{userslib.User.api_base_url}',
+                                  params={'q': q, 'limit': 100, 'offset': offset},
+                                  headers=Record.build_headers(data_format='json', env=env,
+                                                               zone=z, rights='RW', area='Users'))
 
             # Check result
             if r.ok is True:

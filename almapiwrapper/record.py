@@ -4,6 +4,7 @@ from typing import Optional, Callable, ClassVar, Literal, Dict, Union
 import logging
 import json
 from lxml import etree
+import time
 import os
 import requests
 
@@ -48,7 +49,8 @@ class Record(metaclass=abc.ABCMeta):
     parser: ClassVar[etree.XMLParser] = etree.XMLParser(remove_blank_text=True)
 
     @abc.abstractmethod
-    def __init__(self, zone: str,
+    def __init__(self,
+                 zone: str,
                  env: Literal['P', 'S'] = 'P',
                  data: Optional[Union['JsonData', 'XmlData']] = None) -> None:
         """Abstract constructor, all entities have at least a zone and an environment.
@@ -64,6 +66,34 @@ class Record(metaclass=abc.ABCMeta):
     def _fetch_data(self) -> None:
         """Abstract method. This method is different according to the type of record"""
         return None
+
+    @staticmethod
+    def _api_call(method: Literal['get', 'put', 'post', 'delete'], *args, **kwargs) -> Optional[requests.Response]:
+        """Static method to handle http errors. Quit the program after 3 failed tries
+
+        :param method: 'get', 'put', 'post' or 'delete' according to the api method call
+        """
+
+        for api_try in [1, 2, 3]:
+            try:
+                if method == 'get':
+                    r = requests.get(*args, **kwargs)
+                elif method == 'put':
+                    r = requests.put(*args, **kwargs)
+                elif method == 'post':
+                    r = requests.post(*args, **kwargs)
+                elif method == 'delete':
+                    r = requests.delete(*args, **kwargs)
+                else:
+                    return None
+                return r
+
+            except requests.exceptions.RequestException as err:
+                logging.error(f'HTTP error: try {api_try} - message: {str(err)}')
+                if api_try == 300:
+                    logging.critical(f'HTTP error: try {api_try} => exiting of the program')
+                    exit()
+                time.sleep(3)
 
     @staticmethod
     def build_headers(data_format: Literal['json', 'xml'],
@@ -189,9 +219,12 @@ class Record(metaclass=abc.ABCMeta):
             json_data = r.json()
             error_message = json_data['errorList']['error'][0]['errorMessage']
         else:
-            xml = etree.fromstring(r.content, parser=self.parser)
-            error_message = xml.find('.//{http://com/exlibris/urm/general/xmlbeans}errorMessage').text
-        logging.error(f'{repr(self)} - {r.status_code}: '
+            try:
+                xml = etree.fromstring(r.content, parser=self.parser)
+                error_message = xml.find('.//{http://com/exlibris/urm/general/xmlbeans}errorMessage').text
+            except etree.XMLSyntaxError:
+                error_message = 'unknown error'
+        logging.error(f'{repr(self)} - {r.status_code if r is not None else "unknown"}: '
                       f'{msg} / {error_message}')
         self.error = True
 

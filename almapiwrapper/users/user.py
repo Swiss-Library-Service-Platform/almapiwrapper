@@ -2,7 +2,6 @@
 
 from typing import Optional, ClassVar, Literal, Union, List
 import logging
-import requests
 from ..record import Record, check_error, JsonData
 import almapiwrapper.users as users
 from datetime import datetime
@@ -45,7 +44,9 @@ class User(Record):
         :return: json data or None if no data is available
         """
 
-        r = requests.get(f'{self.api_base_url}/{self.primary_id}', headers=self._get_headers())
+        r = self._api_call('get',
+                           f'{self.api_base_url}/{self.primary_id}',
+                           headers=self._get_headers())
         if r.ok is True:
             logging.info(f'{repr(self)}: user data available')
             return JsonData(r.json())
@@ -57,9 +58,10 @@ class User(Record):
 
         :return: list of :class:`almapiwrapper.users.Fee` objects"""
 
-        r = requests.get(f'{self.api_base_url}/{self.primary_id}/fees',
-                         # params={'status': 'EXPORTED'},
-                         headers=self._get_headers())
+        r = self._api_call('get',
+                           f'{self.api_base_url}/{self.primary_id}/fees',
+                           # params={'status': 'EXPORTED'},
+                           headers=self._get_headers())
         if r.ok is True:
 
             logging.info(f'{repr(self)}: fees data available')
@@ -105,10 +107,11 @@ class User(Record):
         else:
             params = {}
 
-        r = requests.put(f'{self.api_base_url}/{self.primary_id}',
-                         data=bytes(self),
-                         params=params,
-                         headers=self._get_headers())
+        r = self._api_call('put',
+                           f'{self.api_base_url}/{self.primary_id}',
+                           data=bytes(self),
+                           params=params,
+                           headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: user updated.')
             self.data = JsonData(r.json())
@@ -128,7 +131,9 @@ class User(Record):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = requests.delete(f'{self.api_base_url}/{self.primary_id}', headers=self._get_headers())
+        r = self._api_call('delete',
+                           f'{self.api_base_url}/{self.primary_id}',
+                           headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: user deleted.')
         else:
@@ -278,7 +283,10 @@ class NewUser(User):
         """
         self.set_password(password)
 
-        r = requests.post(f'{self.api_base_url}', headers=self._get_headers(), data=bytes(self))
+        r = self._api_call('post',
+                           f'{self.api_base_url}',
+                           headers=self._get_headers(),
+                           data=bytes(self))
 
         if r.ok is True:
             logging.info(f'{repr(self)}: user created')

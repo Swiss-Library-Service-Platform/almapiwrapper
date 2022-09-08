@@ -21,7 +21,7 @@ How to import modules
 
     # Import libraries
     from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, check_synchro
-    from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
+    from almapiwrapper.inventory import IzBib, NzBib, Holding, Item, fetch_bibs
     from almapiwrapper.record import JsonData, XmlData
     from almapiwrapper.configlog import config_log
     from almapiwrapper import ApiKeys

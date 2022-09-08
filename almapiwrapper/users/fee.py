@@ -1,6 +1,5 @@
 from ..record import Record, check_error, JsonData
 from typing import Optional, ClassVar, Literal
-import requests
 import logging
 import almapiwrapper.users as userslib
 
@@ -58,8 +57,9 @@ class Fee(Record):
         """Fetch the json data of the fee
 
         :return: :class:`almapiwrapper.record.JsonData`"""
-        r = requests.get(f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
-                         headers=self._get_headers())
+        r = self._api_call('get',
+                           f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
+                           headers=self._get_headers())
         if r.ok is True:
             logging.info(f'{repr(self)}: fee data available')
             fee_data = r.json()
@@ -86,9 +86,10 @@ class Fee(Record):
 
         :return: object :class:`almapiwrapper.users.Fee`
         """
-        r = requests.post(f'{self.api_base_url_users}/{self.user.primary_id}/fees',
-                          headers=self._get_headers(),
-                          data=bytes(self))
+        r = self._api_call('post',
+                           f'{self.api_base_url_users}/{self.user.primary_id}/fees',
+                           headers=self._get_headers(),
+                           data=bytes(self))
         if r.ok is True:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: fee created')
@@ -139,15 +140,16 @@ class Fee(Record):
         if op == 'waive' and reason is None:
             reason = 'OTHER'
 
-        r = requests.post(f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
-                          headers=self._get_headers(),
-                          data=None,
-                          params={'op': op,
-                                  'amount': str(amount),
-                                  'comment': comment,
-                                  'method': method,
-                                  'reason': reason,
-                                  'external_transaction_id': external_transaction_id})
+        r = self._api_call('post',
+                           f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
+                           headers=self._get_headers(),
+                           data=None,
+                           params={'op': op,
+                                   'amount': str(amount),
+                                   'comment': comment,
+                                   'method': method,
+                                   'reason': reason,
+                                   'external_transaction_id': external_transaction_id})
         if r.ok is True:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: fee operation "{op}" succeed')
