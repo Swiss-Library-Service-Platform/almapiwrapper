@@ -6,6 +6,7 @@ import shutil
 from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
+from lxml import etree
 
 config_log("test.log")
 
@@ -125,7 +126,7 @@ class TestBib(unittest.TestCase):
 
         Item(barcode='03124510_NEW_2', zone='HPH', env='S').holding.delete(force=True)
 
-    def test_create_holding(self):
+    def test_create_update_holding(self):
         # Get the item data
         holding1 = Holding('991000975799705520', '2234409340005520', 'HPH', 'S')
 
@@ -134,7 +135,16 @@ class TestBib(unittest.TestCase):
 
         self.assertEqual(holding2.data.find('.//datafield[@tag="852"]/subfield[@code="b"]').text, 'hph_bjnbe')
 
-        # Delete duplicated holding
+        # Duplicate holding
+        holding2.data.find('.//record').append(etree.XML(
+            '<datafield tag="035" ind1=" " ind2=" "><subfield code="a">400040004000</subfield></datafield>'))
+
+        holding2.update()
+
+        holding3 = Holding(holding2.bib.mms_id, holding2.holding_id, 'HPH', 'S')
+
+        self.assertEqual(holding3.data.findall('.//datafield[@tag="035"]/subfield[@code="a"]')[-1].text, '400040004000')
+
         holding2.delete()
 
     def test_update_bib_record(self):

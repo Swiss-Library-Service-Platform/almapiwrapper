@@ -152,7 +152,7 @@ class Holding(Record):
                            headers=self._get_headers())
 
         if r.ok is True:
-            self.data = XmlData(etree.fromstring(r.content, parser=self.parser))
+            self.data = XmlData(r.content)
             logging.info(f'{repr(self)}: holding data updated')
         else:
             self._handle_error(r, 'unable to update holding data')
