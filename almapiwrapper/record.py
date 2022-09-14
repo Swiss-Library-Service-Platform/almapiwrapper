@@ -56,6 +56,7 @@ class Record(metaclass=abc.ABCMeta):
         """Abstract constructor, all entities have at least a zone and an environment.
         """
         self.error = False
+        self.error_msg = None
         self.zone = zone
         self.env = env
         self.area = None
@@ -217,7 +218,10 @@ class Record(metaclass=abc.ABCMeta):
         """
         if 'json' in r.headers['Content-Type']:
             json_data = r.json()
-            error_message = json_data['errorList']['error'][0]['errorMessage']
+            try:
+                error_message = json_data['errorList']['error'][0]['errorMessage']
+            except KeyError:
+                error_message = 'unknown error'
         else:
             try:
                 xml = etree.fromstring(r.content, parser=self.parser)
@@ -227,6 +231,7 @@ class Record(metaclass=abc.ABCMeta):
         logging.error(f'{repr(self)} - {r.status_code if r is not None else "unknown"}: '
                       f'{msg} / {error_message}')
         self.error = True
+        self.error_msg = error_message
 
 
 class XmlData:

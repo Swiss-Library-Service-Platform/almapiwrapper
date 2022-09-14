@@ -48,6 +48,7 @@ class Item(Record):
         """Construct an item.
         """
         self.error = False
+        self.error_msg = None
         self._data = data
 
         if holding_id is not None and mms_id is not None and holding is None:

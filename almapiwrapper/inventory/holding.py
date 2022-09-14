@@ -51,6 +51,7 @@ class Holding(Record):
         """
         self._items = None
         self.error = False
+        self.error_msg = None
         self._data = None
         self.area = 'Bibs'
         self.format = 'xml'
