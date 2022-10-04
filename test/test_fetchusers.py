@@ -1,6 +1,4 @@
 import unittest
-import sys
-import os
 import time
 from almapiwrapper.users import User, NewUser, fetch_users
 from almapiwrapper.record import JsonData
