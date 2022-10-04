@@ -1,6 +1,4 @@
 import unittest
-import sys
-import os
 
 from almapiwrapper.users import User, NewUser, Fee
 from almapiwrapper.record import JsonData
@@ -18,7 +16,7 @@ class TestCreateUser(unittest.TestCase):
         if u.data is None:
             # Create new user
             data = JsonData(filepath='test/data/user_testFeeUser1.json')
-            u = NewUser('UBS', 'S', data).create()
+            _ = NewUser('UBS', 'S', data).create()
 
     def test_create_fee(self):
 

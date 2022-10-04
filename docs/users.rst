@@ -7,4 +7,4 @@ Users submodule
    user
    newuser
    fee
-   fetchusers
+   usersutils
