@@ -296,6 +296,55 @@ class Holding(Record):
             logging.info(f'{repr(self)}: location changed from "{location.text}" to "{location_code}"')
             location.text = location_code
 
+    @property
+    @check_error
+    def callnumber(self) -> Optional[str]:
+        """callnumber(self) -> Optional[str]
+        Property of the holding returning the callnumber
+
+        :return: str containing callnumber
+        """
+        field852 = self.data.find('.//datafield[@tag="852"]')
+        if field852 is None:
+            return None
+
+        callnumber_field = field852.find('./subfield[@code="j"]')
+
+        if callnumber_field is None:
+            callnumber_field = field852.find('./subfield[@code="h"]')
+
+        if callnumber_field is None:
+            logging.error(f'{repr(self)}: no callnumber field in the holding')
+            return None
+
+        return callnumber_field.text
+
+    @callnumber.setter
+    @check_error
+    def callnumber(self, callnumber_txt: str) -> None:
+        """callnumber(self, callnumber_txt: str) -> None
+        This setter is able to update the 852$j or 852$h of the holding. But the field should already exist.
+
+        :param callnumber_txt: text of the callnumber to be set in j or h subfield
+
+        :return: None
+        """
+        field852 = self.data.find('.//datafield[@tag="852"]')
+        if field852 is None:
+            return None
+
+        callnumber_field = field852.find('./subfield[@code="j"]')
+
+        if callnumber_field is None:
+            callnumber_field = field852.find('./subfield[@code="h"]')
+
+        if callnumber_field is None:
+            logging.error(f'{repr(self)}: no callnumber field in the holding -> not possible to update it')
+            return None
+
+        logging.info(f'{repr(self)}: callnumber changed from "{callnumber_field.text}" to "{callnumber_txt}"')
+        callnumber_field.text = callnumber_txt
+
     @staticmethod
     def get_data_from_disk(mms_id: str, holding_id: str, zone: str) -> Optional[XmlData]:
         """get_data_from_disk(mms_id, holding_id, zone)

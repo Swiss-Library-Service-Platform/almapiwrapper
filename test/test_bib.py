@@ -126,8 +126,16 @@ class TestBib(unittest.TestCase):
 
         Item(barcode='03124510_NEW_2', zone='HPH', env='S').holding.delete(force=True)
 
+    def test_holding_callnumber(self):
+        holding = Holding('991000975799705520', '2234409340005520', 'HPH', 'S')
+        self.assertEqual(holding.callnumber, 'HEPBE FRIE')
+
+        holding.callnumber = 'Test'
+
+        self.assertEqual(holding.callnumber, 'Test')
+
     def test_create_update_holding(self):
-        # Get the item data
+        # Get the holding data
         holding1 = Holding('991000975799705520', '2234409340005520', 'HPH', 'S')
 
         # Duplicate holding
