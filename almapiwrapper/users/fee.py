@@ -10,7 +10,7 @@ class Fee(Record):
     :cvar api_base_url_users: url of the user api
     :ivar fee_id: id of the fee
     :ivar primary_id: primary_id of the user
-    :ivar zone: initial value: zone where the user should be created
+    :ivar zone: initial value: zone of the fee
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar user: :class:`almapiwrapper.users.User` either primary_id of the user or the user itself must be provided
     :ivar data: :class:`almapiwrapper.record.JsonData` with fee data"""
