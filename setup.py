@@ -13,4 +13,5 @@ setup(name='almapiwrapper',
       long_description_content_type='text/reST',
       packages=find_packages(),
       py_modules=['almapiwrapper'],
+      author_email='raphael.rey@slsp.ch'
       )
