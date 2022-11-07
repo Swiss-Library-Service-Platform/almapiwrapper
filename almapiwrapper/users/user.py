@@ -66,7 +66,7 @@ class User(Record):
 
             logging.info(f'{repr(self)}: fees data available')
             fees_data = r.json()
-            if 'fee' not in fees_data:
+            if 'fee' not in fees_data or fees_data['fee'] is None:
                 logging.warning(f'{repr(self)}: no fee in the account')
                 return []
             fees = []

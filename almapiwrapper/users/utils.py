@@ -32,18 +32,17 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
         while offset == 0 or offset < nb_total_records:
 
             # Make request
-            r = Record._api_call('get',
-                                  f'{userslib.User.api_base_url}',
-                                  params={'q': q, 'limit': 100, 'offset': offset},
-                                  headers=Record.build_headers(data_format='json', env=env,
-                                                               zone=z, rights='RW', area='Users'))
+            r = requests.get(f'{userslib.User.api_base_url}',
+                             params={'q': q, 'limit': 100, 'offset': offset},
+                             headers=Record.build_headers(data_format='json', env=env,
+                                                          zone=z, rights='RW', area='Users'))
 
             # Check result
             if r.ok is True:
                 users_list = JsonData(r.json())
                 nb_total_records = int(users_list.content['total_record_count'])
 
-                if 'user' in users_list.content:
+                if 'user' in users_list.content and users_list.content['user'] is not None:
                     users += [userslib.User(user['primary_id'], z, env) for user in users_list.content['user']]
                     nb_users = len(users_list.content['user'])
                 else:
