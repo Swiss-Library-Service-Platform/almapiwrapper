@@ -2,7 +2,7 @@
 name = "almapiwrapper"
 version = "0.8.6"
 authors = [
-  { name="Raphael Rey", email="raphael.rey@slsp.ch" },
+  { name="Raphaël Rey", email="raphael.rey@slsp.ch" },
 ]
 description = "This python module is a tool to use Alma APIs. it manages the logs and the backup of the records."
 readme = "readme.rst"
