@@ -23,7 +23,7 @@ How to import modules
     from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, check_synchro
     from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
     from almapiwrapper.record import JsonData, XmlData
-    from almapiwrapper.config import RecSet
+    from almapiwrapper.config import RecSet, Job
     from almapiwrapper.configlog import config_log
     from almapiwrapper import ApiKeys
 
