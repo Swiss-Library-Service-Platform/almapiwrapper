@@ -8,6 +8,7 @@ from ..users import User
 
 class RecSet(Record):
     """Class representing a set of records
+
     :ivar set_id: initial value: ID of the set
     :ivar zone: initial value: zone of the fee
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
@@ -47,28 +48,52 @@ class RecSet(Record):
 
     @check_error
     def get_members_number(self) -> int:
-        """Return the number of members
+        """get_members_number(self) -> int
+        Return the number of members
 
-        :return: int with the number of records"""
+        :return: int with the number of records
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped."""
         return int(self.data.find('.//number_of_members').text)
 
     @check_error
     def get_set_type(self) -> str:
-        """Return the type of the set
+        """get_set_type(self) -> str
+        Return the type of the set
 
-        :return: str indicating the type of the set"""
+        :return: str indicating the type of the set
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+        """
         return self.data.find('.//type').text
 
     @check_error
     def get_content_type(self) -> str:
-        """Return the type of the set
+        """get_content_type(self) -> str
+        Return the type of the set
 
-        :return: str indicating the type of the set"""
+        :return: str indicating the type of the set
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+        """
         return self.data.find('.//content').text
 
     @check_error
     def get_members(self) -> list[Record]:
-        """Return a list with all the records of the set
+        """get_members(self) -> list[Record]
+        Return a list with all the records of the set
+
+        :return: list of records depending on the type of the set
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
         """
 
         # Prevent to fetch data twice, if already available

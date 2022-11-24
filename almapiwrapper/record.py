@@ -102,8 +102,8 @@ class Record(metaclass=abc.ABCMeta):
                       area: str,
                       rights: Literal['R', 'RW'] = 'RW',
                       env: Optional[Literal['P', 'S']] = 'P') -> Dict:
-        """
-        Build the headers for the API calls.
+        """Build the headers for the API calls.
+
         :param data_format: "json" or "xml"
         :param zone: optional, if indicated allow to make the query in an other IZ
         :param area: area of the record, bibs, users for example
@@ -120,6 +120,7 @@ class Record(metaclass=abc.ABCMeta):
     @property
     def data(self) -> Optional[Union[Dict, etree.Element]]:
         """Property that get xml data with API call. If not available, make an api call
+
         :return: xml data
         """
         if self._data is None and self.error is False:
@@ -280,8 +281,8 @@ class XmlData:
     def _read_file(filepath: str) -> Optional[bytes]:
         """Read xml data file from disk
 
-        :param filepath: patrh to the data file
-        :return: etre element
+        :param filepath: path to the data file
+        :return: etree element
         """
         try:
             f = open(filepath, 'rb')
@@ -337,7 +338,7 @@ class JsonData:
     def _read_file(filepath: str) -> Optional[Dict]:
         """Read json data file from disk
 
-        :param filepath: patrh to the data file
+        :param filepath: path to the data file
         :return: json data
         """
         try:

@@ -1,6 +1,8 @@
-``RecSet`` class
------------------
-.. autoclass:: almapiwrapper.config.RecSet
-    :members:
-    :show-inheritance:
-    :inherited-members:
+Config submodule
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   recset
+   job

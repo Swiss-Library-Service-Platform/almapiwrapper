@@ -1,0 +1,40 @@
+<job>
+	<parameters>
+		<parameter>
+			<name>task_ExportBibParams_outputFormat_string</name>
+			<value>MARC21_XML</value>
+		</parameter>
+		<parameter>
+			<name>task_ExportBibParams_outputRegistryFormat_string</name>
+			<value>3</value>
+		</parameter>
+		<parameter>
+			<name>task_ExportBibParams_maxSize_string</name>
+			<value>0</value>
+		</parameter>
+		<parameter>
+			<name>task_ExportBibParams_enrich_string</name>
+			<value>Null</value>
+		</parameter>
+		<parameter>
+			<name>task_ExportBibParams_exportFolder_string</name>
+			<value>PRIVATE</value>
+		</parameter>
+		<parameter>
+			<name>task_ExportParams_ftpConfig_string</name>
+			<value></value>
+		</parameter>
+		<parameter>
+			<name>task_ExportParams_ftpSubdirectory_string</name>
+			<value></value>
+		</parameter>
+		<parameter>
+			<name>set_id</name>
+			<value>12901610390005504</value>
+		</parameter>
+		<parameter>
+			<name>job_name</name>
+			<value>Export Bibliographic records - via API - Test_set_bib_records - Itemized</value>
+		</parameter>
+	</parameters>
+</job>
