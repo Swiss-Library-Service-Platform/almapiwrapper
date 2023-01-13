@@ -85,6 +85,27 @@ class RecSet(Record):
         return self.data.find('.//content').text
 
     @check_error
+    def delete(self) -> None:
+        """Delete a set
+
+        :return: None
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+        """
+
+        r = self._api_call('delete',
+                           f'{self.api_base_url}/conf/sets/{self.set_id}',
+                           headers=self._get_headers())
+        if r.ok is True:
+            logging.info(f'{repr(self)}: set deleted')
+            return
+        else:
+            print(r.text)
+            self._handle_error(r, f'unable to delete the set')
+
+    @check_error
     def get_members(self) -> list[Record]:
         """get_members(self) -> list[Record]
         Return a list with all the records of the set

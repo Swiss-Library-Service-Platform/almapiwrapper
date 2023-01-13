@@ -20,14 +20,15 @@ class Holding(Record):
     if no 'holding_id' is provided, but 'data' is provided and create_holding is True, then
     it creates a new holding.
 
-    :ivar mms_id: record mms_id
+
     :ivar holding_id: holding ID
     :ivar zone: zone of the record
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar bib: class:`almapiwrapper.inventory.IzBib` object
     :ivar data: :class:`almapiwrapper.record.XmlData` or `etree.Element` object,
     useful to force update a record from a backup
-    :ivar create_holding: boolean, if True try to create a new holding (if no 'holding_id' is provided)
+    :param mms_id: record mms_id
+    :param create_holding: boolean, if True try to create a new holding (if no 'holding_id' is provided)
     """
 
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'
@@ -331,7 +332,7 @@ class Holding(Record):
         """
         field852 = self.data.find('.//datafield[@tag="852"]')
         if field852 is None:
-            return None
+            return
 
         callnumber_field = field852.find('./subfield[@code="j"]')
 
@@ -340,7 +341,7 @@ class Holding(Record):
 
         if callnumber_field is None:
             logging.error(f'{repr(self)}: no callnumber field in the holding -> not possible to update it')
-            return None
+            return
 
         logging.info(f'{repr(self)}: callnumber changed from "{callnumber_field.text}" to "{callnumber_txt}"')
         callnumber_field.text = callnumber_txt

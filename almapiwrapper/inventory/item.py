@@ -20,16 +20,16 @@ class Item(Record):
     Create an item:
         - Item(holding=:class:`almapiwrapper.inventory.Holding`, data=`almapiwrapper.record.XmlData`, create_item=True)
 
-    :ivar mms_id: bib record mms_id
-    :ivar holding_id: holding record ID
     :ivar item_id: numerical ID of the item
     :ivar zone: zone of the record
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar holding: :class:`almapiwrapper.inventory.Holding` object
-    :ivar barcode: string with barcode of the item
     :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to force
         update a record from a backup
-    :ivar create_item: when True, create a new item
+    :param barcode: string with barcode of the item
+    :param mms_id: bib record mms_id
+    :param holding_id: holding record ID
+    :param create_item: when True, create a new item
     """
 
     api_base_url_items: ClassVar[str] = f'{Record.api_base_url}/items'

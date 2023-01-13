@@ -176,12 +176,12 @@ class IzBib(Bib):
     :ivar mms_id: record mms_id
     :ivar zone: zone of the record
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar from_nz_mms_id: if this parameter is True the system assumes that the provided MMS ID is a network ID
+    :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to force update a record from a backup
+    :param from_nz_mms_id: if this parameter is True the system assumes that the provided MMS ID is a network ID
         and fetch data from it
-    :ivar copy_nz_rec: if this parameter is True, if no record exists in the IZ for the provided
+    :param copy_nz_rec: if this parameter is True, if no record exists in the IZ for the provided
         NZ ID, the CZ record is copied from NZ
-    :ivar data: :class:`almapiwrapper.record.XmlData`
-        object, useful to force update a record from a backup
+
     """
     def __init__(self, mms_id: str,
                  zone: str,
@@ -276,10 +276,6 @@ class IzBib(Bib):
         :return: None
         """
 
-        if force is True:
-            # Will delete also items and holdings
-            self.delete_holdings(force=True)
-
         # Unlink NZ and IZ record
         r = self._api_call('post',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
@@ -293,7 +289,7 @@ class IzBib(Bib):
 
             r = self._api_call('delete',
                                f'{self.api_base_url_bibs}/{self.mms_id}',
-                               headers=self._get_headers(), params={'override': 'true'})
+                               headers=self._get_headers(), params={'override': 'true' if force is True else 'false'})
             if r.ok is True:
                 logging.info(f'{repr(self)} deleted')
                 return
@@ -370,7 +366,7 @@ class NzBib(Bib):
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to
         force update a record from a backup
-    :ivar create_bib: bool, if True, create a new bib record in the NZ
+    :param create_bib: bool, if True, create a new bib record in the NZ
     """
     def __init__(self, mms_id: Optional[str] = None,
                  env: Literal['P', 'S'] = 'P',
@@ -378,9 +374,6 @@ class NzBib(Bib):
                  create_bib: Optional[bool] = False) -> None:
         """
         Construct a bibliographic record of the NZ
-        :param mms_id: record MMS ID
-        :param env: environment of the entity: 'P' for production and 'S' for sandbox
-        :param
         """
         if data is not None:
             if data.__class__.__name__ == '_Element':
@@ -442,20 +435,3 @@ class NzBib(Bib):
 
         else:
             self._handle_error(r, f'unable to create NZ bib record')
-
-
-def fetch_nz_bibs(q: str, env: Literal['P', 'S'] = 'P') -> List[NzBib]:
-    """
-
-    :param q: sru query
-    :param env: environment of the entity: 'P' for production and 'S' for sandbox
-    :return: list of :class:`almapiwrapper.record.NzBib`
-    """
-    pass
-#     url = 'https://swisscovery.slsp.ch/view/sru/41SLSP_NETWORK'
-#     r = Record._api_call('get',
-#                          url,
-#                          params={'query': q,
-#                                  'version': '1.2',
-#                                  'operation': 'searchRetrieve'})
-#     return r

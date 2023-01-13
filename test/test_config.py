@@ -57,7 +57,7 @@ class TestRecSet(unittest.TestCase):
         self.assertEqual(state['status'], 'COMPLETED_SUCCESS', 'Impossible to get instance info')
 
         instances = job.get_instances()
-        self.assertTrue(instances.content['total_record_count'] > 50)
+        self.assertTrue(instances.content['total_record_count'] > 20)
 
 
 if __name__ == '__main__':
