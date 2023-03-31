@@ -78,6 +78,12 @@ Records backups
 The `save` method of all records creates a backup of the record in the
 `./records` folder.
 
+Thresholds
+----------
+The program will exit if less than 5000 allowed API calls are remaining.
+If the threshold of 25 API calls per second is exceeded the system waits
+for 3 seconds. The API call is then sent again.
+
 Inventory
 ---------
 This mudule can use Alma APIs to manage bib records, holdings and items.
