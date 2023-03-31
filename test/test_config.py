@@ -15,7 +15,7 @@ class TestRecSet(unittest.TestCase):
     def test_fetch_members_of_user_set(self):
 
         # Fetch set data
-        s = RecSet('12901610260005504', 'UBS', 'S')
+        s = RecSet('15443075260005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')
@@ -25,7 +25,7 @@ class TestRecSet(unittest.TestCase):
     def test_fetch_members_of_bib_set(self):
 
         # Fetch set data
-        s = RecSet('12901610390005504', 'UBS', 'S')
+        s = RecSet('15443075460005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')
@@ -49,10 +49,10 @@ class TestRecSet(unittest.TestCase):
     def test_monitor_job(self):
         job = Job('44', 'UBS', 'S')
 
-        instance = job.get_instance_info('12901746310005504')
+        instance = job.get_instance_info('15442965370005504')
         self.assertFalse(job.error, 'Not able to fetch a job instance')
 
-        state = job.check_instance_state('12901746310005504')
+        state = job.check_instance_state('15442965370005504')
         self.assertEqual(state['progress'], 100, 'Impossible to get instance info')
         self.assertEqual(state['status'], 'COMPLETED_SUCCESS', 'Impossible to get instance info')
 

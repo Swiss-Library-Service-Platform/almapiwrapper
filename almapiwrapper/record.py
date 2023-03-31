@@ -77,6 +77,7 @@ class Record(metaclass=abc.ABCMeta):
 
         for api_try in [1, 2, 3]:
             try:
+                time.sleep(0.04)
                 if method == 'get':
                     r = requests.get(*args, **kwargs)
                 elif method == 'put':
@@ -87,14 +88,22 @@ class Record(metaclass=abc.ABCMeta):
                     r = requests.delete(*args, **kwargs)
                 else:
                     return None
-                return r
+
+                if 'X-Exl-Api-Remaining' in r.headers and int(r.headers['X-Exl-Api-Remaining']) < 5000:
+                    logging.critical(f'Limit of the number of requests allowed critical - '
+                                     f'{r.headers["X-Exl-Api-Remaining"]} reamaining => exiting of the program')
+                    exit()
+
+                # Retry later if threshold of 25 requests per second exceeded
+                if r.status_code != 429:
+                    return r
 
             except requests.exceptions.RequestException as err:
                 logging.error(f'HTTP error: try {api_try} - message: {str(err)}')
-                if api_try == 300:
-                    logging.critical(f'HTTP error: try {api_try} => exiting of the program')
-                    exit()
-                time.sleep(3)
+            if api_try == 3:
+                logging.critical(f'HTTP error: try {api_try} => exiting of the program')
+                exit()
+            time.sleep(3)
 
     @staticmethod
     def build_headers(data_format: Literal['json', 'xml'],
