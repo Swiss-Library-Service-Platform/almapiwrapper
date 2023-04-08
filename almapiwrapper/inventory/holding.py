@@ -315,7 +315,7 @@ class Holding(Record):
             callnumber_field = field852.find('./subfield[@code="h"]')
 
         if callnumber_field is None:
-            logging.error(f'{repr(self)}: no callnumber field in the holding')
+            logging.warning(f'{repr(self)}: no callnumber field in the holding')
             return None
 
         return callnumber_field.text
