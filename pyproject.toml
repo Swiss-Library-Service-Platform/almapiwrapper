@@ -1,6 +1,6 @@
 [project]
 name = "almapiwrapper"
-version = "0.12.0"
+version = "0.12.1"
 authors = [
   { name="Raphaël Rey", email="raphael.rey@slsp.ch" },
 ]
