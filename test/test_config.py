@@ -2,12 +2,53 @@ import unittest
 import sys
 import os
 
-from almapiwrapper.users import User, NewUser
-from almapiwrapper.config import RecSet, Job
+from almapiwrapper.config import RecSet, Job, Reminder, fetch_reminders
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
 config_log("test.log")
+
+
+class TestReminder(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        if len(reminders) > 0:
+            for r in reminders:
+                r.delete()
+        data = JsonData(filepath='test/data/reminder_test1.json')
+        r = Reminder(zone='NZ', env='S', data=data, create_reminder=True)
+
+    def test_get_reminder(self):
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        self.assertEqual(len(reminders), 1, 'Not able to fetch the reminder')
+        self.assertEqual(reminders[0].entity_id, '991170687152205501', 'Reminder linked to the wrong record')
+        self.assertEqual(reminders[0].reminder_type, 'Additional edition',
+                         'Bad reminder type, should be "Additional edition"')
+        self.assertEqual(reminders[0].status, 'NEW', 'Bad reminder status, should be "NEW"')
+
+
+    def test_delete_reminder(self):
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        self.assertEqual(len(reminders), 1, 'Not able to fetch the reminder')
+        self.assertEqual(reminders[0].entity_id, '991170687152205501', 'Reminder linked to the wrong record')
+        reminders[0].delete()
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        self.assertEqual(len(reminders), 0, 'Not able to delete the reminder')
+        data = JsonData(filepath='test/data/reminder_test1.json')
+        Reminder(zone='NZ', env='S', data=data, create_reminder=True)
+
+    def test_update_reminder(self):
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        self.assertEqual(len(reminders), 1, 'Not able to fetch the reminder')
+        self.assertEqual(reminders[0].entity_id, '991170687152205501', 'Reminder linked to the wrong record')
+        reminders[0].data['text'] = 'Test update'
+        reminders[0].update()
+
+        reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
+        self.assertEqual(len(reminders), 1, 'Not able to fetch the reminder')
+        self.assertEqual(reminders[0].entity_id, '991170687152205501', 'Reminder linked to the wrong record')
+        self.assertEqual(reminders[0].data['text'], 'Test update', 'Reminder not updated')
 
 
 class TestRecSet(unittest.TestCase):
