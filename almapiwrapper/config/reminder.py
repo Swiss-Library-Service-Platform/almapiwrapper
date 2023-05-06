@@ -67,7 +67,7 @@ def fetch_reminders(zone: str,
 
             logging.info(f'fetch_reminders("{zone}", "{env}"): '
                          f'{offset + nb_reminders} / '
-                         f'{nb_total_records} users data available')
+                         f'{nb_total_records} reminders data available')
             offset += 100
 
         else:
@@ -84,8 +84,6 @@ def _handle_error(r: requests.models.Response, msg: str, zone: str, env: str):
     :return: None
     """
     json_data = r.json()
-    print(json_data)
-    print(r.url)
     error_message = json_data['errorList']['error'][0]['errorMessage']
 
     logging.error(f'fetch_reminders({zone}, {env}) - {r.status_code}: '
