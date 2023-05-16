@@ -4,6 +4,15 @@ import os
 
 version = almapiwrapper.__version__
 
+# docs/conf.py of documentation
+with open('docs/conf.py') as f:
+    content = f.read()
+
+content = re.sub(r"release = '.+'", f"release = '{version}'", content)
+
+with open('docs/conf.py', 'w') as f:
+    f.write(content)
+
 # pyproject.toml
 with open('pyproject.toml') as f:
     content = f.read()
