@@ -138,3 +138,25 @@ It is possible to chain all the methods.
 
 If there is any error, most methods are simply skipped. This way there is no
 corruption, and the script should not encounter an interrupting exception.
+
+Sets
+----
+This module can use Alma APIs to create and delete sets. It is also possible
+to get the members of a set.
+
+.. code-block:: python
+
+    # Create a set
+    s = NewRecSet('NZ',
+                  'S',
+                  'Series_1',
+                  'Series_1',
+                  'BIB_MMS where BIB_MMS ((mms_id GREATER_EQUAL "991020000000005501") AND BIB_MMS (mms_id LESS_THAN "991020001000005501") AND BIB_MMS (series NOT_EMPTY))',
+                  'raphael.rey@slsp.ch',
+                  True)
+
+    # Fetch the members
+    members = s.get_members()
+
+    # Delete the set
+    s.delete()
