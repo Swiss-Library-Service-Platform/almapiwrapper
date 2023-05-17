@@ -14,7 +14,6 @@ class User(Record):
     :ivar zone: initial value: zone where the user should be created
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: initial value: :class:`almapiwrapper.record.JsonData` of the user (useful for new created users)
-
     """
 
     api_base_url: ClassVar[str] = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users'
@@ -164,6 +163,7 @@ class User(Record):
         at the data level.
 
         :param primary_id: new primary ID to set
+
         :return: None
         """
         self._primary_id = primary_id
@@ -186,6 +186,7 @@ class User(Record):
         Set a new password to a user
 
         :param password: password string, default is '123pw123'
+
         :return: object :class:`almapiwrapper.users.User`
 
         .. note::
@@ -274,6 +275,7 @@ class NewUser(User):
 
         :param password: optional string with the password, if not provided,
             the password will be set at the default value (if not available in the data)
+
         :return: object :class:`almapiwrapper.users.User` or object :class:`almapiwrapper.users.NewUser`
             (in case of error)
 
@@ -302,6 +304,7 @@ class NewUser(User):
         Set the password of a new user
 
         :param password: string containing the new password.
+
         :return: object :class:`almapiwrapper.users.NewUser`
         .. note::
             If the record encountered an error, this

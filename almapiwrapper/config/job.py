@@ -120,7 +120,7 @@ class Job(Record):
     def check_instance_state(self, instance_id: Optional[str] = None) -> Optional[Dict]:
         """check_instance_state(self, instance_id: Optional[str] = None) -> Optional[Dict]
         Check the state of the provided instance id or of instance started
-        with :method:`almapiwrapper.config.Job.run`
+        with :meth:`almapiwrapper.config.Job.run`
 
         :param instance_id: optional parameter indicating the instance to check. If not
             provided it will use the instance id of a job started
