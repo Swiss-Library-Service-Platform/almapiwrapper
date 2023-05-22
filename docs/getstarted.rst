@@ -154,6 +154,8 @@ to get the members of a set.
                   'BIB_MMS where BIB_MMS ((mms_id GREATER_EQUAL "991020000000005501") AND BIB_MMS (mms_id LESS_THAN "991020001000005501") AND BIB_MMS (series NOT_EMPTY))',
                   'raphael.rey@slsp.ch',
                   True)
+    # Create the set
+    s = s.create()
 
     # Fetch the members
     members = s.get_members()
