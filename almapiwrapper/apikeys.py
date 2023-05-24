@@ -74,7 +74,7 @@ class ApiKeys:
         :return: Code of all IZ
         :rtype: str
         """
-        return [k for k in self._keys.keys() if k != 'NZ']
+        return [k for k in self._keys.keys() if k != 'NZ' or k.endswith('-PreProd')]
 
 
 if __name__ == "__main__":
