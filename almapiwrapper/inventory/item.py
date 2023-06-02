@@ -417,3 +417,22 @@ class Item(Record):
             return
 
         return XmlData(filepath=f'records/{zone}_{mms_id}/{file_names[-1]}')
+
+    @check_error
+    def scan_in(self, library: str, circ_desk: str) -> 'Item':
+        """scan_in(self) -> 'Item'
+        Scan in an item
+
+        :return: Item
+        """
+        r = self._api_call('post',
+                           f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
+                           f'items/{self.item_id}',
+                           params={'op': 'scan', 'library': library, 'circ_desk': circ_desk},
+                           headers=self._get_headers())
+        if r.ok is True:
+            logging.info(f'{repr(self)}: scanned in')
+        else:
+            self._handle_error(r, 'unable to "scan in" the item')
+
+        return self

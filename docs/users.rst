@@ -6,5 +6,6 @@ Users submodule
 
    user
    newuser
+   loan
    fee
    usersutils

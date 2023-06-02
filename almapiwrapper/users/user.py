@@ -2,6 +2,9 @@
 
 from typing import Optional, ClassVar, Literal, Union, List
 import logging
+
+import almapiwrapper.inventory
+
 from ..record import Record, check_error, JsonData
 import almapiwrapper.users as users
 from datetime import datetime
@@ -30,6 +33,7 @@ class User(Record):
         self.area = 'Users'
         self.format = 'json'
         self._fees = None
+        self._loans = None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -74,6 +78,29 @@ class User(Record):
             return fees
         else:
             self._handle_error(r, f'unable to fetch user fees')
+
+    def _fetch_loans(self) -> Optional[List['users.Loan']]:
+        """Fetch loan data of the current user
+
+        :return: list of :class:`almapiwrapper.users.Loan` objects"""
+
+        r = self._api_call('get',
+                           f'{self.api_base_url}/{self.primary_id}/loans',
+                           params={'limit': '100'},
+                           headers=self._get_headers())
+        if r.ok is True:
+
+            logging.info(f'{repr(self)}: loans data available')
+            loans_data = r.json()
+            if 'item_loan' not in loans_data or loans_data['item_loan'] is None:
+                logging.warning(f'{repr(self)}: no loan in the account')
+                return []
+            loans = []
+            for loan_data in loans_data['item_loan']:
+                loans.append(users.Loan(user=self, data=JsonData(loan_data)))
+            return loans
+        else:
+            self._handle_error(r, f'unable to fetch user loans')
 
     def save(self) -> 'User':
         """save() -> 'User'
@@ -179,6 +206,72 @@ class User(Record):
             self._fees = self._fetch_fees()
 
         return self._fees
+
+    @property
+    def loans(self) -> Optional[List['users.Loan']]:
+        """Property returning the list of the loans of the user
+
+        :return: list of :class:`almapiwrapper.users.Loan` objects"""
+        if self._loans is None:
+            self._loans = self._fetch_loans()
+
+        return self._loans
+
+    @check_error
+    def create_loan(self,
+                    library: str,
+                    circ_desk: str,
+                    item_barcode: Optional[str] = None,
+                    item_id: Optional[str] = None,
+                    item: Optional[almapiwrapper.inventory.Item] = None) -> Optional['users.Loan']:
+        """create_loan(library: str, circ_desk: str, item_barcode: Optional[str] = None, item_id: Optional[str] = None, item: Optional[almapiwrapper.inventory.Item] = None) -> Optional['users.Loan']
+
+        Create a loan for the user
+
+        :param library: code of the library
+        :param circ_desk: code of the circulation desk
+        :param item_barcode: barcode of the item
+        :param item_id: id of the item
+        :param item: object :class:`almapiwrapper.inventory.Item`
+
+        :return: object :class:`almapiwrapper.users.Loan`
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+        """
+        if item is not None and item.error is False:
+            item_barcode = item.barcode
+
+        # Check if mandatory fields are available
+        if library is None or circ_desk is None or (item_barcode is None and item_id is None):
+            logging.error('Missing information to create a loan')
+            self.error = True
+            return None
+
+        # Create the loan
+        loan_data = {"circ_desk": {"value": circ_desk},
+                     "library": {"value": library}}
+
+        params = {'item_barcode': item_barcode} if item_barcode is not None else {'item_pid': item_id}
+
+        r = self._api_call('post',
+                           f'{self.api_base_url}/{self.primary_id}/loans',
+                           params=params,
+                           data=bytes(JsonData(loan_data)),
+                           headers=self._get_headers())
+        if r.ok is True:
+            loan_data = JsonData(r.json())
+
+            loan = users.Loan(user=self, data=loan_data)
+
+            logging.info(f'{repr(self)}: {repr(loan)} created.')
+
+            return loan
+        else:
+            self._handle_error(r, f'unable to create loan for '
+                                  f'{item_barcode if item_barcode is not None else item_id} '
+                                  f'on {circ_desk} at {library}')
 
     @check_error
     def set_password(self, password: Optional[str] = '123pw123') -> 'User':
