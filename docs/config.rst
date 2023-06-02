@@ -1,5 +1,5 @@
 Config submodule
----------------
+----------------
 
 .. toctree::
    :maxdepth: 2
