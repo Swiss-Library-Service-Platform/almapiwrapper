@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional, Literal
 
 
 class ApiKeys:
@@ -68,13 +68,24 @@ class ApiKeys:
         raise KeyError(f'No corresponding API key found: zone "{zone}", area "{area}",'
                        f' permission "{permissions}", environment "{env}".')
 
-    def get_iz_codes(self) -> List[str]:
+    def get_iz_codes(self, env: Optional[Literal['P', 'S']] = 'P') -> List[str]:
         """
         Return the list of all IZ abbreviations
+        :param env: "P" for production, "S" for sandbox. Default is production
         :return: Code of all IZ
         :rtype: str
         """
-        return [k for k in self._keys.keys() if k != 'NZ' or k.endswith('-PreProd')]
+        if env == 'P':
+            return [k for k in self._keys.keys() if k != 'NZ' or k.endswith('-Prod')]
+        else:
+            sb_izs = set()
+            for zone in self._keys.keys():
+                if zone != 'NZ':
+                    for k in self._keys[zone]:
+                        for api in k['Supported_APIs']:
+                            if api['Env'] == 'S':
+                                sb_izs.add(zone)
+        return list(sb_izs)
 
 
 if __name__ == "__main__":

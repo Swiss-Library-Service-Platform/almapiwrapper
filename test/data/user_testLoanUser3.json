@@ -1,0 +1,113 @@
+{
+  "record_type": {
+    "value": "STAFF",
+    "desc": "Staff"
+  },
+  "primary_id": "testLoanUser3",
+  "first_name": "Test",
+  "middle_name": "",
+  "last_name": "TestName",
+  "full_name": "Test TestName",
+  "user_title": {
+    "value": "",
+    "desc": ""
+  },
+  "job_category": {
+    "value": "",
+    "desc": ""
+  },
+  "job_description": "",
+  "gender": {
+    "value": "",
+    "desc": ""
+  },
+  "user_group": {
+    "value": "01",
+    "desc": " Swiss Resident"
+  },
+  "campus_code": {
+    "value": null,
+    "desc": ""
+  },
+  "web_site_url": "",
+  "cataloger_level": {
+    "value": "00",
+    "desc": "[00] view only"
+  },
+  "preferred_language": {
+    "value": "en",
+    "desc": "English"
+  },
+  "account_type": {
+    "value": "EXTERNAL",
+    "desc": "External"
+  },
+  "external_id": "",
+  "password": "",
+  "force_password_change": "",
+  "status": {
+    "value": "ACTIVE",
+    "desc": "Active"
+  },
+  "status_date": "2022-06-18Z",
+  "requests": null,
+  "loans": null,
+  "fees": null,
+  "external_id": "SLSP-NZ-EDUID",
+  "contact_info": {
+    "address": [],
+    "email": [
+      {
+        "email_address": "test.test3@test.ch",
+        "description": null,
+        "preferred": true,
+        "segment_type": "External",
+        "email_type": [
+          {
+            "value": "work",
+            "desc": "Work"
+          }
+        ]
+      }
+    ],
+    "phone": []
+  },
+  "pref_first_name": "",
+  "pref_middle_name": "",
+  "pref_last_name": "",
+  "pref_name_suffix": "",
+  "is_researcher": false,
+  "researcher": null,
+  "link": null,
+  "user_identifier": [{
+      "value": "4070041665",
+      "note": "Test_ID",
+      "status": "ACTIVE",
+      "id_type": {
+        "value": "01",
+        "desc": "Barcode edu-ID"
+      },
+      "segment_type": "External"
+    }],
+  "user_role": [
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "41SLSP_NETWORK",
+        "desc": "SLSP Network Zone"
+      },
+      "role_type": {
+        "value": "200",
+        "desc": "Patron"
+      },
+      "parameter": []
+    }
+  ],
+  "user_block": [],
+  "user_note": [],
+  "user_statistic": [],
+  "proxy_for_user": []
+}

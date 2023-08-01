@@ -1,8 +1,6 @@
 import unittest
-import sys
-import os
 
-from almapiwrapper.users import User, NewUser
+from almapiwrapper.users import User, NewUser, force_synchro
 from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
 
@@ -26,6 +24,14 @@ class TestCreateUser(unittest.TestCase):
             u.delete()
 
         u = User('TestUser5', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestLoanUser3', 'NZ', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestLoanUser3', 'UBS', 'S')
         if u.data is not None:
             u.delete()
 
@@ -99,6 +105,54 @@ class TestCreateUser(unittest.TestCase):
         self.assertFalse(u.check_synchro_note(), 'User has still a synchronization note')
 
         u.delete()
+
+    def test_force_synchro(self):
+        # Create new user
+        data = JsonData(filepath='test/data/user_testLoanUser3.json')
+        nz_u = NewUser('NZ', 'S', data).create()
+        iz_u = User('TestLoanUser3', 'UBS', 'S')
+
+        _ = iz_u.data
+        force_synchro(nz_u)
+        self.assertTrue(User('TestLoanUser3', 'UBS', 'S').data['user_group']['value'] == '01',
+                         'User has bad user group after force synchro')
+
+        iz_u.data['user_group']['value'] = '02'
+        iz_u.data['user_note'].append({
+                                      "note_type": {
+                                        "value": "OTHER",
+                                        "desc": "Other"
+                                      },
+                                          "note_text": "User 7500000000007@eduid.ch has been merged to this user",
+                                          "user_viewable": False,
+                                          "popup_note": False,
+                                          "created_by": "System",
+                                          "created_date": "2023-05-31T05:44:15.264Z",
+                                          "segment_type": "Internal"
+                                      })
+        iz_u.update(override=['user_group'])
+        nz_u.data['user_note'].append({
+                                      "note_type": {
+                                        "value": "OTHER",
+                                        "desc": "Other"
+                                      },
+                                      "note_text": "Registration Info: Initial registration via IZ hesso.",
+                                      "user_viewable": False,
+                                      "popup_note": False,
+                                      "created_by": "registration.slsp.ch",
+                                      "created_date": "2022-12-08T01:43:45Z",
+                                      "segment_type": "External"
+                                    })
+        force_synchro(nz_u)
+        iz_u = User('TestLoanUser3', 'UBS', 'S')
+        nz_u = User('TestLoanUser3', 'NZ', 'S')
+        self.assertTrue(User('TestLoanUser3', 'UBS', 'S').data['user_group']['value'] == '01',
+                         'User has bad user group after force synchro')
+        self.assertTrue(len(iz_u.data['user_note']) == 2,
+                         'IZ user should have 2 notes after force synchro')
+
+        iz_u.delete()
+        nz_u.delete()
 
     @classmethod
     def tearDownClass(cls):

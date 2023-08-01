@@ -9,3 +9,7 @@
 ``check_synchro`` function
 ---------------------------------
 .. autofunction:: almapiwrapper.users.check_synchro
+
+``force_synchro`` function
+---------------------------------
+.. autofunction:: almapiwrapper.users.force_synchro
