@@ -70,7 +70,7 @@ class ApiKeys:
         """
 
         # If the zone is not in the keys, it can be a zone alias
-        if zone not in self._keys and hasattr(self, _zones) and zone in self._zones:
+        if zone not in self._keys and hasattr(self, '_zones') and zone in self._zones:
             zone = self._zones[zone]
 
         # Fetch the key
