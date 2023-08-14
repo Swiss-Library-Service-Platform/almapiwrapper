@@ -10,6 +10,8 @@ from lxml import etree
 
 config_log("test.log")
 
+if os.getcwd().endswith('test'):
+    os.chdir('..')
 
 class TestBib(unittest.TestCase):
 
@@ -219,11 +221,15 @@ class TestBib(unittest.TestCase):
         item1.data.find('.//internal_note_3').text = 'changed on disk'
         item1.save()
 
-        data_item2 = Item.get_data_from_disk(item1.get_mms_id(), item1.get_holding_id(), item1.get_item_id(), 'UBS')
+        data_item2 = Item.get_data_from_disk(item1.get_mms_id(),
+                                             item1.get_holding_id(),
+                                             item1.get_item_id(),
+                                             'UBS')
         item2 = Item(item1.get_mms_id(),
                      item1.get_holding_id(),
                      item1.get_item_id(),
                      zone='UBS', env='S', data=data_item2)
+
         self.assertEqual(item2.data.find('.//internal_note_3').text,
                          'changed on disk',
                          'Internal note present on disk data')
@@ -231,7 +237,7 @@ class TestBib(unittest.TestCase):
 
         self.assertFalse(item2.error, 'No error when updating record from disk (1)')
 
-        data_item3 = XmlData(filepath='records/UBS_9966145550105504/item_22224723340005504_23224723290005504_01.xml')
+        data_item3 = XmlData(filepath='test/data/item_22423662710005504_23224723290005504_01.xml')
 
         item3 = Item(item1.get_mms_id(),
                      item1.get_holding_id(),

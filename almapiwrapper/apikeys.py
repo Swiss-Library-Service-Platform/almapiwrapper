@@ -29,8 +29,17 @@ class ApiKeys:
         """
         Constructor: read the keys file and store it in the private attribute _keys.
         The path to the file should be in an environment variable "alma_api_keys"
+
+        Since the version 0.16, the IZ codes can now be translated with the API keys
+        json file. The two format are accepted. The new format is with new level: "zones"
+        and "apikeys". The old format is with only directly the IZ codes.
         """
-        self._keys = self._read_keys_file()
+        keys = self._read_keys_file()
+        if 'apikeys' in keys:
+            self._keys = keys['apikeys']
+            self._zones = keys['zones']
+        else:
+            self._keys = keys
 
     @staticmethod
     def _read_keys_file() -> Dict[str, Any]:
@@ -59,6 +68,12 @@ class ApiKeys:
 
         :raise: KeyError: exception is risen when no corresponding key is found
         """
+
+        # If the zone is not in the keys, it can be a zone alias
+        if zone not in self._keys and hasattr(self, _zones) and zone in self._zones:
+            zone = self._zones[zone]
+
+        # Fetch the key
         for k in self._keys[zone]:
             for api in k['Supported_APIs']:
                 if api['Area'] == area and \

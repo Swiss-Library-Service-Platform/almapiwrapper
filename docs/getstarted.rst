@@ -14,48 +14,57 @@ Here is a sample without the complete API keys:
 .. code-block:: json
 
     {
-      "NZ": [
-        {
-          "API_Key": "l8xxkey1",
-          "Name": "User management - Correction",
-          "Supported_APIs": [
-            {
-              "Area": "Users",
-              "Env": "S",
-              "Permissions": "RW"
-            }
-          ]
-        },
-        {
-          "API_Key": "l8xxkey2",
-          "Name": "Get Analytics",
-          "Supported_APIs": [
-            {
-              "Area": "Analytics",
-              "Env": "P",
-              "Permissions": "R"
-            }
-          ]
-        }
-      ],
-      "BFH": [
-        {
-          "API_Key": "l8xxkey3",
-          "Name": "User management - Correction",
-          "Supported_APIs": [
-            {
-              "Area": "Users",
-              "Env": "P",
-              "Permissions": "RW"
-            }
-          ]
-        }
-      ]
+      "apikeys": {
+        "NZ": [
+          {
+            "API_Key": "l8xxkey1",
+            "Name": "User management - Correction",
+            "Supported_APIs": [
+              {
+                "Area": "Users",
+                "Env": "S",
+                "Permissions": "RW"
+              }
+            ]
+          },
+          {
+            "API_Key": "l8xxkey2",
+            "Name": "Get Analytics",
+            "Supported_APIs": [
+              {
+                "Area": "Analytics",
+                "Env": "P",
+                "Permissions": "R"
+              }
+            ]
+          }
+        ],
+        "BFH": [
+          {
+            "API_Key": "l8xxkey3",
+            "Name": "User management - Correction",
+            "Supported_APIs": [
+              {
+                "Area": "Users",
+                "Env": "P",
+                "Permissions": "RW"
+              }
+            ]
+          }
+        ]
+      },
+      "zones": {
+        "NETWORK": "NZ",
+        "EPFL": "EPF"
+      }
     }
+
 
 The API keys are grouped by IZ. Env can be either "p" for production or "S"
 for sandbox. Permissions are either "RW" (read and write) or "R" (read). This file
 can be stored anyway on the machine.
+
+The "zones" section is optional. It is used to map the zone code to the IZ code.
 
 .. note::
     You have to create a new environment variable **`alma_api_keys`** with the absolute path

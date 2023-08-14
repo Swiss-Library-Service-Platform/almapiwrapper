@@ -7,7 +7,8 @@ from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
 config_log("test.log")
-
+if os.getcwd().endswith('test'):
+    os.chdir('..')
 
 class TestReminder(unittest.TestCase):
     @classmethod
@@ -16,7 +17,9 @@ class TestReminder(unittest.TestCase):
         if len(reminders) > 0:
             for r in reminders:
                 r.delete()
+
         data = JsonData(filepath='test/data/reminder_test1.json')
+
         r = Reminder(zone='NZ', env='S', data=data, create_reminder=True)
 
     def test_get_reminder(self):
@@ -35,6 +38,7 @@ class TestReminder(unittest.TestCase):
         reminders[0].delete()
         reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
         self.assertEqual(len(reminders), 0, 'Not able to delete the reminder')
+
         data = JsonData(filepath='test/data/reminder_test1.json')
         Reminder(zone='NZ', env='S', data=data, create_reminder=True)
 
@@ -56,7 +60,7 @@ class TestRecSet(unittest.TestCase):
     def test_fetch_members_of_user_set(self):
 
         # Fetch set data
-        s = RecSet('15443075260005504', 'UBS', 'S')
+        s = RecSet('17807769420005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')
@@ -65,8 +69,8 @@ class TestRecSet(unittest.TestCase):
 
     def test_fetch_members_of_bib_set(self):
 
-        # Fetch set data
-        s = RecSet('15443075460005504', 'UBS', 'S')
+        # Fetch set data (IEP is related to physical titles)
+        s = RecSet('17807701740005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')
@@ -90,10 +94,10 @@ class TestRecSet(unittest.TestCase):
     def test_monitor_job(self):
         job = Job('44', 'UBS', 'S')
 
-        instance = job.get_instance_info('15442965370005504')
+        instance = job.get_instance_info('17797121220005504')
         self.assertFalse(job.error, 'Not able to fetch a job instance')
 
-        state = job.check_instance_state('15442965370005504')
+        state = job.check_instance_state('17797121220005504')
         self.assertEqual(state['progress'], 100, 'Impossible to get instance info')
         self.assertEqual(state['status'], 'COMPLETED_SUCCESS', 'Impossible to get instance info')
 

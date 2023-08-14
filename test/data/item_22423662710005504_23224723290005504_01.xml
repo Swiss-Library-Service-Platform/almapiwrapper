@@ -1,0 +1,96 @@
+<item link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9966145550105504/holdings/22423662710005504/items/23224723290005504">
+  <bib_data link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9966145550105504">
+    <mms_id>9966145550105504</mms_id>
+    <bib_suppress_from_publishing>false</bib_suppress_from_publishing>
+    <title>A primer on scientific programming with Python</title>
+    <author>Langtangen, Hans Petter</author>
+    <isbn>9783662498866</isbn>
+    <complete_edition>5th Edition</complete_edition>
+    <network_numbers>
+      <network_number>(OCoLC)945132048</network_number>
+      <network_number>(NEBIS)010664320EBI01</network_number>
+      <network_number>(IDSBB)006614555DSV01</network_number>
+      <network_number>226229017</network_number>
+      <network_number>(swissbib)226229017-41slsp_network</network_number>
+      <network_number>(EXLNZ-41SLSP_NETWORK)991036672719705501</network_number>
+    </network_numbers>
+    <place_of_publication>Berlin</place_of_publication>
+    <date_of_publication>[2016]</date_of_publication>
+    <publisher_const>Springer</publisher_const>
+  </bib_data>
+  <holding_data link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9966145550105504/holdings/22423662710005504">
+    <holding_id>22423662710005504</holding_id>
+    <holding_suppress_from_publishing>false</holding_suppress_from_publishing>
+    <calculated_suppress_from_publishing>false</calculated_suppress_from_publishing>
+    <permanent_call_number_type desc="Shelving control number">4</permanent_call_number_type>
+    <permanent_call_number>PHY NA 275 Ed. 5</permanent_call_number>
+    <call_number_type desc="Shelving control number">4</call_number_type>
+    <call_number>PHY NA 275 Ed. 5</call_number>
+    <accession_number/>
+    <copy_id/>
+    <in_temp_location>false</in_temp_location>
+    <temp_library/>
+    <temp_location/>
+    <temp_call_number_type/>
+    <temp_call_number/>
+    <temp_call_number_source/>
+    <temp_policy/>
+  </holding_data>
+  <item_data>
+    <pid>23224723290005504</pid>
+    <barcode>DSVN8068436</barcode>
+    <creation_date>2020-01-15Z</creation_date>
+    <modification_date>2020-01-15Z</modification_date>
+    <base_status desc="Item in place">1</base_status>
+    <awaiting_reshelving>false</awaiting_reshelving>
+    <physical_material_type desc="Book">BOOK</physical_material_type>
+    <policy desc="68 On-site use only, no copy">68</policy>
+    <provenance desc="A204">A204</provenance>
+    <po_line/>
+    <is_magnetic>false</is_magnetic>
+    <arrival_date>2020-01-15Z</arrival_date>
+    <year_of_issue/>
+    <enumeration_a/>
+    <enumeration_b/>
+    <enumeration_c/>
+    <enumeration_d/>
+    <enumeration_e/>
+    <enumeration_f/>
+    <enumeration_g/>
+    <enumeration_h/>
+    <chronology_i/>
+    <chronology_j/>
+    <chronology_k/>
+    <chronology_l/>
+    <chronology_m/>
+    <break_indicator/>
+    <pattern_type/>
+    <linking_number/>
+    <type_of_unit/>
+    <description/>
+    <receiving_operator>import</receiving_operator>
+    <process_type/>
+    <inventory_number/>
+    <inventory_price/>
+    <library desc="Basel - Uni Physik">A204</library>
+    <location desc="204FH - Freihandbereich">FH</location>
+    <alternative_call_number/>
+    <alternative_call_number_type/>
+    <storage_location_id/>
+    <pages/>
+    <pieces/>
+    <public_note/>
+    <fulfillment_note/>
+    <internal_note_1/>
+    <internal_note_2/>
+    <internal_note_3/>
+    <statistics_note_1/>
+    <statistics_note_2/>
+    <statistics_note_3/>
+    <requested>false</requested>
+    <physical_condition/>
+    <committed_to_retain/>
+    <retention_reason/>
+    <retention_note/>
+  </item_data>
+</item>
