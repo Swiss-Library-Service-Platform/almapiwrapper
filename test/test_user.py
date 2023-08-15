@@ -3,9 +3,12 @@ import unittest
 from almapiwrapper.users import User, NewUser, force_synchro
 from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
+import os
 
 config_log("test.log")
 
+if os.getcwd().endswith('test'):
+    os.chdir('..')
 
 class TestCreateUser(unittest.TestCase):
 
@@ -109,10 +112,13 @@ class TestCreateUser(unittest.TestCase):
     def test_force_synchro(self):
         # Create new user
         data = JsonData(filepath='test/data/user_testLoanUser3.json')
-        nz_u = NewUser('NZ', 'S', data).create()
+        _ = NewUser('NZ', 'S', data).create()
         iz_u = User('TestLoanUser3', 'UBS', 'S')
+        nz_u = User('TestLoanUser3', 'NZ', 'S')
 
         _ = iz_u.data
+        _ = nz_u.data
+
         force_synchro(nz_u)
         self.assertTrue(User('TestLoanUser3', 'UBS', 'S').data['user_group']['value'] == '01',
                          'User has bad user group after force synchro')
@@ -143,10 +149,14 @@ class TestCreateUser(unittest.TestCase):
                                       "created_date": "2022-12-08T01:43:45Z",
                                       "segment_type": "External"
                                     })
+        nz_u.update()
         force_synchro(nz_u)
         iz_u = User('TestLoanUser3', 'UBS', 'S')
         nz_u = User('TestLoanUser3', 'NZ', 'S')
-        self.assertTrue(User('TestLoanUser3', 'UBS', 'S').data['user_group']['value'] == '01',
+        _ = iz_u.data
+        _ = nz_u.data
+
+        self.assertTrue(iz_u.data['user_group']['value'] == '01',
                          'User has bad user group after force synchro')
         self.assertTrue(len(iz_u.data['user_note']) == 2,
                          'IZ user should have 2 notes after force synchro')

@@ -7,6 +7,7 @@ from lxml import etree
 import time
 import os
 import requests
+import pandas as pd
 
 
 def check_error(fn: Callable) -> Callable:
@@ -127,21 +128,24 @@ class Record(metaclass=abc.ABCMeta):
                 'Authorization': 'apikey ' + ApiKeys().get_key(zone, area, rights, env)}
 
     @property
-    def data(self) -> Optional[Union[Dict, etree.Element]]:
+    def data(self) -> Optional[Union[Dict, etree.Element, pd.DataFrame]]:
         """Property that get xml data with API call. If not available, make an api call
 
-        :return: xml data
+        :return: xml data, dictionary or pandas dataframe
         """
         if self._data is None and self.error is False:
             self.data = self._fetch_data()
 
         if self._data is not None:
-            return self._data.content
+            if type(self._data) is pd.DataFrame:
+                return self._data
+            else:
+                return self._data.content
 
     @data.setter
-    def data(self, data: Union['JsonData', 'XmlData']) -> None:
-        """Property used to set xml data of an holding
-        :param data: dictionary with holding xml data
+    def data(self, data: Union['JsonData', 'XmlData', pd.DataFrame]) -> None:
+        """Property used to set data
+        :param data: xml data or dictionary
         :return: None
         """
         self._data = data
@@ -185,9 +189,15 @@ class Record(metaclass=abc.ABCMeta):
         # Build the final path
         final_path = os.path.join(directory, f'{base_filename}_{version}.{extension}')
 
-        # Write the file
-        with open(final_path, 'w') as f:
-            f.write(str(self))
+        if type(self.data) is pd.DataFrame:
+            if extension == 'csv':
+                self.data.to_csv(final_path, index=False)
+            elif extension == 'xlsx':
+                self.data.to_excel(final_path, index=False)
+        else:
+            # Write the file
+            with open(final_path, 'w') as f:
+                f.write(str(self))
 
         logging.info(f'{repr(self)}: record saved: {final_path}')
 

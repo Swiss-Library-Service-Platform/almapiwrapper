@@ -8,7 +8,7 @@ backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
 * Year: 2022
-* Version: 0.16.1
+* Version: 0.18.0
 * License: GNU General Public License v3.0
 
 Introduction
@@ -25,6 +25,7 @@ How to import modules
     from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
     from almapiwrapper.record import JsonData, XmlData
     from almapiwrapper.config import RecSet, NewRecSet, Job, Reminder, fetch_reminders
+    from almapiwrapper.analytics import AnalyticsReport
     from almapiwrapper.configlog import config_log
     from almapiwrapper import ApiKeys
 
@@ -51,6 +52,7 @@ Module Almapi
    inventory
    users
    config
+   analytics
    apikeys
    configlog
    jsonxmldata
