@@ -139,7 +139,8 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
 
     if len(nz_users) < nb_users:
         logging.error(f'Impossible to force synchronization on not NZ account')
-        return None
+        error_msg.append(f'Impossible to force synchronization on not NZ account')
+        return error_msg
 
     for nz_user in nz_users:
 
