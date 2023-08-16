@@ -75,7 +75,7 @@ def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P'
     list_iz = ApiKeys().get_iz_codes(env=env)
     users = []
     for iz in list_iz:
-        users_temp = fetch_users(f'primary_id~{primary_id}', iz, env)
+        users_temp = fetch_users(f'primary_id~{primary_id.replace(" ", "+")}', iz, env)
         if len(users_temp) == 1:
             users += users_temp
 
@@ -192,7 +192,7 @@ def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env:
         xml = etree.fromstring(r.content)
         error_message = xml.find('.//{http://com/exlibris/urm/general/xmlbeans}errorMessage').text
 
-    logging.error(f'fetch_users({q}, {zone}, {env}) - {r.status_code}: '
+    logging.error(f'fetch_users("{q}", "{zone}", "{env}") - {r.status_code}: '
                   f'{msg} / {error_message}')
 
 
