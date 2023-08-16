@@ -123,11 +123,13 @@ def check_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> Option
 
     return not_synchro_iz_users
 
-def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> None:
+def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[str]:
     """Force synchronization of a NZ user with copies of the account across IZs.
     :param nz_users: list of :class:`almapiwrapper.users.User` or only one :class:`almapiwrapper.users.User`
-    :return: None
+    :return: list of errors
     """
+
+    error_msg = []
 
     if type(nz_users) is not list:
         nz_users = [nz_users]
@@ -143,6 +145,7 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> None:
 
         iz_users = fetch_user_in_all_iz(nz_user.primary_id, nz_user.env)
         _ = iz_users
+
         for iz_user in iz_users:
             iz_user.save()
 
@@ -169,7 +172,10 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> None:
                 if re.match(r'\d{2}', local_user_group):
                     iz_user.data['user_group']['value'] = nz_user_group
             iz_user.update(override=['user_group'])
+            if iz_user.error is True:
+                error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
 
+    return error_msg
 
 def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env: str):
     """Set the record error attribute to True and write the logs about the error
