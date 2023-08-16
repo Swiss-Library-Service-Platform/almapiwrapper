@@ -143,7 +143,12 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
         return error_msg
 
     for nz_user in nz_users:
+        _ = nz_user.data
+        if nz_user.error is True:
+            error_msg.append(f'{repr(nz_user)}: no NZ account -> impossible to force synchronization')
+            logging.error(f'{repr(nz_user)}: no NZ account -> impossible to force synchronization')
 
+            continue
         iz_users = fetch_user_in_all_iz(nz_user.primary_id, nz_user.env)
         _ = iz_users
 
