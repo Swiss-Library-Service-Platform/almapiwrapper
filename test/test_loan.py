@@ -4,9 +4,12 @@ from almapiwrapper.users import User, NewUser, Loan
 from almapiwrapper.record import JsonData
 from almapiwrapper.inventory import Item
 from almapiwrapper import config_log
+import os
 
 config_log("test.log")
 
+if os.getcwd().endswith('test'):
+    os.chdir('..')
 
 class TestCreateUser(unittest.TestCase):
 

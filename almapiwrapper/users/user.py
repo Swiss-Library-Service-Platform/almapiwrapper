@@ -177,17 +177,17 @@ class User(Record):
 
         :return: primary ID of the user
         """
-        if self._data is not None:
-            return self.data['primary_id']
-        else:
-            return self._primary_id
+
+        return self._primary_id
 
     @primary_id.setter
     def primary_id(self, primary_id) -> None:
         """Set the primary ID
 
         If json data is available, change the primary ID
-        at the data level.
+        at the data level. To modify the primary ID of the user,
+        do not use this method property but change directly the primary_id
+        in the data attribute.
 
         :param primary_id: new primary ID to set
 
@@ -358,6 +358,7 @@ class NewUser(User):
         """Constructor to create new users
         """
         super(User, self).__init__(zone, env, data)
+        self._primary_id = self.data['primary_id']
         self.area = 'Users'
         self.format = 'json'
 

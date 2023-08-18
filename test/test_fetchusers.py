@@ -3,9 +3,12 @@ import time
 from almapiwrapper.users import User, NewUser, fetch_users
 from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
+import os
 
 config_log("test.log")
 
+if os.getcwd().endswith('test'):
+    os.chdir('..')
 
 class TestFetchUsers(unittest.TestCase):
 
