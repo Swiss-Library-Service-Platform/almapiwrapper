@@ -51,7 +51,7 @@ class RecSet(Record):
         self._name = name
         if data is not None and set_id is None:
             set_id = data.content.find('.//id').text
-        self.set_id = set_id
+        self._set_id = set_id
         self._members = None
 
     def _fetch_data(self) -> Optional[XmlData]:
@@ -62,7 +62,7 @@ class RecSet(Record):
         :return: :class:`almapiwrapper.record.XmlData`
         """
         # set_id is not provided. We try to fetch it from the name.
-        if self.set_id is None and self._name is not None:
+        if self._set_id is None and self._name is not None:
             r = self._api_call('get',
                                f'{self.api_base_url}/conf/sets',
                                params={'q': f'name~{self._name}'},
@@ -72,7 +72,7 @@ class RecSet(Record):
                 set_data = XmlData(r.content).content.find('.//set')
 
                 # We store the set_id for fetching the complete data
-                self.set_id = set_data.find('.//id').text
+                self._set_id = set_data.find('.//id').text
 
             else:
                 logging.error(f'{repr(self)}: unable to fetch set data')
@@ -102,12 +102,25 @@ class RecSet(Record):
 
         return self._name
 
+    @property
+    def set_id(self) -> str:
+        """Property returning the name of the set.
+
+        :return: str containing set name
+        """
+        if self._set_id is None:
+            set_id = self.data.find('.//id')
+            if set_id is not None:
+                self._set_id = set_id.text
+
+        return self._set_id
+
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
 
         :return: string
         """
-        if self.set_id is not None:
+        if self._set_id is not None:
             return f"{self.__class__.__name__}('{self.set_id}', '{self.zone}', '{self.env}')"
         else:
             return f"{self.__class__.__name__}(name='{self.name}', zone='{self.zone}', env='{self.env}')"
@@ -591,6 +604,8 @@ class NewItemizedSet(RecSet):
             set_id = self.data.find('.//id').text
             new_rec = RecSet(set_id, self.zone, self.env, data=self._data)
             logging.info(f'{repr(new_rec)}: set created')
+            if self.members is not None:
+                new_rec.add_members(self.members)
             return new_rec
         else:
             self._handle_error(r, f'unable to create the set')
