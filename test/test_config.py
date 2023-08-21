@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 
-from almapiwrapper.config import RecSet, NewRecSet, Job, Reminder, fetch_reminders
+from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -103,37 +103,6 @@ class TestRecSet(unittest.TestCase):
 
         instances = job.get_instances()
         self.assertTrue(instances.content['total_record_count'] > 20)
-
-class TestNewRecSet(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        RecSet(name='TEST_RRE_123', zone='NZ', env='S').delete()
-
-    def test_create(self):
-        s1 = NewRecSet('NZ',
-                       'S',
-                       'TEST_RRE_123',
-                       'TEST_RRE_123',
-                       'BIB_MMS where BIB_MMS ((all CONTAIN "991082448539705501"))',
-                       'raphael.rey@slsp.ch',
-                       True)
-        s1 = s1.create()
-        self.assertEqual(type(s1).__name__, 'RecSet')
-        members = s1.get_members()
-
-        self.assertEqual(len(members), 1, f'It should one member, {len(members)} available')
-
-        self.assertEqual(s1.get_content_type(),
-                         'BIB_MMS',
-                         f'Content type should be "BIB_MMS", it is {s1.get_content_type()}.')
-
-        s2 = RecSet(name='TEST_RRE_123', zone='NZ', env='S')
-
-        members = s2.get_members()
-
-        self.assertEqual(len(members), 1, f'It should one member, {len(members)} available')
-
-        s2.delete()
 
 
 if __name__ == '__main__':

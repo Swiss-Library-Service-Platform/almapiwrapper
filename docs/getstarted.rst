@@ -156,7 +156,7 @@ to get the members of a set.
 .. code-block:: python
 
     # Create a set
-    s = NewRecSet('NZ',
+    s = NewLogicalSet('NZ',
                   'S',
                   'Series_1',
                   'Series_1',

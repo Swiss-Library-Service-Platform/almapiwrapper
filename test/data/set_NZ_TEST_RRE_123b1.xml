@@ -1,0 +1,15 @@
+<set link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/conf/sets/59317390720005501">
+  <id>59317390720005501</id>
+  <name>TEST_RRE_123b</name>
+  <description>TEST_RRE_123b</description>
+  <type desc="Logical">LOGICAL</type>
+  <content desc="All Titles">BIB_MMS</content>
+  <private desc="Yes">true</private>
+  <status desc="Active">ACTIVE</status>
+  <status_date>2023-08-21T09:05:07.281Z</status_date>
+  <created_by desc="API, Ex Libris">exl_api</created_by>
+  <created_date>2023-08-21T09:05:07.281Z</created_date>
+  <query desc="where (Keywords contains keywords &quot;991082448539705501&quot;)">BIB_MMS where BIB_MMS ((all CONTAIN "991082448539705501"))</query>
+  <number_of_members link="https://api-eu.hosted.exlibrisgroup.com/almaws/v1/conf/sets/59317390720005501/members">1</number_of_members>
+  <origin desc="Institution only">UI</origin>
+</set>

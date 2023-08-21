@@ -6,10 +6,18 @@ from ..record import XmlData, JsonData, Record, check_error
 
 class Job(Record):
     """Class representing a job
+    :param job_id: ID of the job
+    :param zone: zone of the job
+    :param env: environment of the entity: 'P' for production and 'S' for sandbox
+    :param job_type: type of the job: 'M' for manual, 'S' for scheduled
 
     :ivar job_id: initial value: ID of the job
     :ivar zone: initial value: zone of the fee
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
+    :ivar job_type: initial value: type of the job: 'M' for manual, 'S' for scheduled
+    :ivar instance_id: initial value: str
+    :ivar area: initial value: 'Conf'
+    :ivar format: initial value: 'xml'
     """
     def __init__(self,
                  job_id: str,
@@ -48,7 +56,7 @@ class Job(Record):
 
     @check_error
     def run(self, parameters: Optional[Union[str, 'XmlData']] = '<job/>') -> Optional['XmlData']:
-        """run(self, parameters: Optional[Union[str, 'XmlData']] = '<job/>') -> Optional['XmlData']
+        """run(parameters: Optional[Union[str, 'XmlData']] = '<job/>') -> Optional['XmlData']
         Run the job with the provided parameters
 
         :param parameters: :class:`almapiwrapper.record.XmlData` or string with the parameters to use for the job.
@@ -87,7 +95,7 @@ class Job(Record):
 
     @check_error
     def get_instance_info(self, instance_id: Optional[str] = None) -> Optional['JsonData']:
-        """get_instance_info(self, instance_id: Optional[str] = None) -> Optional['JsonData']
+        """get_instance_info(instance_id: Optional[str] = None) -> Optional['JsonData']
         Get information about a specif job instance
 
         :param instance_id: optional parameter indicating the instance to check. If not
@@ -118,7 +126,7 @@ class Job(Record):
 
     @check_error
     def check_instance_state(self, instance_id: Optional[str] = None) -> Optional[Dict]:
-        """check_instance_state(self, instance_id: Optional[str] = None) -> Optional[Dict]
+        """check_instance_state(instance_id: Optional[str] = None) -> Optional[Dict]
         Check the state of the provided instance id or of instance started
         with :meth:`almapiwrapper.config.Job.run`
 
