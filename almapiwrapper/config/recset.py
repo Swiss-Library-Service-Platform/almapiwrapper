@@ -460,7 +460,7 @@ class NewLogicalSet(RecSet):
         """create() -> Union['LogicalSet', 'NewLogicalSet']
         Create the logical set
 
-        :return: `almapiwrapper.config.LogicalSet` or `almapiwrapper.config.NewLogicalSet` in case of error
+        :return: :class:`almapiwrapper.config.LogicalSet` or :class:`almapiwrapper.config.NewLogicalSet` in case of error
 
         .. note::
             If the record encountered an error, this
@@ -491,6 +491,7 @@ class NewItemizedSet(RecSet):
     :param zone: zone of the set
     :param env: environment of the set: 'P' for production and 'S' for sandbox
     :param name: name of the set
+    :param content: content of the set for example 'BIB_MMS' or 'USER'
     :param description: description of the set
     :param query: query to build the set
     :param private: set as private or not
@@ -585,7 +586,7 @@ class NewItemizedSet(RecSet):
         """create() -> Union['LogicalSet', 'NewLogicalSet']
         Create the itemized set
 
-        :return: `almapiwrapper.config.ItemizedSet` or `almapiwrapper.config.NewItemizedSet` in case of error
+        :return: :class:`almapiwrapper.config.ItemizedSet` or :class:`almapiwrapper.config.NewItemizedSet` in case of error
 
         .. note::
             If the record encountered an error, this

@@ -171,14 +171,11 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             # Copy user_group
             nz_user_group = nz_user.data['user_group']['value']
             local_user_group = iz_user.data['user_group']['value']
-            if local_user_group == '':
-                iz_user.data['user_group']['value'] = nz_user_group
-            elif re.match(r'\d{2}', nz_user_group):
-                if re.match(r'\d{2}', local_user_group):
+            local_user_group_name = iz_user.data['user_group']['desc']
+
+            if local_user_group != nz_user_group and 'MM-' not in local_user_group_name:
                     iz_user.data['user_group']['value'] = nz_user_group
-            else:
-                if re.match(r'\d{2}', local_user_group):
-                    iz_user.data['user_group']['value'] = nz_user_group
+
             iz_user.update(override=['user_group'])
             if iz_user.error is True:
                 error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
