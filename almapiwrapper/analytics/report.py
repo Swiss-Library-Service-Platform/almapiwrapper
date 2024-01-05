@@ -14,6 +14,8 @@ class AnalyticsReport(Record):
     :ivar zone: initial value: zone of the report
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: :class:`almapiwrapper.record.XmlData` with raw report data
+    :ivar report_name: name of the report
+    :ivar filter: filter of the report
 """
 
     api_base_url_analytics: ClassVar[str] = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/analytics/reports'
@@ -21,7 +23,8 @@ class AnalyticsReport(Record):
     def __init__(self,
                  path: str,
                  zone: str,
-                 env: Optional[Literal['P', 'S']] = 'P'):
+                 env: Optional[Literal['P', 'S']] = 'P',
+                 filter_to_apply: Optional[str] = None) -> None:
         """Constructor of AnalyticsReport Object
         """
 
@@ -30,6 +33,7 @@ class AnalyticsReport(Record):
         self.format = 'xml'
         self.path = path
         self.report_name = self.path.split('/')[-1]
+        self.filter = filter_to_apply
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -42,10 +46,16 @@ class AnalyticsReport(Record):
         """Fetch the json data of the AnalyticsReport
 
         :return: pandas DataFrame"""
+
+        # Construct params
+        params = {"path": self.path,
+                  "limit": 1000}
+        if self.filter is not None:
+            params['filter'] = self.filter
+
         r = self._api_call('get',
                            f'{self.api_base_url_analytics}',
-                           params={"path": self.path,
-                                   "limit": 1000},
+                           params=params,
                            headers=self._get_headers(rights='R'))
         if r.ok is False:
             self._handle_error(r, f'{repr(self)}: unable to fetch Analytics data')

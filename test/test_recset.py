@@ -97,7 +97,7 @@ class TestNewItemizedSet(unittest.TestCase):
         # Create an itemized set from a logical set
         s2 = NewItemizedSet(zone='NZ', env='S', from_logical_set=s1)
         s3 = s2.create()
-        time.sleep(2)
+        time.sleep(4)
         self.assertEqual(type(s3).__name__, 'ItemizedSet')
 
         members_2 = s3.get_members()
