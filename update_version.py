@@ -58,4 +58,4 @@ os.system(f'git commit -m "Create version {version}"')
 os.system(f'git push')
 
 # Upload the package on pipy
-os.system('twine upload dist/*')
+os.system('python -m twine upload dist/*')
