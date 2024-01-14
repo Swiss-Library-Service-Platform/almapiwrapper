@@ -162,11 +162,23 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             nz_ids = [nz_id['value'] for nz_id in nz_user.data['user_identifier']]
             local_ids = [u_id for u_id in iz_user.data['user_identifier'] if
                          u_id['value'] not in nz_ids and u_id['id_type']['value'] == '03']
-            iz_user.data['user_identifier'] = local_ids + nz_user.data['user_identifier']
+
+            # Transform segment of NZ ids to External before copying into IZ account
+            ids_to_be_copied = deepcopy(nz_user.data['user_identifier'])
+            for id_to_be_copied in ids_to_be_copied:
+                id_to_be_copied['segment_type'] = 'External'
+            iz_user.data['user_identifier'] = local_ids + ids_to_be_copied
     
             # Copy notes
             local_notes = [u_note for u_note in iz_user.data['user_note'] if u_note['segment_type'] == 'Internal']
-            iz_user.data['user_note'] = local_notes + nz_user.data['user_note']
+
+            # Make nz notes as external when copied into IZ account
+            notes_to_be_copied = deepcopy(nz_user.data['user_note'])
+            for note in notes_to_be_copied:
+                note['segment_type'] = 'External'
+
+            iz_user.data['user_note'] = local_notes + notes_to_be_copied
+            iz_user.dedup_notes()
     
             # Copy user_group
             nz_user_group = nz_user.data['user_group']['value']

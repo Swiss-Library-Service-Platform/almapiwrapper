@@ -147,7 +147,7 @@ class TestCreateUser(unittest.TestCase):
                                       "popup_note": False,
                                       "created_by": "registration.slsp.ch",
                                       "created_date": "2022-12-08T01:43:45Z",
-                                      "segment_type": "External"
+                                      "segment_type": "Internal"
                                     })
         nz_u.update()
         force_synchro(nz_u)
@@ -161,7 +161,49 @@ class TestCreateUser(unittest.TestCase):
         self.assertTrue(len(iz_u.data['user_note']) == 2,
                          'IZ user should have 2 notes after force synchro')
 
+        self.assertEqual(iz_u.data['user_note'][1]['segment_type'],
+                         'External',
+                         'Second note should be external')
+
         iz_u.delete()
+        nz_u.delete()
+
+    def test_dedup_notes(self):
+        # Create new user
+        data = JsonData(filepath='test/data/user_testLoanUser3.json')
+        _ = NewUser('NZ', 'S', data).create()
+        nz_u = User('TestLoanUser3', 'NZ', 'S')
+        _ = nz_u.data
+
+        nz_u.data['user_note'].append({'note_type': {'value': 'POPUP', 'desc': 'General'},
+                                       'note_text': 'Test note',
+                                       'user_viewable': False,
+                                       'popup_note': False,
+                                       'created_by': 'test system',
+                                       'segment_type': 'Internal'})
+        nz_u.data['user_note'].append({'note_type': {'value': 'POPUP', 'desc': 'General'},
+                                       'note_text': 'Test note',
+                                       'user_viewable': False,
+                                       'popup_note': False,
+                                       'created_by': 'test system',
+                                       'segment_type': 'External'})
+        nz_u.data['user_note'].append({'note_type': {'value': 'POPUP', 'desc': 'General'},
+                                       'note_text': 'Test note',
+                                       'user_viewable': False,
+                                       'popup_note': False,
+                                       'created_by': 'test system',
+                                       'segment_type': 'Internal'})
+        nz_u.dedup_notes()
+        nz_u.update()
+
+        self.assertEqual(len(nz_u.data['user_note']),
+                         1,
+                         'User has bad number of notes after deduplication')
+
+        self.assertEqual(nz_u.data['user_note'][0]['segment_type'],
+                         'External',
+                         'Segment must be external')
+
         nz_u.delete()
 
     @classmethod

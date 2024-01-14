@@ -534,7 +534,7 @@ class NewItemizedSet(RecSet):
         # If itemized set is created from a logical set, we can get the name and the content from the logical set
         if  self.from_logical_set is not None and (name is None or content is None):
             if isinstance(from_logical_set, str) is True:
-                from_logical_set = LogicalSetSet(from_logical_set, zone, env)
+                from_logical_set = LogicalSet(from_logical_set, zone, env)
             if name is None:
                 name = from_logical_set.data.find('name').text + '_itemized'
             if content is None:

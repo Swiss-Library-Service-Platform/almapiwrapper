@@ -345,6 +345,35 @@ class User(Record):
             logging.warning(f'{repr(self)}: NO synchronization test note exists')
         return has_synchro_note
 
+    @check_error
+    def dedup_notes(self) -> 'User':
+        """dedup_notes(self) -> 'User'
+        Remove all duplicated notes
+
+        Text of note is used to compare notes.
+        If the text is the same, the external note is preferred.
+
+        :return: object :class:`almapiwrapper.users.User`
+        """
+        notes_to_be_kept = []
+        for note in self.data['user_note']:
+            found = False
+            for note_to_be_kept in notes_to_be_kept:
+                if note_to_be_kept['note_text'] == note['note_text']:
+                    found = True
+
+                    # Prefer external note
+                    if note['segment_type'] == 'External' and note_to_be_kept['segment_type'] == 'Internal':
+                        # remove internal note and add the external one to be kept
+                        notes_to_be_kept.remove(note_to_be_kept)
+                        notes_to_be_kept.append(note)
+                    break
+
+            # Add the current tested note if no corresponding note is found
+            if found is False:
+                notes_to_be_kept.append(note)
+        self.data['user_note'] = notes_to_be_kept
+        return self
 
 class NewUser(User):
     """Class used to create new users

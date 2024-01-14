@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from ..record import Record, check_error
 from typing import Optional, ClassVar, Literal
 import almapiwrapper.analytics as analyticslib
 from lxml import etree
@@ -16,14 +16,14 @@ class AnalyticsReport(Record):
     :ivar data: :class:`almapiwrapper.record.XmlData` with raw report data
     :ivar report_name: name of the report
     :ivar filter: filter of the report
-"""
+    """
 
     api_base_url_analytics: ClassVar[str] = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/analytics/reports'
 
     def __init__(self,
                  path: str,
                  zone: str,
-                 env: Optional[Literal['P', 'S']] = 'P',
+                 env: Literal['P', 'S'] = 'P',
                  filter_to_apply: Optional[str] = None) -> None:
         """Constructor of AnalyticsReport Object
         """
