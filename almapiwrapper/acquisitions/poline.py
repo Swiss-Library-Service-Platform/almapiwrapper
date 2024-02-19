@@ -1,5 +1,5 @@
 from ..record import Record, check_error, JsonData
-from typing import Optional, Literal,ClassVar
+from typing import Optional, Literal,ClassVar, Union
 import almapiwrapper.acquisitions as acquisitionslib
 from lxml import etree
 import pandas as pd
@@ -16,7 +16,7 @@ class POLine(Record):
                  pol_number: Optional[str] = None,
                  zone: Optional[str] = None,
                  env: Literal['P', 'S'] = 'P',
-                 data: Optional[dict|JsonData] = None) -> None:
+                 data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of POLine Object
         """
 
@@ -82,7 +82,7 @@ class POLine(Record):
         Save a PO Line record in the 'records' folder
 
         When saved, a suffix is added to the file path with the version.
-        Example: records/set_<IZ>_<set_id>_<version>.xml
+        Example: records/polines/pol_<IZ>_<set_id>_<version>.xml
 
         :return: object :class:`almapiwrapper.acquisitions.POLine`
 

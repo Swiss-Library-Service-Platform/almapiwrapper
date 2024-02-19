@@ -60,7 +60,7 @@ class TestRecSet(unittest.TestCase):
     def test_fetch_members_of_user_set(self):
 
         # Fetch set data
-        s = RecSet('17807769420005504', 'UBS', 'S')
+        s = RecSet('17866160420005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')
@@ -70,7 +70,7 @@ class TestRecSet(unittest.TestCase):
     def test_fetch_members_of_bib_set(self):
 
         # Fetch set data (IEP is related to physical titles)
-        s = RecSet('17807701740005504', 'UBS', 'S')
+        s = RecSet('8020260160005504', 'UBS', 'S')
         members = s.get_members()
 
         self.assertEqual(len(members), s.get_members_number(), 'Not able to fetch all members')

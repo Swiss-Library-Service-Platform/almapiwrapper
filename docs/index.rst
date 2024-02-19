@@ -8,7 +8,7 @@ backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
 * Year: 2022
-* Version: 0.19.4
+* Version: 0.19.5
 * License: GNU General Public License v3.0
 
 Introduction
@@ -50,6 +50,7 @@ Module Almapi
    :maxdepth: 2
 
    inventory
+   acquisitions
    users
    config
    analytics
