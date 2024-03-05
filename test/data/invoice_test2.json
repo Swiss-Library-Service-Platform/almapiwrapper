@@ -1,0 +1,146 @@
+{
+  "id": "18447133880005504",
+  "number": "PO-UBS-4828001",
+  "vendor": {
+    "value": "UBS-A100-582",
+    "desc": "Buchhandlung Seitenblick (ehemals Annemarie Pfister)"
+  },
+  "currency": {
+    "value": "CHF",
+    "desc": "Swiss Franc"
+  },
+  "owner": {
+    "value": "A100",
+    "desc": "https://ub.unibas.ch/de/home/"
+  },
+  "payment": {
+    "prepaid": false,
+    "internal_copy": false,
+    "payment_status": {
+      "value": "PAID",
+      "desc": "Paid"
+    },
+    "voucher_date": "2023-09-26Z",
+    "voucher_number": "",
+    "voucher_amount": "0",
+    "voucher_currency": {
+      "value": "CHF",
+      "desc": "Swiss Franc"
+    }
+  },
+  "invoice_date": "2023-09-19Z",
+  "vendor_account": "Buchhandlung Seitenblick",
+  "total_amount": 136.35,
+  "total_invoice_lines_amount": 136.35,
+  "vendor_contact_person": {},
+  "payment_method": {
+    "value": "ACCOUNTINGDEPARTMENT",
+    "desc": "Accounting Department"
+  },
+  "reference_number": "",
+  "creation_form": {
+    "value": "PO",
+    "desc": "From PO"
+  },
+  "invoice_status": {
+    "value": "CLOSED",
+    "desc": "Closed"
+  },
+  "invoice_workflow_status": {},
+  "invoice_approval_status": {
+    "value": "APPROVED",
+    "desc": "Approved"
+  },
+  "approved_by": "Stammherr Timo",
+  "approval_date": "2023-09-26Z",
+  "additional_charges": {
+    "shipment": 0.0,
+    "overhead": 0.0,
+    "insurance": 0.0,
+    "discount": 0.0,
+    "use_pro_rata": true
+  },
+  "invoice_vat": {
+    "percentage": 0.0,
+    "type": {
+      "value": "INCLUSIVE",
+      "desc": "Inclusive"
+    },
+    "report_tax": false,
+    "vat_per_invoice_line": false,
+    "vat_code": {
+      "value": ""
+    },
+    "vat_amount": 0,
+    "expended_from_fund": true
+  },
+  "explicit_ratio": [],
+  "alert": [
+    {
+      "value": "NOT_LINKED_LINES",
+      "desc": "Lines not linked"
+    }
+  ],
+  "note": [],
+  "number_of_lines": {
+    "value": 6,
+    "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/acq/invoices/18447133880005504/lines"
+  },
+  "invoice_lines": {
+    "invoice_line": [
+      {
+        "id": "18447134020005504",
+        "type": {
+          "value": "REGULAR",
+          "desc": "Regular"
+        },
+        "number": "1",
+        "status": {
+          "value": "READY",
+          "desc": "Ready"
+        },
+        "price": 34.5,
+        "quantity": 1,
+        "note": "",
+        "po_line": "POL-UBS-2023-117701",
+        "price_note": "",
+        "total_price": 34.5,
+        "vat_note": "Approximately 0.00 included in line Total Price.",
+        "check_subscription_date_overlap": false,
+        "fully_invoiced": true,
+        "additional_info": "",
+        "release_remaining_encumbrance": false,
+        "reporting_code": {
+          "value": "RC1-3120100",
+          "desc": "3120100 - B\u00fccher Monographien"
+        },
+        "secondary_reporting_code": {
+          "value": ""
+        },
+        "tertiary_reporting_code": {
+          "value": "a100tst",
+          "desc": "tst"
+        },
+        "invoice_line_vat": {
+          "percentage": 0.0,
+          "vat_code": {
+            "value": ""
+          },
+          "vat_amount": 0
+        },
+        "fund_distribution": [
+          {
+            "percent": 100.0,
+            "amount": 34.5,
+            "fund_code": {
+              "value": "Fundforall"
+            }
+          }
+        ],
+        "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/acq/invoices/18447133880005504/lines/18447134020005504"
+      }
+    ],
+    "total_record_count": 1
+  },
+  "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/acq/invoices/18447133880005504"
+}

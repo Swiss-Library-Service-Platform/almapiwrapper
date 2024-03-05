@@ -8,7 +8,7 @@ backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
 * Year: 2022
-* Version: 0.19.5
+* Version: 0.20.0
 * License: GNU General Public License v3.0
 
 Introduction
@@ -20,12 +20,12 @@ How to import modules
 .. code-block:: python
 
     # Import libraries
-    from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, Loan
-    from almapiwrapper.users import check_synchro, force_synchro
+    from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, Loan, check_synchro, force_synchro
     from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
+    from almapiwrapper.config import RecSet, ItemizedSet, LogicalSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
     from almapiwrapper.record import JsonData, XmlData
-    from almapiwrapper.config import ItemizedSet, LogicalSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
     from almapiwrapper.analytics import AnalyticsReport
+    from almapiwrapper.acquisitions import POLine, Vendor, Invoice, fetch_invoices
     from almapiwrapper.configlog import config_log
     from almapiwrapper import ApiKeys
 

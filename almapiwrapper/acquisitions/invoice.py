@@ -116,7 +116,7 @@ class Invoice(Record):
 
             return json_data
         else:
-            self._handle_error(r, 'unable to fetch vendor data')
+            self._handle_error(r, 'unable to fetch invoice data')
 
     @check_error
     def update(self) -> 'acquisitionslib.Invoice':
@@ -162,7 +162,7 @@ class Invoice(Record):
         return self
 
     @check_error
-    def create(self)  -> 'acquisitionslib.Invoice':
+    def create(self) -> 'acquisitionslib.Invoice':
         """create(self) -> acquisitionslib.Invoice
         Create a Invoice
 
@@ -174,7 +174,7 @@ class Invoice(Record):
 
         if r.ok is True:
             self._data = JsonData(r.json())
-            self.invoice_id = self.data['invoice_id']
+            self.invoice_id = self.data['id']
             logging.info(f'{repr(self)}: Invoice created: {self.invoice_id}')
         else:
             self._handle_error(r, 'unable to create Invoice')
@@ -182,17 +182,27 @@ class Invoice(Record):
         return self
 
     @check_error
-    def delete(self) -> None:
-        """delete(self) -> None
-        Delete the Invoice
+    def process_invoice(self) -> 'acquisitionslib.Invoice':
+        """process_invoice(self) -> acquisitionslib.Invoice
+        Process the invoice
+
+        This operation is useful after adding invoice lines to the invoice
+
+        :return: object :class:`almapiwrapper.acquisitions.Invoice`
         """
-        r = self._api_call('delete',
-                           f'{self.api_base_url_invoices}/{self.invoice_id}',
-                           headers=self._get_headers())
+        r = self._api_call('post',
+                           f'{self.api_base_url_invoices}/{self.invoice_id}/process',
+                           headers=self._get_headers(),
+                           data='',
+                           params={'op': 'process_invoice'})
+
         if r.ok is True:
-            logging.info(f'{repr(self)}: Invoice deleted: {self.invoice_id}')
+            logging.info(f'{repr(self)}: Invoice processed')
         else:
-            self._handle_error(r, 'unable to delete Invoice')
+            self._handle_error(r, 'unable to process invoice')
+
+        return self
+
 
 def fetch_invoices(q: str,
                    zone: str,
@@ -233,3 +243,98 @@ def fetch_invoices(q: str,
             return []
     else:
         _handle_error(q, r, 'unable to fetch invoices', zone, env)
+
+
+class InvoiceLine(Record):
+    """Class representing an InvoiceLine"""
+
+    api_base_url_invoices: ClassVar[str] = f'{Record.api_base_url}/acq/invoices'
+
+    def __init__(self,
+                 invoice_line_id: Optional[str] = None,
+                 zone: Optional[str] = None,
+                 env: Literal['P', 'S'] = 'P',
+                 invoice_number: Optional[str] = None,
+                 invoice_id: Optional[str] = None,
+                 data: Optional[Union[dict, JsonData]] = None) -> None:
+        """Constructor of InvoiceLine Object
+        """
+
+        super().__init__(zone, env)
+        self.area = 'Acquisitions'
+        self.format = 'json'
+        self.invoice_line_id = invoice_line_id
+        self.invoice_id = invoice_id
+        self.invoice_number = invoice_number
+
+        # Invoice id and invoice line id are provided we can directly fetch the data
+        if invoice_line_id is not None and invoice_id is not None:
+            self._data = self._fetch_data()
+
+        if data is not None:
+            self._data = data if type(data) is JsonData else JsonData(data)
+
+        if self.invoice_number is not None:
+            invoice = Invoice(invoice_number=self.invoice_number, zone=zone, env=env)
+            _ = invoice.data
+            if invoice.error is False:
+                self.invoice_id = invoice.invoice_id
+            else:
+                self.error = True
+                logging.error(f'No invoice found for invoice_number: {invoice_number}')
+
+
+        if data is None and (self.invoice_line_id is None or self.invoice_id is None):
+            self.error = True
+            logging.error('Missing information to construct an InvoiceLine')
+
+    def __repr__(self) -> str:
+        """Get a string representation of the object. Useful for logs.
+
+        :return: str representing the object
+        """
+        return f"{self.__class__.__name__}('{self.invoice_id}', '{self.invoice_line_id}', '{self.zone}', '{self.env}')"
+
+
+    def _fetch_data(self) -> Optional[JsonData]:
+        """Fetch the json data of the invoice
+
+        :return: :class:`almapiwrapper.record.JsonData` if no error else None
+        """
+
+        r = self._api_call('get',
+                     f'{self.api_base_url_invoices}/{self.invoice_id}/lines/{self.invoice_line_id}',
+                           headers=self._get_headers())
+        if r.ok is True:
+            # Parse data
+            json_data = JsonData(r.json())
+            logging.debug(f"{self.__class__.__name__} data fetched")
+
+            return json_data
+        else:
+            self._handle_error(r, 'unable to fetch vendor data')
+
+    @check_error
+    def update(self) -> 'acquisitionslib.InvoiceLine':
+        """update(self) -> 'acquisitionslib.InvoiceLine'
+        Update the InvoiceLine
+
+        .. note::
+            If the record encountered an error, this
+            method will be skipped.
+
+        :return: Vendor object
+        """
+
+        r = self._api_call('put',
+                           f'{self.api_base_url_invoices}/{self.invoice_id}/lines/{self.invoice_line_id}',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok is True:
+            self.data = JsonData(r.json())
+            logging.info(f'{repr(self)}: InvoiceLine data updated')
+        else:
+            self._handle_error(r, 'unable to update invoice line data')
+
+        return self

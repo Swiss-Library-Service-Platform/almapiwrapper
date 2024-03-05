@@ -1,0 +1,149 @@
+{
+  "number": "A100-800098",
+  "status": {
+    "value": "CLOSED",
+    "desc": "Closed"
+  },
+  "owner": {
+    "value": "A100",
+    "desc": "Basel - UB Hauptbibliothek"
+  },
+  "type": {
+    "value": "PRINTED_BOOK_OT",
+    "desc": "Print Book - One Time"
+  },
+  "vendor": {
+    "value": "UBS-A100-831",
+    "desc": "Dietmar Dreier"
+  },
+  "rush": false,
+  "price": {
+    "sum": "53.49",
+    "currency": {
+      "value": "EUR",
+      "desc": "Euro"
+    }
+  },
+  "portfolios": {
+    "portfolio": [],
+    "total_record_count": 0
+  },
+  "license": {
+    "value": "",
+    "desc": ""
+  },
+  "url": "",
+  "vendor_account": "Kundennr. 31085",
+  "reclaim_interval": "0",
+  "expected_receipt_interval": "0",
+  "claiming_interval": "0",
+  "acquisition_method": {
+    "value": "TECHNICAL"
+  },
+  "no_charge": false,
+  "cancellation_restriction": false,
+  "vendor_reference_number": "",
+  "source_type": {
+    "value": "",
+    "desc": ""
+  },
+  "po_number": "A100-800098-DSV51",
+  "additional_order_reference": "",
+  "invoice_reference": "",
+  "resource_metadata": {
+    "title": "Linked noun groups opposition and expansion as genre and style markers Michael Pace-Sigge",
+    "author": "",
+    "isbn": "978-3-030-53985-6 (h",
+    "publisher": "Palgrave Macmillan",
+    "mms_id": {
+      "value": "9972286490105504",
+      "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504"
+    },
+    "publication_place": "Basingstoke",
+    "publication_year": "2020",
+    "vendor_title_number": "",
+    "system_control_number": [
+      ""
+    ]
+  },
+  "fund_distribution": [
+    {
+      "amount": {
+        "sum": "53.49",
+        "currency": {
+          "value": "EUR",
+          "desc": "Euro"
+        }
+      },
+      "fund_code": {
+        "value": "Fundforall"
+      }
+    }
+  ],
+  "reporting_code": "",
+  "secondary_reporting_code": "",
+  "tertiary_reporting_code": "",
+  "fourth_reporting_code": "",
+  "fifth_reporting_code": "",
+  "vendor_note": "",
+  "receiving_note": "",
+  "alert": [
+    {
+      "value": "",
+      "desc": "The ordered resource already exists in the Inventory:  1 copies in library: Basel - UB Hauptbibliothek."
+    }
+  ],
+  "note": [
+    {
+      "note_text": "Warenkorb 01.10.2020 joh",
+      "creation_date": "2020-11-03Z",
+      "created_by": "EX_LIBRIS"
+    },
+    {
+      "note_text": "Order Number 2 ASU4",
+      "creation_date": "2020-11-03Z",
+      "created_by": "EX_LIBRIS"
+    }
+  ],
+  "location": [
+    {
+      "quantity": 1,
+      "library": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "shelving_location": "100FH",
+      "holding": [
+        {
+          "id": "22313225480005504",
+          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504"
+        }
+      ],
+      "copy": [
+        {
+          "pid": "23313225470005504",
+          "barcode": "A1002624931",
+          "item_policy": {
+            "value": "01",
+            "desc": "01 Loan 28 days"
+          },
+          "receive_date": "2021-03-29Z",
+          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504/items/23313225470005504"
+        }
+      ]
+    }
+  ],
+  "base_status": "",
+  "access_provider": "",
+  "manual_renewal": false,
+  "renewal_cycle": {},
+  "renewal_period": 0,
+  "renewal_note": "",
+  "material_type": {
+    "value": "",
+    "desc": ""
+  },
+  "created_date": "2020-10-09Z",
+  "status_date": "2021-03-29Z",
+  "expected_receipt_date": "2021-03-01Z"
+}

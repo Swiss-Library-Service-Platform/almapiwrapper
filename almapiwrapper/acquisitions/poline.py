@@ -1,5 +1,6 @@
 from ..record import Record, check_error, JsonData
-from typing import Optional, Literal,ClassVar, Union
+from ..inventory import Item
+from typing import Optional, Literal,ClassVar, Union, List
 import almapiwrapper.acquisitions as acquisitionslib
 from lxml import etree
 import pandas as pd
@@ -102,10 +103,69 @@ class POLine(Record):
                            data=bytes(self))
 
         if r.ok is True:
+            print(r.text)
             self._data = JsonData(r.json())
             self.pol_number = self.data['number']
             logging.info(f'{repr(self)}: POLine data created: {self.pol_number}')
         else:
             self._handle_error(r, 'unable to create POLine')
+
+        return self
+
+    @check_error
+    def get_items(self) -> List[Item]:
+        """Get the items of the POLine
+
+        :return: list of :class:`almapiwrapper.inventory.Item`
+        """
+        items = []
+        for location in self.data['location']:
+            for item in location['copy']:
+                items.append(Item(barcode=item['barcode'],
+                                  zone=self.zone,
+                                  env=self.env))
+        return items
+
+    @check_error
+    def get_vendor(self) -> Optional['acquisitionslib.Vendor']:
+        """Get the vendor of the POLine
+
+        :return: :class:`almapiwrapper.acquisitions.Vendor` or None if not available
+        """
+        if 'vendor' in self.data and 'value' in self.data['vendor']:
+            return acquisitionslib.Vendor(vendor_code=self.data['vendor']['value'],
+                                          zone=self.zone,
+                                          env=self.env)
+        else:
+            return None
+
+    @check_error
+    def receive_item(self, item: Item, receive_date: Optional[str] = None) -> 'acquisitionslib.POLine':
+        """Receive an item of the POLine
+
+        :param item: :class:`almapiwrapper.inventory.Item`
+        :param receive_date: str : date of the reception in format YYYY-MM-DDZ
+
+        :return: POLine object
+        """
+        if item.error is True:
+            logging.error(f'{repr(self)}: unable to receive item {repr(item)}, item has an error')
+            return self
+        params = {'op': 'receive'}
+        if receive_date is not None:
+            params['receive_date'] = receive_date
+        headers = self._get_headers()
+        headers['content-type'] = 'application/xml'
+
+        r = self._api_call('post',
+                           f'{self.api_base_url_acquisitions}/{self.pol_number}/items/{item.item_id}',
+                           params=params,
+                           headers=headers,
+                           data=bytes(item))
+
+        if r.ok is True:
+            logging.info(f'{repr(self)}: Item {repr(item)} received.')
+        else:
+            self._handle_error(r, 'unable to receive item')
 
         return self

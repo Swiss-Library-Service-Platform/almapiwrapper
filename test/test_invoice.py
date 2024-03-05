@@ -13,12 +13,17 @@ if os.getcwd().endswith('test'):
     os.chdir('..')
 
 class TestInvoice(unittest.TestCase):
-    # @classmethod
-    # def setUpClass(cls):
-    #     invoice = Invoice(invoice_number='PO-UBS-4828001_copy', zone='UBS', env='S').delete()
+    @classmethod
+    def setUpClass(cls):
+        invoice = Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        _ = invoice.data
+        if invoice.error is True:
+            data = JsonData(filepath='test/data/invoice_test1.json')
+            invoice = Invoice(data=data, zone='UBS', env='S').create()
+
 
     def test_update(self):
-        invoice =  Invoice(invoice_number='PO-UBS-4828001', zone='UBS', env='S')
+        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
         initial_voucher_date = invoice.data['payment']['voucher_date']
         if initial_voucher_date == '2023-04-10Z':
             new_date = '2023-05-10Z'
@@ -35,8 +40,8 @@ class TestInvoice(unittest.TestCase):
 
     @unittest.skip
     def test_create(self):
-        invoice =  Invoice(invoice_number='PO-UBS-4828001', zone='UBS', env='S')
-        invoice.invoice_number = 'PO-UBS-4828001_copy'
+        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        invoice.invoice_number = '2000007791_copy'
         new_invoice = Invoice(data=invoice.data, zone='UBS', env='S').create()
 
         self.assertEqual('PO-UBS-4828001_copy',

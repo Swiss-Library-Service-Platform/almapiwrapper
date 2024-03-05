@@ -1,5 +1,6 @@
 import unittest
-
+from dateutil import parser
+from datetime import timedelta
 from almapiwrapper.users import User, NewUser, Loan
 from almapiwrapper.record import JsonData
 from almapiwrapper.inventory import Item
@@ -25,6 +26,7 @@ class TestCreateUser(unittest.TestCase):
                 _ = NewUser('UBS', 'S', data).create()
 
         Item('996259850105504', '22202377380005504', '23202377370005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
+        Item('9953896770105504', '22315547880005504', '23315547870005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
 
     def test_create_loan(self):
 
@@ -59,6 +61,23 @@ class TestCreateUser(unittest.TestCase):
         loan2 = u2.create_loan('A100', 'A100_KUR', '0UBU0536413')
         self.assertTrue(u2.error, 'No expected error during loan creation of already loaned item')
         self.assertIsNone(loan2, 'Loan should be None')
+
+    def test_renew_workflow(self):
+        u = User('testLoanUser1', 'UBS', 'S')
+        loan = u.create_loan('A100', 'A100_KUR', 'A1001891856')
+        self.assertFalse(u.error, 'Error during loan creation')
+
+        due_date = parser.isoparse(loan.data['due_date'])
+        new_due_date = due_date - timedelta(days=10)
+
+        loan = loan.change_due_date(new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'))
+        self.assertEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
+        self.assertFalse(loan.error, 'Error during due date change')
+
+        loan = loan.renew_loan()
+        self.assertNotEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
+        self.assertFalse(loan.error, 'Error during due date change')
+
 
     @classmethod
     def tearDownClass(cls):

@@ -1,0 +1,146 @@
+{
+  "number": "2000007791",
+  "vendor": {
+    "value": "UBS-A100-831",
+    "desc": "Dietmar Dreier"
+  },
+  "currency": {
+    "value": "CHF",
+    "desc": "Swiss Franc"
+  },
+  "owner": {
+    "value": "A100",
+    "desc": "https://ub.unibas.ch/de/home/"
+  },
+  "payment": {
+    "prepaid": false,
+    "internal_copy": false,
+    "payment_status": {
+      "value": "PAID",
+      "desc": "Paid"
+    },
+    "voucher_date": "2020-12-07Z",
+    "voucher_number": "",
+    "voucher_amount": "0",
+    "voucher_currency": {
+      "value": "CHF",
+      "desc": "Swiss Franc"
+    }
+  },
+  "invoice_date": "2020-11-25Z",
+  "total_amount": 42.79,
+  "total_invoice_lines_amount": 42.79,
+  "vendor_contact_person": {},
+  "payment_method": {
+    "value": "ACCOUNTINGDEPARTMENT",
+    "desc": "Accounting Department"
+  },
+  "reference_number": "20096891",
+  "creation_form": {
+    "value": "MANUALLY",
+    "desc": "Manually"
+  },
+  "invoice_status": {
+    "value": "CLOSED",
+    "desc": "Closed"
+  },
+  "invoice_workflow_status": {},
+  "invoice_approval_status": {
+    "value": "APPROVED",
+    "desc": "Approved"
+  },
+  "approved_by": "Test User",
+  "approval_date": "2020-12-07Z",
+  "additional_charges": {
+    "shipment": 0.0,
+    "overhead": 0.0,
+    "insurance": 0.0,
+    "discount": 0.0,
+    "use_pro_rata": true
+  },
+  "invoice_vat": {
+    "percentage": 0.0,
+    "type": {
+      "value": "INCLUSIVE",
+      "desc": "Inclusive"
+    },
+    "report_tax": false,
+    "vat_per_invoice_line": false,
+    "vat_code": {
+      "value": ""
+    },
+    "vat_amount": 0,
+    "expended_from_fund": true
+  },
+  "explicit_ratio": [],
+  "alert": [
+    {
+      "value": "DIFFERENT_VENDOR_ACCOUNT",
+      "desc": "Invoice holds vendor account different than some of the linked PO lines"
+    },
+    {
+      "value": "DIFF_PRICE_THAN_POLINE",
+      "desc": "Some invoice lines differ in price from their linked PO line."
+    },
+    {
+      "value": "DIF_CURRENCY_THAN_PO",
+      "desc": "Currency different from PO"
+    }
+  ],
+  "note": [],
+  "number_of_lines": {
+    "value": 1
+  },
+  "invoice_lines": {
+    "invoice_line": [
+      {
+        "type": {
+          "value": "REGULAR",
+          "desc": "Regular"
+        },
+        "number": "1",
+        "status": {
+          "value": "READY",
+          "desc": "Ready"
+        },
+        "price": 42.79,
+        "quantity": 1,
+        "note": "",
+        "po_line": "A100-800098",
+        "price_note": "",
+        "total_price": 42.79,
+        "vat_note": "Approximately 0.00 included in line Total Price.",
+        "check_subscription_date_overlap": true,
+        "fully_invoiced": true,
+        "additional_info": "",
+        "release_remaining_encumbrance": false,
+        "reporting_code": {
+          "value": ""
+        },
+        "secondary_reporting_code": {
+          "value": ""
+        },
+        "tertiary_reporting_code": {
+          "value": ""
+        },
+        "invoice_line_vat": {
+          "percentage": 0.0,
+          "vat_code": {
+            "value": ""
+          },
+          "vat_amount": 0
+        },
+        "fund_distribution": [
+          {
+            "percent": 100.0,
+            "amount": 42.79,
+            "fund_code": {
+              "value": "Fundforall"
+            }
+          }
+        ]
+      }
+    ],
+    "total_record_count": 1
+  }
+}
