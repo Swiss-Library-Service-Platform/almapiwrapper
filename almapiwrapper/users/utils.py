@@ -188,9 +188,22 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             if local_user_group != nz_user_group and 'MM-' not in local_user_group_name:
                     iz_user.data['user_group']['value'] = nz_user_group
 
-            iz_user.update(override=['user_group'])
+
             if iz_user.error is True:
                 error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
+
+            # Copy blocks
+            local_blocks = [u_block for u_block in iz_user.data['user_block'] if u_block['segment_type'] == 'Internal']
+
+            # Make nz blocks as external when copied into IZ account
+            blocks_to_be_copied = deepcopy(nz_user.data['user_block'])
+            for block in blocks_to_be_copied:
+                block['segment_type'] = 'External'
+
+            iz_user.data['user_block'] = local_blocks + blocks_to_be_copied
+            iz_user.dedup_notes()
+
+            iz_user.update(override=['user_group'])
 
     return error_msg
 

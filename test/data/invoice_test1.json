@@ -1,9 +1,10 @@
 {
   "number": "2000007791",
   "vendor": {
-    "value": "UBS-A100-831",
-    "desc": "Dietmar Dreier"
+    "value": "A100-1043",
+    "desc": "Konrad Theiss Verlag"
   },
+  "vendor_account": "A100-1043",
   "currency": {
     "value": "CHF",
     "desc": "Swiss Franc"
@@ -16,20 +17,19 @@
     "prepaid": false,
     "internal_copy": false,
     "payment_status": {
-      "value": "PAID",
-      "desc": "Paid"
+      "value": "NOT_PAID"
     },
     "voucher_date": "2020-12-07Z",
     "voucher_number": "",
-    "voucher_amount": "0",
+    "voucher_amount": "53.49",
     "voucher_currency": {
       "value": "CHF",
       "desc": "Swiss Franc"
     }
   },
   "invoice_date": "2020-11-25Z",
-  "total_amount": 42.79,
-  "total_invoice_lines_amount": 42.79,
+  "total_amount": 53.49,
+  "total_invoice_lines_amount": 53.49,
   "vendor_contact_person": {},
   "payment_method": {
     "value": "ACCOUNTINGDEPARTMENT",
@@ -74,18 +74,6 @@
   },
   "explicit_ratio": [],
   "alert": [
-    {
-      "value": "DIFFERENT_VENDOR_ACCOUNT",
-      "desc": "Invoice holds vendor account different than some of the linked PO lines"
-    },
-    {
-      "value": "DIFF_PRICE_THAN_POLINE",
-      "desc": "Some invoice lines differ in price from their linked PO line."
-    },
-    {
-      "value": "DIF_CURRENCY_THAN_PO",
-      "desc": "Currency different from PO"
-    }
   ],
   "note": [],
   "number_of_lines": {
@@ -103,15 +91,15 @@
           "value": "READY",
           "desc": "Ready"
         },
-        "price": 42.79,
+        "price": 53.49,
         "quantity": 1,
         "note": "",
-        "po_line": "A100-800098",
+        "po_line": "POL-UBS-2024-131277",
         "price_note": "",
-        "total_price": 42.79,
+        "total_price": 53.49,
         "vat_note": "Approximately 0.00 included in line Total Price.",
         "check_subscription_date_overlap": true,
-        "fully_invoiced": true,
+        "fully_invoiced": false,
         "additional_info": "",
         "release_remaining_encumbrance": false,
         "reporting_code": {
@@ -133,7 +121,7 @@
         "fund_distribution": [
           {
             "percent": 100.0,
-            "amount": 42.79,
+            "amount": 53.49,
             "fund_code": {
               "value": "Fundforall"
             }

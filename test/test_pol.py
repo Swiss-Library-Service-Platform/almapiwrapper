@@ -4,6 +4,7 @@ import os
 import time
 import pandas as pd
 
+from almapiwrapper.inventory import Item
 from almapiwrapper.acquisitions import POLine, Vendor, Invoice, fetch_invoices
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
@@ -12,21 +13,27 @@ config_log("test.log")
 if os.getcwd().endswith('test'):
     os.chdir('..')
 
-def create_pol():
-    """Used after refreshing the sandbox to create a new POLine"""
-    pol = POLine('A100-800098', 'UBS', 'P')
-    pol.data["fund_distribution"][0]['fund_code']['value'] = 'Fundforall'
-    pol.data["acquisition_method"] = {'value': 'TECHNICAL'}
-    pol_copy = POLine(data=pol.data, zone='UBS', env='S').create()
-    invoice = Invoice
+# def create_pol():
+#     """Used after refreshing the sandbox to create a new POLine"""
+#     pol = POLine('A100-800098', 'UBS', 'P')
+#     pol.data["fund_distribution"][0]['fund_code']['value'] = 'Fundforall'
+#     pol.data["acquisition_method"] = {'value': 'TECHNICAL'}
+#     pol_copy = POLine(data=pol.data, zone='UBS', env='S').create()
+#     invoice = Invoice
 
 class TestPOLine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        data = JsonData(filepath='test/data/pol_test2.json')
+        pol = POLine('131268', zone='UBS', env='S')
+        _ = pol.data
+        if pol.error is True:
+            data = JsonData(filepath='test/data/pol_test1.json')
+            pol = POLine(data=data, zone='UBS', env='S').create()
+            item = Item(barcode='A1111000', zone='UBS', env='S')
+            pol.receive_item(item, receive_date='2022-04-10Z')
 
     def test_update(self):
-        pol =  POLine('131268', 'UBS', 'S')
+        pol =  POLine('POL-UBS-2024-131273', 'UBS', 'S')
         reclaim_interval = pol.data['reclaim_interval']
         if reclaim_interval == '60':
             pol.data['reclaim_interval'] = '30'

@@ -1,9 +1,5 @@
 {
-  "number": "A100-800098",
-  "status": {
-    "value": "CLOSED",
-    "desc": "Closed"
-  },
+  "number": "131268",
   "owner": {
     "value": "A100",
     "desc": "Basel - UB Hauptbibliothek"
@@ -13,15 +9,15 @@
     "desc": "Print Book - One Time"
   },
   "vendor": {
-    "value": "UBS-A100-831",
-    "desc": "Dietmar Dreier"
+    "value": "A100-1043",
+    "desc": "Konrad Theiss Verlag"
   },
   "rush": false,
   "price": {
     "sum": "53.49",
     "currency": {
-      "value": "EUR",
-      "desc": "Euro"
+      "value": "CHF",
+      "desc": "Swiss Franc"
     }
   },
   "portfolios": {
@@ -33,33 +29,34 @@
     "desc": ""
   },
   "url": "",
-  "vendor_account": "Kundennr. 31085",
-  "reclaim_interval": "0",
+  "vendor_account": "A100-1043",
+  "reclaim_interval": "30",
   "expected_receipt_interval": "0",
   "claiming_interval": "0",
   "acquisition_method": {
-    "value": "TECHNICAL"
+    "value": "TECHNICAL",
+    "desc": "Technical"
   },
   "no_charge": false,
   "cancellation_restriction": false,
   "vendor_reference_number": "",
   "source_type": {
-    "value": "",
-    "desc": ""
+    "value": "API",
+    "desc": "API"
   },
-  "po_number": "A100-800098-DSV51",
+  "po_number": "",
   "additional_order_reference": "",
   "invoice_reference": "",
   "resource_metadata": {
     "title": "Linked noun groups opposition and expansion as genre and style markers Michael Pace-Sigge",
-    "author": "",
-    "isbn": "978-3-030-53985-6 (h",
+    "author": "Pace-Sigge, Michael 1970-",
+    "isbn": "9783030539856",
     "publisher": "Palgrave Macmillan",
     "mms_id": {
       "value": "9972286490105504",
       "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504"
     },
-    "publication_place": "Basingstoke",
+    "publication_place": "Cham, Switzerland",
     "publication_year": "2020",
     "vendor_title_number": "",
     "system_control_number": [
@@ -71,12 +68,13 @@
       "amount": {
         "sum": "53.49",
         "currency": {
-          "value": "EUR",
-          "desc": "Euro"
+          "value": "CHF",
+          "desc": "Swiss Franc"
         }
       },
       "fund_code": {
-        "value": "Fundforall"
+        "value": "Fundforall",
+        "desc": "Fundforall"
       }
     }
   ],
@@ -94,16 +92,6 @@
     }
   ],
   "note": [
-    {
-      "note_text": "Warenkorb 01.10.2020 joh",
-      "creation_date": "2020-11-03Z",
-      "created_by": "EX_LIBRIS"
-    },
-    {
-      "note_text": "Order Number 2 ASU4",
-      "creation_date": "2020-11-03Z",
-      "created_by": "EX_LIBRIS"
-    }
   ],
   "location": [
     {
@@ -122,12 +110,12 @@
       "copy": [
         {
           "pid": "23313225470005504",
-          "barcode": "A1002624931",
+          "barcode": "A1111000",
           "item_policy": {
             "value": "01",
             "desc": "01 Loan 28 days"
           },
-          "receive_date": "2021-03-29Z",
+          "expected_arrival_date": "2021-03-01Z",
           "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504/items/23313225470005504"
         }
       ]
@@ -140,10 +128,7 @@
   "renewal_period": 0,
   "renewal_note": "",
   "material_type": {
-    "value": "",
-    "desc": ""
-  },
-  "created_date": "2020-10-09Z",
-  "status_date": "2021-03-29Z",
-  "expected_receipt_date": "2021-03-01Z"
+    "value": "BOOK",
+    "desc": "Book"
+  }
 }

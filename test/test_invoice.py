@@ -4,7 +4,7 @@ import os
 import time
 import pandas as pd
 
-from almapiwrapper.acquisitions import POLine, Vendor, Invoice, fetch_invoices
+from almapiwrapper.acquisitions import POLine, Vendor, Invoice, InvoiceLine, fetch_invoices
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -20,6 +20,14 @@ class TestInvoice(unittest.TestCase):
         if invoice.error is True:
             data = JsonData(filepath='test/data/invoice_test1.json')
             invoice = Invoice(data=data, zone='UBS', env='S').create()
+
+        if 'invoice_lines' not in invoice.data or invoice.data['invoice_lines']['total_record_count'] == 0:
+            data = JsonData(filepath='test/data/invoice_test1.json')
+            invoice_line_data = data.content['invoice_lines']['invoice_line'][0]
+            invoice_line = InvoiceLine(invoice_id=invoice.invoice_id,
+                                       data=invoice_line_data,
+                                       zone='UBS',
+                                       env='S').create()
 
 
     def test_update(self):
@@ -48,6 +56,14 @@ class TestInvoice(unittest.TestCase):
                          new_invoice.invoice_number,
                          f'Invoice number should be PO-UBS-4828001_copy')
         self.assertFalse(new_invoice.error, f'Invoice create error: {new_invoice.error}')
+
+    def test_get_invoice_lines(self):
+        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        invoice_lines = invoice.get_invoice_lines()
+        self.assertNotEqual(len(invoice_lines), 0, 'No invoice line found')
+
+        # self.assertEqual(invoice_lines[0].invoice_line_id, '2000007791-1', 'Invoice line id should be 2000007791-1')
+
 
 if __name__ == '__main__':
     unittest.main()

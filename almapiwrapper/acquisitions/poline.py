@@ -58,16 +58,17 @@ class POLine(Record):
             self._handle_error(r, 'unable to fetch POLine data')
 
     @check_error
-    def update(self) -> 'acquisitionslib.POLine':
+    def update(self, update_inventory=True) -> 'acquisitionslib.POLine':
         """Update the POLine
 
         :return: POLine object
         """
-
+        params = {'update_inventory': 'true'} if update_inventory is True else {'update_inventory': 'false'}
         r = self._api_call('put',
                            f'{self.api_base_url_acquisitions}/{self.pol_number}',
                            headers=self._get_headers(),
-                           data=bytes(self))
+                           data=bytes(self),
+                           params=params)
 
         if r.ok is True:
             self.data = JsonData(r.json())
@@ -103,7 +104,6 @@ class POLine(Record):
                            data=bytes(self))
 
         if r.ok is True:
-            print(r.text)
             self._data = JsonData(r.json())
             self.pol_number = self.data['number']
             logging.info(f'{repr(self)}: POLine data created: {self.pol_number}')
@@ -140,7 +140,7 @@ class POLine(Record):
             return None
 
     @check_error
-    def receive_item(self, item: Item, receive_date: Optional[str] = None) -> 'acquisitionslib.POLine':
+    def receive_item(self, item: Item, library: Optional[str] = None, department: Optional[str] = None, receive_date: Optional[str] = None) -> 'acquisitionslib.POLine':
         """Receive an item of the POLine
 
         :param item: :class:`almapiwrapper.inventory.Item`
@@ -154,6 +154,10 @@ class POLine(Record):
         params = {'op': 'receive'}
         if receive_date is not None:
             params['receive_date'] = receive_date
+        if library is not None:
+            params['department_library'] = library
+        if department is not None:
+            params['department'] = department
         headers = self._get_headers()
         headers['content-type'] = 'application/xml'
 
@@ -161,7 +165,7 @@ class POLine(Record):
                            f'{self.api_base_url_acquisitions}/{self.pol_number}/items/{item.item_id}',
                            params=params,
                            headers=headers,
-                           data=bytes(item))
+                           data='<item />')
 
         if r.ok is True:
             logging.info(f'{repr(self)}: Item {repr(item)} received.')

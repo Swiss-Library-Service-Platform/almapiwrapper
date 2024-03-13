@@ -182,7 +182,7 @@ class Invoice(Record):
         return self
 
     @check_error
-    def process_invoice(self) -> 'acquisitionslib.Invoice':
+    def process_invoice(self, op='process_invoice') -> 'acquisitionslib.Invoice':
         """process_invoice(self) -> acquisitionslib.Invoice
         Process the invoice
 
@@ -191,17 +191,33 @@ class Invoice(Record):
         :return: object :class:`almapiwrapper.acquisitions.Invoice`
         """
         r = self._api_call('post',
-                           f'{self.api_base_url_invoices}/{self.invoice_id}/process',
+                           f'{self.api_base_url_invoices}/{self.invoice_id}',
                            headers=self._get_headers(),
-                           data='',
-                           params={'op': 'process_invoice'})
+                           data=bytes(self),
+                           params={'op': op})
 
         if r.ok is True:
+            self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: Invoice processed')
         else:
             self._handle_error(r, 'unable to process invoice')
 
         return self
+
+    def get_invoice_lines(self, limit: Optional[int] = None) -> List['InvoiceLine']:
+        """get_invoice_lines(self, limit: Optional[int] = None) -> List['InvoiceLine']
+        Get the invoice lines of the invoice
+
+        :param limit: int : limit of invoice lines to fetch
+
+        :return: list of invoice lines
+        """
+        if 'invoice_lines' not in self.data:
+            logging.warning(f'{repr(self)}: No invoice lines found')
+            return []
+        invoice_lines = [InvoiceLine(data=invoice_line_data, invoice_id=self.invoice_id, zone=self.zone, env=self.env)
+                         for invoice_line_data in self.data['invoice_lines']['invoice_line']]
+        return invoice_lines
 
 
 def fetch_invoices(q: str,
@@ -251,11 +267,11 @@ class InvoiceLine(Record):
     api_base_url_invoices: ClassVar[str] = f'{Record.api_base_url}/acq/invoices'
 
     def __init__(self,
+                 invoice_id: Optional[str] = None,
                  invoice_line_id: Optional[str] = None,
                  zone: Optional[str] = None,
                  env: Literal['P', 'S'] = 'P',
                  invoice_number: Optional[str] = None,
-                 invoice_id: Optional[str] = None,
                  data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of InvoiceLine Object
         """
@@ -273,6 +289,8 @@ class InvoiceLine(Record):
 
         if data is not None:
             self._data = data if type(data) is JsonData else JsonData(data)
+            if 'id' in self.data:
+                self.invoice_line_id = self.data['id']
 
         if self.invoice_number is not None:
             invoice = Invoice(invoice_number=self.invoice_number, zone=zone, env=env)
@@ -336,5 +354,31 @@ class InvoiceLine(Record):
             logging.info(f'{repr(self)}: InvoiceLine data updated')
         else:
             self._handle_error(r, 'unable to update invoice line data')
+
+        return self
+
+    @check_error
+    def create(self) -> 'acquisitionslib.InvoiceLine':
+        """add_to_invoice(self) -> acquisitionslib.InvoiceLine
+        Add the invoice line to the invoice
+
+        :return: object :class:`almapiwrapper.acquisitions.InvoiceLine`
+        """
+        data = self.data
+        for fund in data['fund_distribution']:
+            if 'amount' in fund and 'percent' in fund:
+                del fund['percent']
+
+        r = self._api_call('post',
+                           f'{self.api_base_url_invoices}/{self.invoice_id}/lines',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok is True:
+            self.data = JsonData(r.json())
+            self.invoice_line_id = self.data['id']
+            logging.info(f'{repr(self)}: InvoiceLine added to invoice')
+        else:
+            self._handle_error(r, 'unable to add invoice line to invoice')
 
         return self

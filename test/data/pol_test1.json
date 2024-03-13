@@ -1,9 +1,5 @@
 {
   "number": "131268",
-  "status": {
-    "value": "READY",
-    "desc": "Ready"
-  },
   "owner": {
     "value": "A100",
     "desc": "Basel - UB Hauptbibliothek"
@@ -13,15 +9,15 @@
     "desc": "Print Book - One Time"
   },
   "vendor": {
-    "value": "UBS-A100-831",
-    "desc": "Dietmar Dreier"
+    "value": "A100-1043",
+    "desc": "Konrad Theiss Verlag"
   },
   "rush": false,
   "price": {
     "sum": "53.49",
     "currency": {
-      "value": "EUR",
-      "desc": "Euro"
+      "value": "CHF",
+      "desc": "Swiss Franc"
     }
   },
   "portfolios": {
@@ -33,13 +29,12 @@
     "desc": ""
   },
   "url": "",
-  "vendor_account": "Kundennr. 31085",
-  "reclaim_interval": "60",
-  "expected_receipt_interval": "60",
-  "claiming_interval": "60",
+  "vendor_account": "A100-1043",
+  "reclaim_interval": "30",
+  "expected_receipt_interval": "0",
+  "claiming_interval": "0",
   "acquisition_method": {
-    "value": "TECHNICAL",
-    "desc": "Technical"
+    "value": "VENDOR_SYSTEM"
   },
   "no_charge": false,
   "cancellation_restriction": false,
@@ -48,7 +43,7 @@
     "value": "API",
     "desc": "API"
   },
-  "po_number": "A100-800098-DSV51",
+  "po_number": "",
   "additional_order_reference": "",
   "invoice_reference": "",
   "resource_metadata": {
@@ -72,8 +67,8 @@
       "amount": {
         "sum": "53.49",
         "currency": {
-          "value": "EUR",
-          "desc": "Euro"
+          "value": "CHF",
+          "desc": "Swiss Franc"
         }
       },
       "fund_code": {
@@ -90,22 +85,8 @@
   "vendor_note": "",
   "receiving_note": "",
   "alert": [
-    {
-      "value": "",
-      "desc": "The ordered resource already exists in the Inventory:  1 copies in library: Basel - UB Hauptbibliothek."
-    }
   ],
   "note": [
-    {
-      "note_text": "Order Number 2 ASU4",
-      "creation_date": "2024-02-20Z",
-      "created_by": "exl_api"
-    },
-    {
-      "note_text": "Warenkorb 01.10.2020 joh",
-      "creation_date": "2024-02-20Z",
-      "created_by": "exl_api"
-    }
   ],
   "location": [
     {
@@ -117,20 +98,20 @@
       "shelving_location": "100FH",
       "holding": [
         {
-          "id": "22313225480005504",
+          "id": "22436304470005504",
           "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504"
         }
       ],
       "copy": [
         {
-          "pid": "23434734450005504",
-          "barcode": "A1002624931",
+          "pid": "23436304450005504",
+          "barcode": "A1111000",
           "item_policy": {
             "value": "01",
             "desc": "01 Loan 28 days"
           },
-          "receive_date": "2021-03-29Z",
-          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504/items/23434734450005504"
+          "expected_arrival_date": "2021-03-01Z",
+          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504/items/23313225470005504"
         }
       ]
     }
@@ -144,8 +125,5 @@
   "material_type": {
     "value": "BOOK",
     "desc": "Book"
-  },
-  "created_date": "2024-02-20Z",
-  "status_date": "2024-02-20Z",
-  "expected_receipt_date": "2021-03-01Z"
+  }
 }
