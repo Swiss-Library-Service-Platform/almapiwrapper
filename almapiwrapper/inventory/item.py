@@ -420,8 +420,12 @@ class Item(Record):
 
     @check_error
     def scan_in(self, library: str, circ_desk: str) -> 'Item':
-        """scan_in(self) -> 'Item'
+        """scan_in(self, library: str, circ_desk: str) -> 'Item'
+
         Scan in an item
+
+        :param library: library code
+        :param circ_desk: circulation desk code
 
         :return: Item
         """
