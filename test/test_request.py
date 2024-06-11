@@ -1,0 +1,103 @@
+import unittest
+from dateutil import parser
+from datetime import timedelta
+from almapiwrapper.users import User, NewUser, Loan, Request
+from almapiwrapper.record import JsonData
+from almapiwrapper.inventory import Item
+from almapiwrapper import config_log
+import os
+
+config_log("test.log")
+
+if os.getcwd().endswith('test'):
+    os.chdir('..')
+
+class TestRequest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        for primary_id in ['testRequestUser1',]:
+            u = User(primary_id, 'UBS', 'S')
+
+            if u.data is None:
+
+                # Create new user
+                data = JsonData(filepath=f'test/data/user_{primary_id}.json')
+                _ = NewUser('UBS', 'S', data).create()
+
+        # Item('996259850105504', '22202377380005504', '23202377370005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
+        # Item('9953896770105504', '22315547880005504', '23315547870005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
+
+    def test_fetch_request(self):
+
+        u = User('testRequestUser1', 'UBS', 'S')
+
+        # Create new request
+        r = u.requests[0]
+        self.assertFalse(r.error, 'Error during request creation')
+
+        self.assertEqual(r.data['title'],
+                         'The dot-com debacle and the return of reason Louis E.V. Nevaer',
+                         'Request title mismatch')
+
+    # def test_create_loan(self):
+    #
+    #     u = User('testLoanUser1', 'UBS', 'S')
+    #
+    #     # Create new loan
+    #     loan = u.create_loan('A100', 'A100_KUR', '0UBU0536413')
+    #     self.assertFalse(u.error, 'Error during loan creation')
+    #
+    #     self.assertEqual(u.loans[0].data['loan_id'], loan.data['loan_id'], 'Loan ID mismatch')
+    #
+    # def test_scan_in(self):
+    #     u = User('testLoanUser1', 'UBS', 'S')
+    #
+    #     # Create new loan
+    #     loan1 = u.create_loan('A100', 'A100_KUR', '0UBU0536413')
+    #     self.assertEqual(loan1.data['loan_status'], 'ACTIVE', 'Loan status should be ACTIVE')
+    #
+    #     item = loan1.item.scan_in('A100', 'A100_KUR')
+    #     self.assertEqual(item.barcode, '0UBU0536413', 'Item status should be LOAN')
+    #
+    #     loan2 = Loan(loan1.data['loan_id'], user=u)
+    #     self.assertEqual(loan2.data['loan_status'], 'COMPLETE', 'Loan status should be COMPLETE')
+    #
+    # def test_loan_error(self):
+    #     u1 = User('testLoanUser1', 'UBS', 'S')
+    #     loan1 = u1.create_loan('A100', 'A100_KUR', '0UBU0536413')
+    #     self.assertFalse(u1.error, 'Unexpected error during loan creation')
+    #     self.assertIsNotNone(loan1, 'Loan should not be None')
+    #
+    #     u2 = User('testLoanUser2', 'UBS', 'S')
+    #     loan2 = u2.create_loan('A100', 'A100_KUR', '0UBU0536413')
+    #     self.assertTrue(u2.error, 'No expected error during loan creation of already loaned item')
+    #     self.assertIsNone(loan2, 'Loan should be None')
+    #
+    # def test_renew_workflow(self):
+    #     u = User('testLoanUser1', 'UBS', 'S')
+    #     loan = u.create_loan('A100', 'A100_KUR', 'A1001891856')
+    #     self.assertFalse(u.error, 'Error during loan creation')
+    #
+    #     due_date = parser.isoparse(loan.data['due_date'])
+    #     new_due_date = due_date - timedelta(days=10)
+    #
+    #     loan = loan.change_due_date(new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    #     self.assertEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
+    #     self.assertFalse(loan.error, 'Error during due date change')
+    #
+    #     loan = loan.renew_loan()
+    #     self.assertNotEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
+    #     self.assertFalse(loan.error, 'Error during due date change')
+
+    def test_create_request(self):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        for primary_id in ['testRequestUser1']:
+            u = User(primary_id, 'UBS', 'S')
+            # u.delete()
+
+if __name__ == '__main__':
+    unittest.main()

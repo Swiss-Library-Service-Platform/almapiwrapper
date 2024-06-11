@@ -14,7 +14,7 @@
   },
   "rush": false,
   "price": {
-    "sum": "53.49",
+    "sum": "54.10",
     "currency": {
       "value": "CHF",
       "desc": "Swiss Franc"
@@ -65,7 +65,7 @@
   "fund_distribution": [
     {
       "amount": {
-        "sum": "53.49",
+        "sum": "54.10",
         "currency": {
           "value": "CHF",
           "desc": "Swiss Franc"
@@ -98,21 +98,10 @@
       "shelving_location": "100FH",
       "holding": [
         {
-          "id": "22436304470005504",
-          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504"
+          "id": "22436304470005504"
         }
       ],
       "copy": [
-        {
-          "pid": "23436304450005504",
-          "barcode": "A1111000",
-          "item_policy": {
-            "value": "01",
-            "desc": "01 Loan 28 days"
-          },
-          "expected_arrival_date": "2021-03-01Z",
-          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504/holdings/22313225480005504/items/23313225470005504"
-        }
       ]
     }
   ],

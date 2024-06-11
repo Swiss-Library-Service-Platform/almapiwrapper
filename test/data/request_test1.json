@@ -1,0 +1,24 @@
+{
+  "title": "The dot-com debacle and the return of reason Louis E.V. Nevaer",
+  "author": "Nevaer, Louis E. V.",
+  "volume": "",
+  "issue": "",
+  "part": "",
+  "user_primary_id": "testRequestUser1",
+  "additional_id": "202-593-687-1",
+  "request_type": "HOLD",
+  "request_sub_type": {
+    "value": "PATRON_PHYSICAL"
+  },
+  "mms_id": "9925942850105504",
+  "holding_id": "22243580760005504",
+  "pickup_location": "Basel - Bibliothek PZ.BS",
+  "pickup_location_type": "LIBRARY",
+  "pickup_location_library": "A342",
+  "managed_by_library": "Basel - UB Hauptbibliothek",
+  "managed_by_circulation_desk": "Ausleihe A100",
+  "managed_by_library_code": "A100",
+  "managed_by_circulation_desk_code": "A100_KUR",
+  "material_type": {},
+  "date_of_publication": ""
+}

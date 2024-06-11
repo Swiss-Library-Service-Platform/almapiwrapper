@@ -34,6 +34,7 @@ class User(Record):
         self.format = 'json'
         self._fees = None
         self._loans = None
+        self._requests = None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -101,6 +102,29 @@ class User(Record):
             return loans
         else:
             self._handle_error(r, f'unable to fetch user loans')
+
+    def _fetch_requests(self) -> Optional[List['users.Request']]:
+        """Fetch request data of the current user
+
+        :return: list of :class:`almapiwrapper.users.Request` objects"""
+
+        r = self._api_call('get',
+                           f'{self.api_base_url}/{self.primary_id}/requests',
+                           params={'limit': '100'},
+                           headers=self._get_headers())
+        if r.ok is True:
+
+            logging.info(f'{repr(self)}: requests data available')
+            request_data = r.json()
+            if 'user_request' not in request_data or request_data['user_request'] is None:
+                logging.warning(f'{repr(self)}: no request in the account')
+                return []
+            user_requests = []
+            for request_data in request_data['user_request']:
+                user_requests.append(users.Request(user=self, data=JsonData(request_data)))
+            return user_requests
+        else:
+            self._handle_error(r, f'unable to fetch user requests')
 
     def save(self) -> 'User':
         """save() -> 'User'
@@ -216,6 +240,16 @@ class User(Record):
             self._loans = self._fetch_loans()
 
         return self._loans
+
+    @property
+    def requests(self) -> Optional[List['users.Request']]:
+        """Property returning the list of the requests of the user
+
+        :return: list of :class:`almapiwrapper.users.Request` objects"""
+        if self._requests is None:
+            self._requests = self._fetch_requests()
+
+        return self._requests
 
     @check_error
     def create_loan(self,
@@ -374,6 +408,12 @@ class User(Record):
                 notes_to_be_kept.append(note)
         self.data['user_note'] = notes_to_be_kept
         return self
+
+    def fetch_requests(self) -> Optional[List['users.Request']]:
+        """fetch_requests(self) -> Optional[List['users.Request']]
+        Fetch the list of the requests of the user"""
+
+        pass
 
 class NewUser(User):
     """Class used to create new users

@@ -15,7 +15,7 @@ if os.getcwd().endswith('test'):
 class TestInvoice(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        invoice = Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        invoice = Invoice(invoice_number='20000077919999', zone='UBS', env='S')
         _ = invoice.data
         if invoice.error is True:
             data = JsonData(filepath='test/data/invoice_test1.json')
@@ -31,7 +31,7 @@ class TestInvoice(unittest.TestCase):
 
 
     def test_update(self):
-        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        invoice =  Invoice(invoice_number='20000077919999', zone='UBS', env='S')
         initial_voucher_date = invoice.data['payment']['voucher_date']
         if initial_voucher_date == '2023-04-10Z':
             new_date = '2023-05-10Z'
@@ -48,8 +48,8 @@ class TestInvoice(unittest.TestCase):
 
     @unittest.skip
     def test_create(self):
-        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
-        invoice.invoice_number = '2000007791_copy'
+        invoice =  Invoice(invoice_number='20000077919999', zone='UBS', env='S')
+        invoice.invoice_number = '20000077919999_copy'
         new_invoice = Invoice(data=invoice.data, zone='UBS', env='S').create()
 
         self.assertEqual('PO-UBS-4828001_copy',
@@ -58,7 +58,7 @@ class TestInvoice(unittest.TestCase):
         self.assertFalse(new_invoice.error, f'Invoice create error: {new_invoice.error}')
 
     def test_get_invoice_lines(self):
-        invoice =  Invoice(invoice_number='2000007791', zone='UBS', env='S')
+        invoice =  Invoice(invoice_number='20000077919999', zone='UBS', env='S')
         invoice_lines = invoice.get_invoice_lines()
         self.assertNotEqual(len(invoice_lines), 0, 'No invoice line found')
 

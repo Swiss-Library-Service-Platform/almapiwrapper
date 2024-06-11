@@ -1,5 +1,5 @@
 {
-  "number": "2000007791",
+  "number": "20000077919999",
   "vendor": {
     "value": "A100-1043",
     "desc": "Konrad Theiss Verlag"
@@ -28,8 +28,8 @@
     }
   },
   "invoice_date": "2020-11-25Z",
-  "total_amount": 53.49,
-  "total_invoice_lines_amount": 53.49,
+  "total_amount": 54.10,
+  "total_invoice_lines_amount": 54.10,
   "vendor_contact_person": {},
   "payment_method": {
     "value": "ACCOUNTINGDEPARTMENT",
@@ -91,12 +91,12 @@
           "value": "READY",
           "desc": "Ready"
         },
-        "price": 53.49,
+        "price": 54.10,
         "quantity": 1,
         "note": "",
         "po_line": "POL-UBS-2024-131277",
         "price_note": "",
-        "total_price": 53.49,
+        "total_price": 54.10,
         "vat_note": "Approximately 0.00 included in line Total Price.",
         "check_subscription_date_overlap": true,
         "fully_invoiced": false,
@@ -121,7 +121,7 @@
         "fund_distribution": [
           {
             "percent": 100.0,
-            "amount": 53.49,
+            "amount": 54.10,
             "fund_code": {
               "value": "Fundforall"
             }

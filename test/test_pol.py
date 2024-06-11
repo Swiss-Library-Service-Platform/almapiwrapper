@@ -13,27 +13,25 @@ config_log("test.log")
 if os.getcwd().endswith('test'):
     os.chdir('..')
 
-# def create_pol():
-#     """Used after refreshing the sandbox to create a new POLine"""
-#     pol = POLine('A100-800098', 'UBS', 'P')
-#     pol.data["fund_distribution"][0]['fund_code']['value'] = 'Fundforall'
-#     pol.data["acquisition_method"] = {'value': 'TECHNICAL'}
-#     pol_copy = POLine(data=pol.data, zone='UBS', env='S').create()
-#     invoice = Invoice
 
 class TestPOLine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        pol = POLine('131268', zone='UBS', env='S')
+        item = Item(barcode='A1111000', zone='UBS', env='S')
+        pol_number = item.data.find('.//po_line').text
+        pol = POLine(pol_number, zone='UBS', env='S')
         _ = pol.data
         if pol.error is True:
             data = JsonData(filepath='test/data/pol_test1.json')
             pol = POLine(data=data, zone='UBS', env='S').create()
             item = Item(barcode='A1111000', zone='UBS', env='S')
-            pol.receive_item(item, receive_date='2022-04-10Z')
+            item.data.find('.//po_line').text = pol.pol_number
+            item.update()
 
     def test_update(self):
-        pol =  POLine('POL-UBS-2024-131273', 'UBS', 'S')
+        item = Item(barcode='A1111000', zone='UBS', env='S')
+        pol_number = item.data.find('.//po_line').text
+        pol = POLine(pol_number, zone='UBS', env='S')
         reclaim_interval = pol.data['reclaim_interval']
         if reclaim_interval == '60':
             pol.data['reclaim_interval'] = '30'
@@ -47,14 +45,18 @@ class TestPOLine(unittest.TestCase):
                          f'POL reclaim interval should be {reclaim_interval}')
 
     def test_get_items(self):
-        pol =  POLine('131268', 'UBS', 'S')
+        item = Item(barcode='A1111000', zone='UBS', env='S')
+        pol_number = item.data.find('.//po_line').text
+        pol = POLine(pol_number, zone='UBS', env='S')
         items = pol.get_items()
         self.assertNotEqual(len(items), 0, 'No item found')
 
         self.assertEqual(items[0].barcode, 'A1111000', 'Item barcode should be A1111000')
 
     def test_get_vendor(self):
-        pol =  POLine('131268', 'UBS', 'S')
+        item = Item(barcode='A1111000', zone='UBS', env='S')
+        pol_number = item.data.find('.//po_line').text
+        pol = POLine(pol_number, zone='UBS', env='S')
         vendor = pol.get_vendor()
         self.assertIsInstance(vendor, Vendor, 'Vendor should be an instance of Vendor')
         self.assertEqual(vendor.vendor_code, 'A100-1043', 'Vendor code should be "A100-1043"')

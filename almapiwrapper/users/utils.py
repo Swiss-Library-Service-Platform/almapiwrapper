@@ -157,6 +157,9 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
 
             # Copy contact_info
             iz_user.data['contact_info'] = deepcopy(nz_user.data['contact_info'])
+            for segment in iz_user.data['contact_info']:
+                for entry in iz_user.data['contact_info'][segment]:
+                    entry['segment_type'] = 'External'
 
             # Copy identifiers
             nz_ids = [nz_id['value'] for nz_id in nz_user.data['user_identifier']]

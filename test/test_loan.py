@@ -12,7 +12,7 @@ config_log("test.log")
 if os.getcwd().endswith('test'):
     os.chdir('..')
 
-class TestCreateUser(unittest.TestCase):
+class TestLoan(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
