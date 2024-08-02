@@ -23,7 +23,9 @@ class TestRequest(unittest.TestCase):
 
                 # Create new user
                 data = JsonData(filepath=f'test/data/user_{primary_id}.json')
-                _ = NewUser('UBS', 'S', data).create()
+
+                user = NewUser('UBS', 'S', data).create()
+
 
         # Item('996259850105504', '22202377380005504', '23202377370005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
         # Item('9953896770105504', '22315547880005504', '23315547870005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')
@@ -33,6 +35,8 @@ class TestRequest(unittest.TestCase):
         u = User('testRequestUser1', 'UBS', 'S')
 
         # Create new request
+        req_data = JsonData(filepath=f'test/data/request_test1.json')
+        _ = Request(zone='UBS', env='S', data=req_data).create()
         r = u.requests[0]
         self.assertFalse(r.error, 'Error during request creation')
 
@@ -40,64 +44,32 @@ class TestRequest(unittest.TestCase):
                          'The dot-com debacle and the return of reason Louis E.V. Nevaer',
                          'Request title mismatch')
 
-    # def test_create_loan(self):
-    #
-    #     u = User('testLoanUser1', 'UBS', 'S')
-    #
-    #     # Create new loan
-    #     loan = u.create_loan('A100', 'A100_KUR', '0UBU0536413')
-    #     self.assertFalse(u.error, 'Error during loan creation')
-    #
-    #     self.assertEqual(u.loans[0].data['loan_id'], loan.data['loan_id'], 'Loan ID mismatch')
-    #
-    # def test_scan_in(self):
-    #     u = User('testLoanUser1', 'UBS', 'S')
-    #
-    #     # Create new loan
-    #     loan1 = u.create_loan('A100', 'A100_KUR', '0UBU0536413')
-    #     self.assertEqual(loan1.data['loan_status'], 'ACTIVE', 'Loan status should be ACTIVE')
-    #
-    #     item = loan1.item.scan_in('A100', 'A100_KUR')
-    #     self.assertEqual(item.barcode, '0UBU0536413', 'Item status should be LOAN')
-    #
-    #     loan2 = Loan(loan1.data['loan_id'], user=u)
-    #     self.assertEqual(loan2.data['loan_status'], 'COMPLETE', 'Loan status should be COMPLETE')
-    #
-    # def test_loan_error(self):
-    #     u1 = User('testLoanUser1', 'UBS', 'S')
-    #     loan1 = u1.create_loan('A100', 'A100_KUR', '0UBU0536413')
-    #     self.assertFalse(u1.error, 'Unexpected error during loan creation')
-    #     self.assertIsNotNone(loan1, 'Loan should not be None')
-    #
-    #     u2 = User('testLoanUser2', 'UBS', 'S')
-    #     loan2 = u2.create_loan('A100', 'A100_KUR', '0UBU0536413')
-    #     self.assertTrue(u2.error, 'No expected error during loan creation of already loaned item')
-    #     self.assertIsNone(loan2, 'Loan should be None')
-    #
-    # def test_renew_workflow(self):
-    #     u = User('testLoanUser1', 'UBS', 'S')
-    #     loan = u.create_loan('A100', 'A100_KUR', 'A1001891856')
-    #     self.assertFalse(u.error, 'Error during loan creation')
-    #
-    #     due_date = parser.isoparse(loan.data['due_date'])
-    #     new_due_date = due_date - timedelta(days=10)
-    #
-    #     loan = loan.change_due_date(new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'))
-    #     self.assertEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
-    #     self.assertFalse(loan.error, 'Error during due date change')
-    #
-    #     loan = loan.renew_loan()
-    #     self.assertNotEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
-    #     self.assertFalse(loan.error, 'Error during due date change')
-
     def test_create_request(self):
-        pass
+        req_data = JsonData(filepath=f'test/data/request_test2.json')
+        _ = Request(zone='UBS', env='S', data=req_data).create()
+        reqs = User('testRequestUser1', 'UBS', 'S').requests
+        self.assertGreater(len(reqs), 0, 'No request found')
+        for reqs in reqs:
+            self.assertIn(reqs.data['title'],
+                          ['The dot-com debacle and the return of reason Louis E.V. Nevaer',
+                           'Marketing data science modeling techniques in predictive analytics with R and Python Thomas W. Miller'],
+                          'Request title mismatch')
+
+    def test_cancel_request(self):
+        req_data = JsonData(filepath=f'test/data/request_test3.json')
+        r = Request(zone='UBS', env='S', data=req_data).create()
+        req_id = r.data['request_id']
+        r.cancel()
+        r = Request(request_id=req_id, user_id='testRequestUser1' , zone='UBS', env='S')
+        self.assertEqual(r.data['request_status'], 'HISTORY', 'Request status mismatch')
+        print(r)
+
 
     @classmethod
     def tearDownClass(cls):
         for primary_id in ['testRequestUser1']:
             u = User(primary_id, 'UBS', 'S')
-            # u.delete()
+            u.delete()
 
 if __name__ == '__main__':
     unittest.main()

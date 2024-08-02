@@ -71,7 +71,7 @@ class Request(Record):
         It fetches it in a private attribute if not available
         in the data property.
         """
-        if self._data is not None:
+        if self._data is not None and 'request_id' in self.data:
             return self.data['request_id']
         else:
             return self._request_id
@@ -97,9 +97,13 @@ class Request(Record):
         """create(self) -> 'userslib.Request'
         Create a new request
 
+        Requests are created only at title level. MMS ID is required in request data
+        to create a request.
+
         :return: object :class:`almapiwrapper.users.Request`"""
         r = self._api_call('post',
                            f'{self.api_base_url}/users/{self.user.primary_id}/requests',
+                           params={'mms_id': self.data['mms_id']},
                            headers=self._get_headers(),
                            data=bytes(self))
 
