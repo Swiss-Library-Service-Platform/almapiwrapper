@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 
-from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
+from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -103,6 +103,19 @@ class TestRecSet(unittest.TestCase):
 
         instances = job.get_instances()
         self.assertTrue(instances.content['total_record_count'] > 20)
+
+
+class TestLibrary(unittest.TestCase):
+
+    def test_fetch_libraries(self):
+        libraries = fetch_libraries(zone='UBS', env='S')
+        self.assertTrue(len(libraries) > 10, 'No libraries found')
+        self.assertEqual(libraries[20].data['code'], libraries[20].code, 'Library object corrupted')
+
+    def test_get_library(self):
+        lib = Library('A100', 'UBS', 'S')
+        self.assertEqual(lib.data['code'], 'A100', 'Library object corrupted')
+        self.assertEqual(lib.data['name'], 'Basel - UB Hauptbibliothek', 'Library name not correct')
 
 
 if __name__ == '__main__':

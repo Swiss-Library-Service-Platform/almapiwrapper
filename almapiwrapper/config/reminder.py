@@ -14,7 +14,7 @@ def fetch_reminders(zone: str,
                     entity_id: Optional[str] = None) -> List['Reminder']:
     """This function fetch the data describing the reminders.
 
-    :param zone: zone of the fee
+    :param zone: institutional zone
     :param env: environment of the entity: 'P' for production and 'S' for sandbox
     :param reminder_type: filter by reminder type
     :param reminder_status: filter by reminder status
