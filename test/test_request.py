@@ -62,7 +62,7 @@ class TestRequest(unittest.TestCase):
         r.cancel()
         r = Request(request_id=req_id, user_id='testRequestUser1' , zone='UBS', env='S')
         self.assertEqual(r.data['request_status'], 'HISTORY', 'Request status mismatch')
-        print(r)
+        # print(r)
 
 
     @classmethod
