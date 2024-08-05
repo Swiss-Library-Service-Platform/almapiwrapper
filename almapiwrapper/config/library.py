@@ -71,6 +71,8 @@ class Library(Record):
         self.format = 'json'
         self.library_id = library_id
         self.code = code
+        self._locations = None
+        self._open_hours = None
 
         if data is not None:
             if not isinstance(data, JsonData):
@@ -98,141 +100,250 @@ class Library(Record):
         :return: string
         """
         return f"{self.__class__.__name__}('{self.code}', '{self.zone}', '{self.env}')"
-    #
-    # @check_error
-    # def save(self) -> 'Reminder':
-    #     """save() -> 'Reminder'
-    #     Save a Reminder record in the 'records' folder
-    #
-    #     When saved, a suffix is added to the file path with the version.
-    #     Example: records/<entity_type>_<entity_id>/reminder_<IZ>_<reminder_id>_<version>.xml
-    #
-    #     :return: object :class:`almapiwrapper.reminder.Reminder`
-    #     """
-    #     filepath = f'records/{self.zone}_{self.reminder_id}/reminder_{self.zone}_{self.reminder_id}.json'
-    #     self._save_from_path(filepath)
-    #     return self
-    #
-    # @check_error
-    # def update(self) -> 'Reminder':
-    #     """update() -> 'Reminder'
-    #     Update the reminder
-    #     """
-    #     r = self._api_call('put',
-    #                        f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
-    #                        headers=self._get_headers(),
-    #                        data=bytes(self))
-    #
-    #     if r.ok:
-    #         logging.info(f'{repr(self)}: reminder updated.')
-    #     else:
-    #         self._handle_error(r, 'failed to update reminder')
-    #
-    #     return self
-    #
-    # @check_error
-    # def delete(self) -> None:
-    #     """delete() -> None
-    #     Delete the reminder
-    #
-    #     :return: None
-    #     """
-    #     r = self._api_call('delete',
-    #                        f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
-    #                        headers=self._get_headers())
-    #
-    #     if r.ok:
-    #         logging.info(f'{repr(self)}: reminder deleted.')
-    #     else:
-    #         self._handle_error(r, 'failed to delete reminder')
-    #
-    # @check_error
-    # def get_reminder_id(self) -> str:
-    #     """get_reminder_id() -> str
-    #     Get the reminder id
-    #
-    #     :return: string
-    #     """
-    #     return self.data['id']
-    #
-    # @check_error
-    # def _create_reminder(self) -> 'Reminder':
-    #     """create() -> 'Reminder'
-    #     Create the reminder
-    #
-    #     :return: object :class:`almapiwrapper.reminder.Reminder`
-    #     """
-    #     r = self._api_call('post',
-    #                        f'{self.api_base_url}/conf/reminders',
-    #                        headers=self._get_headers(),
-    #                        data=bytes(self))
-    #
-    #     if r.ok:
-    #         self.data = JsonData(r.json())
-    #         self.reminder_id = self.get_reminder_id()
-    #         logging.info(f'{repr(self)}: reminder created.')
-    #     else:
-    #         print(r.text)
-    #         self._handle_error(r, 'failed to create reminder')
-    #
-    #     return self
-    #
-    # @property
-    # @check_error
-    # def entity_id(self) -> str:
-    #     """entity_id() -> str
-    #     Get the entity id
-    #
-    #     :return: string containing the entity id
-    #     """
-    #     return self.data['entity']['entity_id']
-    #
-    # @entity_id.setter
-    # @check_error
-    # def entity_id(self, entity_id: str) -> None:
-    #     """entity_id() -> str
-    #     Set the entity id
-    #
-    #     :return: None
-    #     """
-    #     self.data['entity']['entity_id'] = entity_id
-    #
-    # @property
-    # @check_error
-    # def status(self) -> str:
-    #     """status() -> str
-    #     Get the status
-    #
-    #     :return: string containing the status
-    #     """
-    #     return self.data['status']['value']
-    #
-    # @status.setter
-    # @check_error
-    # def status(self, status: str) -> None:
-    #     """status() -> str
-    #     Set the status
-    #
-    #     :return: None
-    #     """
-    #     self.data['status']['value'] = status
-    #
-    # @property
-    # @check_error
-    # def reminder_type(self) -> str:
-    #     """reminder_type() -> str
-    #     Get the reminder type
-    #
-    #     :return: string containing the reminder type
-    #     """
-    #     return self.data['type']['value']
-    #
-    # @reminder_type.setter
-    # @check_error
-    # def reminder_type(self, reminder_type: str) -> None:
-    #     """reminder_type() -> str
-    #     Set the reminder type
-    #
-    #     :return: None
-    #     """
-    #     self.data['type']['value'] = reminder_type
+
+    @check_error
+    def _fetch_locations(self) -> List:
+        """get_locations(self) -> List
+        Return the list of locations
+
+        :return: list of locations
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/libraries/{self.code}/locations',
+                           headers=self._get_headers())
+        if r.ok is True and 'location' in r.json():
+            logging.info(f'{repr(self)}: locations data available')
+            return [Location(library_code=self.code, zone=self.zone, env=self.env, data=location_data) for location_data in r.json()['location']]
+        elif r.ok and 'location' not in r.json():
+            logging.warning(f'{repr(self)}: no locations data available')
+            return []
+        else:
+            self._handle_error(r, 'unable to fetch locations data')
+
+    @property
+    def locations(self) -> List:
+        """Property to get the locations of the library
+
+        :return: list of locations of the library
+        """
+        if self._locations is None:
+            self._locations = self._fetch_locations()
+
+        return self._locations
+
+    @property
+    def open_hours(self, library_code: Optional[str] = None) -> 'OpenHours':
+        """open_hours(self, library_code: Optional[str] = None) -> 'OpenHours'
+        Get the open hours of the library
+
+        :param library_code: code of the library
+        :return: object :class:`almapiwrapper.library.OpenHours`
+        """
+        if self._open_hours is None:
+            self._open_hours = OpenHours(self.zone, self.code, self.env)
+        return self._open_hours
+
+    @open_hours.setter
+    def open_hours(self, open_hours: 'OpenHours') -> None:
+        """open_hours(self, open_hours: 'OpenHours') -> None
+        Set the open hours of the library
+
+        :param open_hours: object :class:`almapiwrapper.library.OpenHours`
+        :return: None
+        """
+        self._open_hours = open_hours
+
+
+class Location(Record):
+    """Class representing a location
+    """
+
+    def __init__(self,
+                 zone: str,
+                 library_code: str,
+                 code: Optional[str] = None,
+                 env: Optional[Literal['P', 'S']] = 'P',
+                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+        """Constructor of `Location`
+
+        :param code: code of the location
+        :param zone: zone of the location
+        :param env: environment of the location: 'P' for production and 'S' for sandbox
+        :param data: data of the location, :class:`almapiwrapper.record.JsonData` object
+        """
+        super().__init__(zone, env, data)
+        self.library_code = library_code
+        self.area = 'Conf'
+        self.format = 'json'
+        self.code = code
+
+        if data is not None:
+            if not isinstance(data, JsonData):
+                data = JsonData(data)
+            self.code = data.content['code']
+            self.data = data
+
+    def __repr__(self) -> str:
+        """Get a string representation of the object. Useful for logs.
+
+        :return: string
+        """
+        return f"{self.__class__.__name__}('{self.zone}', '{self.library_code}', '{self.code}', '{self.env}')"
+
+
+    def _fetch_data(self) -> Optional[JsonData]:
+        """This method fetch the data describing the location.
+
+        :return: :class:`almapiwrapper.record.JsonData` object
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
+                           headers=self._get_headers())
+        if r.ok is True:
+            logging.info(f'{repr(self)}: location data available')
+            return JsonData(r.json())
+        else:
+            self._handle_error(r, 'unable to fetch location data')
+
+    @check_error
+    def save(self) -> 'Location':
+        """save() -> 'Location'
+        Save a Location record in the 'records' folder
+
+        When saved, a suffix is added to the file path with the version.
+        Example: records/<IZ>_<library_code>/location_<IZ>_<library_code>_<location_code>_<version>.xml
+
+        :return: object :class:`almapiwrapper.library.Location`
+        """
+        filepath = f'records/{self.zone}_{self.library_code}/location_{self.zone}_{self.library_code}_{self.code}.json'
+        self._save_from_path(filepath)
+        return self
+
+    @check_error
+    def update(self):
+        """update() -> None
+        Update the location
+        """
+        r = self._api_call('put',
+                           f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok:
+            logging.info(f'{repr(self)}: location updated.')
+        else:
+            self._handle_error(r, 'failed to update location')
+
+        return self
+
+    @property
+    def fulfillment_unit(self) -> str:
+        """fulfillment_unit() -> str
+        Get the fulfillment unit
+
+        :return: string containing the fulfillment unit
+        """
+        return self.data['fulfillment_unit']['value']
+
+    @fulfillment_unit.setter
+    def fulfillment_unit(self, fulfillment_unit: str) -> None:
+        """fulfillment_unit(self, fulfillment_unit: str) -> None
+        Set the fulfillment unit
+
+        :return: None
+        """
+        self.data['fulfillment_unit']['value'] = fulfillment_unit
+        if 'desc' in self.data['fulfillment_unit']:
+            del self.data['fulfillment_unit']['desc']
+
+
+class OpenHours(Record):
+    """Class representing list of open hours
+    """
+    def __init__(self,
+                 zone: str,
+                 library_code: Optional[str] = None,
+                 env: Optional[Literal['P', 'S']] = 'P',
+                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+        """Constructor of `OpenHours`
+
+        :param zone: zone of the open hours
+        :param library_code: code of the library
+        :param env: environment of the open hours: 'P' for production and 'S' for sandbox
+        :param data: data of the open hours, :class:`almapiwrapper.record.JsonData` object
+        """
+
+        super().__init__(zone, env, data)
+        self.library_code = library_code
+        self.area = 'Conf'
+        self.format = 'json'
+
+        if data is not None:
+            if not isinstance(data, JsonData):
+                data = JsonData(data)
+            self.data = data
+
+    def __repr__(self) -> str:
+        """Get a string representation of the object. Useful for logs.
+
+        :return: string
+        """
+        if self.library_code is not None:
+            return f"{self.__class__.__name__}('{self.zone}', '{self.library_code}', '{self.env}')"
+        else:
+            return f"{self.__class__.__name__}('{self.zone}', '{self.env}')"
+
+    def _fetch_data(self) -> Optional[JsonData]:
+        """This method fetch the data describing the open hours.
+
+        :return: :class:`almapiwrapper.record.JsonData` object
+        """
+        if self.library_code is not None:
+            params = {'scope': self.library_code}
+        else:
+            params = {}
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/open-hours',
+                           params=params,
+                           headers=self._get_headers())
+        if r.ok is True:
+            logging.info(f'{repr(self)}: open hours data available')
+            return JsonData(r.json())
+        else:
+            self._handle_error(r, 'unable to fetch open hours data')
+
+    @check_error
+    def update(self) -> 'OpenHours':
+        """update(self) -> 'OpenHours'
+        Update the open hours
+
+        :return: object :class:`almapiwrapper.library.OpenHours`
+        """
+        r = self._api_call('put',
+                           f'{self.api_base_url}/conf/open-hours',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok:
+            logging.info(f'{repr(self)}: open hours updated.')
+        else:
+            self._handle_error(r, 'failed to update open hours')
+
+        return self
+
+    @check_error
+    def save(self) -> 'OpenHours':
+        """save(self) -> 'OpenHours'
+        Save a OpenHours record in the 'records' folder
+
+        When saved, a suffix is added to the file path with the version.
+        Example: records/<IZ>/open_hours_<IZ>_<version>.xml
+
+        :return: object :class:`almapiwrapper.library.OpenHours`
+        """
+        if self.library_code is not None:
+            filepath = f'records/{self.zone}/open_hours_{self.zone}_{self.library_code}.json'
+        else:
+            filepath = f'records/{self.zone}/open_hours_{self.zone}.json'
+        self._save_from_path(filepath)
+        return self

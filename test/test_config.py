@@ -1,8 +1,9 @@
 import unittest
 import sys
 import os
+from datetime import date, timedelta
 
-from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library
+from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library, Location
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -116,6 +117,96 @@ class TestLibrary(unittest.TestCase):
         lib = Library('A100', 'UBS', 'S')
         self.assertEqual(lib.data['code'], 'A100', 'Library object corrupted')
         self.assertEqual(lib.data['name'], 'Basel - UB Hauptbibliothek', 'Library name not correct')
+
+
+class TestLocation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        loc = Location('UBS', 'A100', '100FH', 'S')
+        if loc.fulfillment_unit != 'IZ_Glob_OS':
+            loc.fulfillment_unit = 'IZ_Glob_OS'
+            loc.update()
+
+    def test_fetch_locations(self):
+        lib = Library('A100', 'UBS', 'S')
+        locations = lib.locations
+        self.assertTrue(len(locations) > 10, 'No locations found')
+        self.assertEqual(locations[20].data['code'], locations[20].code, 'Location object corrupted')
+
+    def test_get_location(self):
+        loc1 = Location('UBS', 'A100', '100FH', 'S')
+        self.assertEqual(loc1.data['code'], '100FH', 'Location object corrupted')
+        self.assertEqual(loc1.fulfillment_unit, 'IZ_Glob_OS', 'fulfillment unit should be "IZ_Glob_OS"')
+        loc1.fulfillment_unit = 'IZ_ClosLib'
+        loc1.update()
+        loc2 = Location('UBS', 'A100', '100FH', 'S')
+        self.assertEqual(loc2.fulfillment_unit, 'IZ_ClosLib', 'fulfillment unit should be "IZ_ClosLib"')
+
+    @classmethod
+    def tearDownClass(cls):
+        loc = Location('UBS', 'A100', '100FH', 'S')
+        loc.fulfillment_unit = 'IZ_Glob_OS'
+        loc.update()
+
+
+class TestOpenHours(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pass
+        # loc = Location('UBS', 'A100', '100FH', 'S')
+        # cls.oh = loc.open_hours
+
+    def test_get_open_hours(self):
+        lib = Library('A100', 'UBS', 'S')
+
+        self.assertTrue(len(lib.open_hours.data['open_hour']) > 0, 'No open hours found')
+        self.assertEqual(lib.open_hours.data['open_hour'][-1]['desc'], 'Silvester', 'Sylvester must be last exception')
+
+    def test_update_open_hours(self):
+        new_open_hours = {
+            "type": {
+                "value": "EXCEPTION",
+                "desc": "Exception"
+            },
+            "inherited": False,
+            "desc": "test_exception",
+            "from_date": f"{date.today()}Z",
+            "to_date": f"{date.today() + timedelta(days=3)}Z",
+            "from_hour": "00:00",
+            "to_hour": "23:59",
+            "status": {
+                "value": "CLOSE",
+                "desc": "Closed"
+            }
+        }
+        lib1 = Library('A100', 'UBS', 'S')
+        lib1.open_hours.data['open_hour'].append(new_open_hours)
+        lib1.open_hours.update()
+        self.assertEqual(lib1.open_hours.data['open_hour'][-1]['desc'],
+                         'test_exception',
+                         'Open hours object not updated')
+
+        lib2 = Library('A100', 'UBS', 'S')
+        is_test_exception = False
+        for oh in lib2.open_hours.data['open_hour']:
+            if oh['desc'] == 'test_exception':
+                lib2.open_hours.data['open_hour'].remove(oh)
+                is_test_exception = True
+
+        self.assertTrue(is_test_exception, 'Test exception not found')
+
+        lib2.open_hours.update()
+
+        lib3 = Library('A100', 'UBS', 'S')
+        is_test_exception = False
+        for oh in lib3.open_hours.data['open_hour']:
+            if oh['desc'] == 'test_exception':
+                is_test_exception = True
+        self.assertFalse(is_test_exception, 'Test exception not deleted')
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
 
 
 if __name__ == '__main__':
