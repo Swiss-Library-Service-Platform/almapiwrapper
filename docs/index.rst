@@ -7,8 +7,8 @@ This python module is a tool to use Alma APIs. it manages the logs and the
 backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
-* Year: 2022
-* Version: 1.1.1
+* Year: 2024
+* Version: 1.1.2
 * License: GNU General Public License v3.0
 
 Introduction
@@ -22,7 +22,8 @@ How to import modules
     # Import libraries
     from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, Loan, check_synchro, force_synchro
     from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
-    from almapiwrapper.config import RecSet, ItemizedSet, LogicalSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
+    from almapiwrapper.config import RecSet, ItemizedSet, LogicalSet, NewLogicalSet, NewItemizedSet, Job
+    from almapiwrapper.config import Reminder, fetch_reminders, Library, fetch_libraries, Location, OpenHours
     from almapiwrapper.record import JsonData, XmlData
     from almapiwrapper.analytics import AnalyticsReport
     from almapiwrapper.acquisitions import POLine, Vendor, Invoice, fetch_invoices

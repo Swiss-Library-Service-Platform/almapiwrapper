@@ -1,5 +1,5 @@
 Acquisitions submodule
--------------------
+----------------------
 
 .. toctree::
    :maxdepth: 2
