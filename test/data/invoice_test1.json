@@ -6,8 +6,7 @@
   },
   "vendor_account": "A100-1043",
   "currency": {
-    "value": "CHF",
-    "desc": "Swiss Franc"
+    "value": "EUR"
   },
   "owner": {
     "value": "A100",
@@ -23,8 +22,7 @@
     "voucher_number": "",
     "voucher_amount": "53.49",
     "voucher_currency": {
-      "value": "CHF",
-      "desc": "Swiss Franc"
+      "value": "EUR"
     }
   },
   "invoice_date": "2020-11-25Z",
@@ -94,7 +92,7 @@
         "price": 54.10,
         "quantity": 1,
         "note": "",
-        "po_line": "POL-UBS-2024-131277",
+        "po_line": "POL-UBS-2024-148772",
         "price_note": "",
         "total_price": 54.10,
         "vat_note": "Approximately 0.00 included in line Total Price.",

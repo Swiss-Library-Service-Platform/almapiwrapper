@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-from almapiwrapper.inventory import IzBib, NzBib, Holding, Item
+from almapiwrapper.inventory import IzBib, NzBib, Holding, Item, Collection
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 from lxml import etree
@@ -33,6 +33,9 @@ class TestBib(unittest.TestCase):
         if item1.data.find('.//internal_note_3').text is not None:
             item1.data.find('.//internal_note_3').text = None
             item1.update()
+
+        col = Collection('81369883060005504', 'UBS', 'S')
+        col.remove_bib('9966145550105504')
 
     def test_get_bib(self):
 
@@ -269,6 +272,34 @@ class TestBib(unittest.TestCase):
 
         self.assertIsNotNone(IzBib.get_data_from_disk(item1.get_mms_id(), 'UBS'),
                              'Bib data available on the disk')
+
+    def test_get_collection(self):
+        col = Collection('81369883060005504', 'UBS', 'S')
+        _ = col.data
+        self.assertFalse(col.error, 'Error when fetching collection data')
+
+        bibs = col.bibs
+
+        self.assertGreater(len(bibs), 30, 'Error when fetching collection bibs')
+
+        self.assertIsNotNone(bibs[0].data.find('.//controlfield[@tag="001"]'),
+                             'Error when fetching bib data from collection')
+
+        col = Collection('81372929910005501', 'NZ', 'S')
+        bib = col.bibs[10]
+
+        self.assertIsNotNone(bib.data.find('.//controlfield[@tag="001"]'),
+                             'impossible to fetch NZ record member of collection')
+
+    def test_update_collection(self):
+        col = Collection('81369883060005504', 'UBS', 'S')
+        nb_bibs = len(col.bibs)
+        col.add_bib('9966145550105504')
+        self.assertEqual(len(col.bibs), nb_bibs + 1, 'Error when adding a bib to a collection')
+
+        col.remove_bib('9966145550105504')
+
+        self.assertEqual(len(col.bibs), nb_bibs, 'Error when removing a bib to a collection')
 
     @classmethod
     def tearDownClass(cls):

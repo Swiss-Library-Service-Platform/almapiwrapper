@@ -1,5 +1,5 @@
 {
-  "number": "131268",
+  "number": "POL-UBS-2024-14877233",
   "owner": {
     "value": "A100",
     "desc": "Basel - UB Hauptbibliothek"
@@ -52,7 +52,7 @@
     "isbn": "9783030539856",
     "publisher": "Palgrave Macmillan",
     "mms_id": {
-      "value": "9972286490105504",
+      "value": "22313225480005504",
       "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9972286490105504"
     },
     "publication_place": "Cham, Switzerland",
@@ -89,21 +89,6 @@
   "note": [
   ],
   "location": [
-    {
-      "quantity": 1,
-      "library": {
-        "value": "A100",
-        "desc": "Basel - UB Hauptbibliothek"
-      },
-      "shelving_location": "100FH",
-      "holding": [
-        {
-          "id": "22436304470005504"
-        }
-      ],
-      "copy": [
-      ]
-    }
   ],
   "base_status": "",
   "access_provider": "",

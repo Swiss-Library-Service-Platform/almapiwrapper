@@ -5,6 +5,7 @@ import time
 import pandas as pd
 
 from almapiwrapper.acquisitions import POLine, Vendor, Invoice, InvoiceLine, fetch_invoices
+from almapiwrapper.inventory import Item
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -15,6 +16,16 @@ if os.getcwd().endswith('test'):
 class TestInvoice(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        pol_number = 'POL-UBS-2024-148772'
+        pol = POLine(pol_number, zone='UBS', env='S')
+        _ = pol.data
+        if pol.error is True:
+            data = JsonData(filepath='test/data/pol_test3.json')
+            pol = POLine(data=data, zone='UBS', env='S').create()
+            item = Item(barcode='UBS-S-1044370', zone='UBS', env='S')
+            item.data.find('.//po_line').text = pol.pol_number
+            item.update()
+
         invoice = Invoice(invoice_number='20000077919999', zone='UBS', env='S')
         _ = invoice.data
         if invoice.error is True:

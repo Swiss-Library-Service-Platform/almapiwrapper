@@ -1,0 +1,146 @@
+{
+  "number": "POL-UBS-2024-148772",
+  "status": {
+    "value": "CLOSED",
+    "desc": "Closed"
+  },
+  "owner": {
+    "value": "A100",
+    "desc": "Basel - UB Hauptbibliothek"
+  },
+  "type": {
+    "value": "PRINT_OT",
+    "desc": "Physical - One Time"
+  },
+  "vendor": {
+    "value": "UBS-A100-520",
+    "desc": "Brepols"
+  },
+  "rush": false,
+  "price": {
+    "sum": "50.0",
+    "currency": {
+      "value": "CHF",
+      "desc": "Swiss Franc"
+    }
+  },
+  "portfolios": {
+    "portfolio": [],
+    "total_record_count": 0
+  },
+  "license": {
+    "value": "",
+    "desc": ""
+  },
+  "url": "",
+  "vendor_account": "1138495",
+  "reclaim_interval": "0",
+  "expected_receipt_interval": "60",
+  "claiming_interval": "0",
+  "acquisition_method": {
+    "value": "VENDOR_SYSTEM",
+    "desc": "Purchase at Vendor System"
+  },
+  "no_charge": false,
+  "cancellation_restriction": false,
+  "vendor_reference_number": "",
+  "source_type": {
+    "value": "MANUALENTRY",
+    "desc": "Manual Entry"
+  },
+  "po_number": "PO-UBS-5948003",
+  "additional_order_reference": "",
+  "invoice_reference": "",
+  "resource_metadata": {
+    "title": "The python spirit and the cross becoming Christian in a highland community of Papua New Guinea Hans Reithofer",
+    "author": "Reithofer, Hans",
+    "isbn": "3825893367",
+    "publisher": "Lit",
+    "mms_id": {
+      "value": "9940475580105504",
+      "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9940475580105504"
+    },
+    "publication_place": "Berlin",
+    "publication_year": "2006",
+    "vendor_title_number": "",
+    "system_control_number": [
+      ""
+    ]
+  },
+  "fund_distribution": [
+    {
+      "amount": {
+        "sum": "50.0",
+        "currency": {
+          "value": "CHF",
+          "desc": "Swiss Franc"
+        }
+      },
+      "fund_code": {
+        "value": "Fundforall",
+        "desc": "Fundforall"
+      }
+    }
+  ],
+  "reporting_code": "",
+  "secondary_reporting_code": "",
+  "tertiary_reporting_code": "",
+  "fourth_reporting_code": "",
+  "fifth_reporting_code": "",
+  "vendor_note": "",
+  "receiving_note": "",
+  "alert": [
+    {
+      "value": "",
+      "desc": "The ordered resource already exists in the Inventory:  1 copies in library: Basel - Museum der Kulturen / Uni Ethnologie."
+    },
+    {
+      "value": "",
+      "desc": "The ordered resource already exists in the Inventory:  1 copies in library: Basel - UB Hauptbibliothek."
+    }
+  ],
+  "note": [],
+  "location": [
+    {
+      "quantity": 1,
+      "library": {
+        "value": "A100",
+        "desc": "Basel - UB Hauptbibliothek"
+      },
+      "shelving_location": "100FH",
+      "holding": [
+        {
+          "id": "22444674480005504",
+          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9940475580105504/holdings/22444674480005504"
+        }
+      ],
+      "copy": [
+        {
+          "pid": "23444674470005504",
+          "barcode": "UBS-S-1044370",
+          "item_policy": {
+            "value": "01",
+            "desc": "01 Loan 28 days"
+          },
+          "receive_date": "2024-08-19Z",
+          "expected_arrival_date": "2024-10-18Z",
+          "link": "https://api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/9940475580105504/holdings/22444674480005504/items/23444674470005504"
+        }
+      ]
+    }
+  ],
+  "access_model": "Null",
+  "base_status": "",
+  "access_provider": "",
+  "manual_renewal": false,
+  "renewal_cycle": {},
+  "renewal_period": 0,
+  "renewal_note": "",
+  "material_type": {
+    "value": "",
+    "desc": ""
+  },
+  "created_date": "2024-08-19Z",
+  "status_date": "2024-08-19Z",
+  "expected_receipt_date": "2024-10-18Z"
+}
