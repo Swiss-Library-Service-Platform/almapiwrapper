@@ -206,6 +206,11 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             iz_user.data['user_block'] = local_blocks + blocks_to_be_copied
             iz_user.dedup_notes()
 
+            # Copy first name and last name
+            for field in ['last_name', 'first_name', 'middle_name']:
+                if nz_user.data.get(field, '') != iz_user.data.get(field, ''):
+                    iz_user.data[field] = nz_user.data[field]
+
             iz_user.update(override=['user_group'])
 
     return error_msg
