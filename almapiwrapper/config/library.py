@@ -220,8 +220,8 @@ class Location(Record):
         return self
 
     @check_error
-    def update(self):
-        """update() -> None
+    def update(self) -> 'Location':
+        """update() -> Location
         Update the location
         """
         r = self._api_call('put',
@@ -235,6 +235,39 @@ class Location(Record):
             self._handle_error(r, 'failed to update location')
 
         return self
+
+    @check_error
+    def create(self) -> 'Location':
+        """create() -> 'Location'
+        Create a new location
+        """
+        r = self._api_call('post',
+                           f'{self.api_base_url}/conf/libraries/{self.library_code}/locations',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok is True:
+            logging.info(f'{repr(self)}: new location created')
+        else:
+            self._handle_error(r, 'unable to create new location')
+
+        return self
+
+    @check_error
+    def delete(self) -> None:
+        """create() -> None
+        Delete a location
+        """
+        r = self._api_call('delete',
+                           f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
+                           headers=self._get_headers())
+
+        if r.ok is True:
+            logging.info(f'{repr(self)}: location deleted')
+        else:
+            self._handle_error(r, 'unable to create new location')
+
+        return None
 
     @property
     def fulfillment_unit(self) -> str:

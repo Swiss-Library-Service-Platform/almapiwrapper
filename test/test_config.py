@@ -142,6 +142,28 @@ class TestLocation(unittest.TestCase):
         loc2 = Location('UBS', 'A100', '100FH', 'S')
         self.assertEqual(loc2.fulfillment_unit, 'IZ_ClosLib', 'fulfillment unit should be "IZ_ClosLib"')
 
+    def test_create_location(self):
+        loc1 = Location('UBS', 'A100', '100FH', 'S')
+        loc1.data['name'] = 'new test loc A100'
+        loc1.data['external_name'] = 'new test loc A100'
+        loc1.data['code'] = 'newlocA100'
+
+        loc2 = Location('UBS', 'A100', env='S', data=loc1.data)
+        _ = loc2.data
+
+        loc2.create()
+
+        loc3 = Location('UBS', 'A100', code='newlocA100', env='S')
+        _ = loc3.data
+
+        self.assertFalse(loc2.error, 'error when creating new location')
+        self.assertFalse(loc3.error, 'error when fetching new location data')
+
+        loc3.delete()
+        loc3 = Location('UBS', 'A100', code='newlocA100', env='S')
+        _ = loc3.data
+        self.assertTrue(loc3.error, 'location should not exist anymore')
+
     @classmethod
     def tearDownClass(cls):
         loc = Location('UBS', 'A100', '100FH', 'S')
