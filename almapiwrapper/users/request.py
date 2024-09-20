@@ -109,7 +109,7 @@ class Request(Record):
 
         # Decides if request is on item or on title level
         if 'item_id' in self.data and len(self.data['item_id']) > 0:
-            params = {'item_id': self.data['item_id']}
+            params = {'item_pid': self.data['item_id']}
         else:
             params = {'mms_id': self.data['mms_id']}
 

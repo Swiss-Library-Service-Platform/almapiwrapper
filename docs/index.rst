@@ -20,7 +20,7 @@ How to import modules
 .. code-block:: python
 
     # Import libraries
-    from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, Loan, check_synchro, force_synchro
+    from almapiwrapper.users import User, NewUser, fetch_users, fetch_user_in_all_iz, Fee, Loan, Request, check_synchro, force_synchro
     from almapiwrapper.inventory import IzBib, NzBib, Holding, Item, Collection
     from almapiwrapper.config import RecSet, ItemizedSet, LogicalSet, NewLogicalSet, NewItemizedSet, Job
     from almapiwrapper.config import Reminder, fetch_reminders, Library, fetch_libraries, Location, OpenHours
