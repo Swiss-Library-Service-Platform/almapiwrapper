@@ -38,11 +38,19 @@ class TestRequest(unittest.TestCase):
         req_data = JsonData(filepath=f'test/data/request_test1.json')
         _ = Request(zone='UBS', env='S', data=req_data).create()
         r = u.requests[0]
+        req_id = r.request_id
         self.assertFalse(r.error, 'Error during request creation')
 
         self.assertEqual(r.data['title'],
                          'The dot-com debacle and the return of reason Louis E.V. Nevaer',
                          'Request title mismatch')
+        r2 = Request(request_id=req_id, zone='UBS', env='S')
+        _ = r2.data
+        self.assertFalse(r2.error, 'Error during request fetch')
+        self.assertEqual(r2.data['title'],
+                         'The dot-com debacle and the return of reason Louis E.V. Nevaer',
+                         'Request title mismatch')
+        self.assertEqual(r2.user.primary_id, 'testRequestUser1', 'Request user mismatch')
 
     def test_create_request(self):
         req_data = JsonData(filepath=f'test/data/request_test2.json')

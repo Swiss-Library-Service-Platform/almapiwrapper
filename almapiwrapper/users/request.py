@@ -6,14 +6,14 @@ from almapiwrapper.inventory import Item
 from copy import deepcopy
 
 class Request(Record):
-    """Class representing a Users loan
+    """Class representing a Users request
 
     :cvar api_base_url: url of the user api
-    :ivar request_id: id of the loan
-    :ivar zone: initial value: zone of the fee
+    :ivar request_id: id of the request
+    :ivar zone: initial value: zone of the request
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar user: :class:`almapiwrapper.users.User` either primary_id of the user or the user itself must be provided
-    :ivar data: :class:`almapiwrapper.record.JsonData` with fee data
+    :ivar data: :class:`almapiwrapper.record.JsonData` with request data
     """
 
     api_base_url: ClassVar[str] = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1'
@@ -21,9 +21,6 @@ class Request(Record):
     def __init__(self,
                  request_id: Optional[str] = None,
                  user_id: Optional[str] = None,
-                 # mms_id: Optional[str] = None,
-                 # holding_id: Optional[str] = None,
-                 # item_id: Optional[str] = None,
                  zone: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
                  user: Optional[userslib.User] = None,
@@ -54,6 +51,9 @@ class Request(Record):
         elif data is not None and 'user_primary_id' in data.content:
             self._user_id = data.content['user_primary_id']
             self.user = userslib.User(self._user_id, self.zone, self.env)
+        elif request_id is not None:
+            self._user_id = None
+            self.user = None
         else:
             logging.error('Missing information to construct a Request')
             self.error = True
@@ -81,12 +81,17 @@ class Request(Record):
 
         :return: :class:`almapiwrapper.record.JsonData`"""
         r = self._api_call('get',
-                           f'{self.api_base_url}/users/{self.user.primary_id}/requests/{self.request_id}',
+                           f'{self.api_base_url}/users/'
+                           f'{self.user.primary_id if self._user_id is not None else "ALL"}/requests/'
+                           f'{self.request_id}',
                            headers=self._get_headers())
         if r.ok is True:
-            logging.info(f'{repr(self)}: request data available')
-            request_data = r.json()
 
+            request_data = r.json()
+            if self._user_id is None:
+                self._user_id = request_data['user_primary_id']
+                self.user = userslib.User(self._user_id, self.zone, self.env)
+            logging.info(f'{repr(self)}: request data available')
             return JsonData(request_data)
 
         else:
