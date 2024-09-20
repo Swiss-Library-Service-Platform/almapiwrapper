@@ -22,7 +22,7 @@ copyright = '2022, Raphaël Rey'
 author = 'Raphaël Rey'
 
 # The full version, including alpha/beta/rc tags
-release = '1.1.7'
+release = '1.1.8'
 
 
 # -- General configuration ---------------------------------------------------
