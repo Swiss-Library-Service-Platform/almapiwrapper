@@ -7,3 +7,4 @@ Inventory submodule
    bib
    holding
    item
+   collection
