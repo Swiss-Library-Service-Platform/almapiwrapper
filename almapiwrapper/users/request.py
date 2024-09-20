@@ -106,9 +106,16 @@ class Request(Record):
         to create a request.
 
         :return: object :class:`almapiwrapper.users.Request`"""
+
+        # Decides if request is on item or on title level
+        if 'item_id' in self.data and len(self.data['item_id']) > 0:
+            params = {'item_id': self.data['item_id']}
+        else:
+            params = {'mms_id': self.data['mms_id']}
+
         r = self._api_call('post',
                            f'{self.api_base_url}/users/{self.user.primary_id}/requests',
-                           params={'mms_id': self.data['mms_id']},
+                           params=params,
                            headers=self._get_headers(),
                            data=bytes(self))
 
