@@ -277,15 +277,30 @@ class IzBib(Bib):
         """
 
         # Unlink NZ and IZ record
+
+        error_message = None
+
         r = self._api_call('post',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
                            params={'op': 'unlink_from_nz'},
                            data='<bib/>',
                            headers=self._get_headers())
 
+        # Manage case when record is not linked to NZ => try to unlink it and check error message.
+        if r.ok is False:
+            try:
+                xml = etree.fromstring(r.content, parser=self.parser)
+                error_message = xml.find('.//{http://com/exlibris/urm/general/xmlbeans}errorMessage').text
+            except etree.XMLSyntaxError:
+                error_message = 'unknown error'
+
         # Delete record
-        if r.ok is True:
-            logging.info(f'{repr(self)} unlinked from NZ')
+        if r.ok is True or (error_message is not None and 'Record not linked to Network Zone' in error_message):
+            if r.ok is True:
+                logging.info(f'{repr(self)} unlinked from NZ')
+
+            elif error_message is not None and 'Record not linked to Network Zone' in error_message:
+                logging.warning(f'{repr(self)}: not linked to NZ')
 
             r = self._api_call('delete',
                                f'{self.api_base_url_bibs}/{self.mms_id}',

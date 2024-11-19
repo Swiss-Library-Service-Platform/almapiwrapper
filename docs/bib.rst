@@ -11,7 +11,7 @@
     :inherited-members:
 
 ``Collection`` class
----------------
+--------------------
 .. autoclass:: almapiwrapper.inventory.Collection
     :members:
     :inherited-members:

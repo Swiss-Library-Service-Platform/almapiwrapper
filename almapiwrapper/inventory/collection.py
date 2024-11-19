@@ -19,7 +19,6 @@ class Collection(Record):
     :ivar env: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: :class:`almapiwrapper.record.JsonData` object or dict,
     useful to force update a record from a backup
-
     """
 
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'

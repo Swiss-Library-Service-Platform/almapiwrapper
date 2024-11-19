@@ -1,5 +1,5 @@
-``Loan`` class
---------------
+``Request`` class
+-----------------
 .. autoclass:: almapiwrapper.users.Request
     :members:
     :show-inheritance:
