@@ -3,7 +3,7 @@ import sys
 import os
 from datetime import date, timedelta
 
-from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library, Location
+from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library, Location, Desk
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
@@ -230,6 +230,28 @@ class TestOpenHours(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
+class TestDesk(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    def test_get_desk(self):
+        desk1 = Desk('UBS', 'A100', 'A100_KUR', 'S')
+        self.assertEqual(desk1.data['code'], desk1.code, 'Desk object corrupted')
+
+        locations = desk1.get_locations()
+        self.assertGreater(len(locations), 10, 'There should be more than 10 locations')
+        for location in locations:
+            if location.code == '100FH':
+                break
+
+        self.assertEqual(location.data['accession_placement']['value'],
+                         '852j',
+                         'accession_placement should be 852j')
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

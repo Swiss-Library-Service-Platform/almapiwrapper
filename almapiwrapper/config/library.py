@@ -72,6 +72,7 @@ class Library(Record):
         self.library_id = library_id
         self.code = code
         self._locations = None
+        self._desks = None
         self._open_hours = None
 
         if data is not None:
@@ -102,9 +103,8 @@ class Library(Record):
         return f"{self.__class__.__name__}('{self.code}', '{self.zone}', '{self.env}')"
 
     @check_error
-    def _fetch_locations(self) -> List:
-        """get_locations(self) -> List
-        Return the list of locations
+    def _fetch_locations(self) -> List['Location']:
+        """Return the list of locations
 
         :return: list of locations
         """
@@ -121,7 +121,7 @@ class Library(Record):
             self._handle_error(r, 'unable to fetch locations data')
 
     @property
-    def locations(self) -> List:
+    def locations(self) -> List['Location']:
         """Property to get the locations of the library
 
         :return: list of locations of the library
@@ -131,9 +131,40 @@ class Library(Record):
 
         return self._locations
 
+
+    @check_error
+    def _fetch_desks(self) -> List['Desk']:
+        """get_locations(self) -> List
+        Return the list of locations
+
+        :return: list of locations
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/libraries/{self.code}/circ-desks',
+                           headers=self._get_headers())
+        if r.ok is True and 'circ_desk' in r.json():
+            logging.info(f'{repr(self)}: circulation desks data available')
+            return [Desk(library_code=self.code, code=desk_data['code'], zone=self.zone, env=self.env) for desk_data in r.json()['circ_desk']]
+        elif r.ok and 'circ_desk' not in r.json():
+            logging.warning(f'{repr(self)}: no circulation desks data available')
+            return []
+        else:
+            self._handle_error(r, 'unable to fetch circulation desks data')
+
     @property
-    def open_hours(self, library_code: Optional[str] = None) -> 'OpenHours':
-        """open_hours(self, library_code: Optional[str] = None) -> 'OpenHours'
+    def desks(self) -> List['Desk']:
+        """Property to get the desks of the library
+
+        :return: list of desks of the library
+        """
+        if self._desks is None:
+            self._desks = self._fetch_desks()
+
+        return self._desks
+
+    @property
+    def open_hours(self) -> 'OpenHours':
+        """open_hours(self) -> 'OpenHours'
         Get the open hours of the library
 
         :param library_code: code of the library
@@ -378,5 +409,68 @@ class OpenHours(Record):
             filepath = f'records/{self.zone}/open_hours_{self.zone}_{self.library_code}.json'
         else:
             filepath = f'records/{self.zone}/open_hours_{self.zone}.json'
+        self._save_from_path(filepath)
+        return self
+
+
+class Desk(Record):
+    """Class representing a desk
+    """
+    def __init__(self,
+                 zone: str,
+                 library_code: Optional[str] = None,
+                 code: Optional[str] = None,
+                 env: Optional[Literal['P', 'S']] = 'P') -> None:
+        """Constructor of `Desk`
+
+        :param zone: zone of the desk
+        :param library_code: code of the library
+        :param code: code of the desk
+        :param env: environment of the desk: 'P' for production and 'S' for sandbox
+        """
+        super().__init__(zone, env)
+        self.library_code = library_code
+        self.area = 'Conf'
+        self.format = 'json'
+        self.code = code
+
+    def __repr__(self) -> str:
+        """Get a string representation of the object. Useful for logs.
+
+        :return: string
+        """
+        return f"{self.__class__.__name__}('{self.zone}', '{self.library_code}', '{self.code}', '{self.env}')"
+
+    def _fetch_data(self) -> Optional[JsonData]:
+        """This method fetch the data describing the desk.
+
+        :return: :class:`almapiwrapper.record.JsonData` object
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/libraries/{self.library_code}/circ-desks/{self.code}',
+                           headers=self._get_headers())
+        if r.ok is True:
+            logging.info(f'{repr(self)}: desk data available')
+            return JsonData(r.json())
+        else:
+            self._handle_error(r, 'unable to fetch desk data')
+
+    @check_error
+    def get_locations(self):
+        """get_locations(self) -> List[Location]
+        Return the list of locations
+
+        :return: list of locations
+        """
+
+        locations = [Location(self.zone, self.library_code, location['location_code'], self.env)
+                     for location in self.data['location']]
+        return locations
+
+    @check_error
+    def save(self) -> 'Desk':
+        """save() -> 'Desk'
+        Save a Desk record in the 'records' folder"""
+        filepath = f'records/{self.zone}/desk_{self.zone}_{self.library_code}_{self.code}.json'
         self._save_from_path(filepath)
         return self
