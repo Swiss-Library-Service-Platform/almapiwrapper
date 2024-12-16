@@ -65,6 +65,7 @@ class Library(Record):
         :param env: environment of the library: 'P' for production and 'S' for sandbox
         :param library_id: library id
         :param data: data of the library, :class:`almapiwrapper.record.JsonData` object
+
         """
         super().__init__(zone, env, data)
         self.area = 'Conf'
@@ -167,7 +168,6 @@ class Library(Record):
         """open_hours(self) -> 'OpenHours'
         Get the open hours of the library
 
-        :param library_code: code of the library
         :return: object :class:`almapiwrapper.library.OpenHours`
         """
         if self._open_hours is None:
@@ -201,6 +201,7 @@ class Location(Record):
         :param zone: zone of the location
         :param env: environment of the location: 'P' for production and 'S' for sandbox
         :param data: data of the location, :class:`almapiwrapper.record.JsonData` object
+
         """
         super().__init__(zone, env, data)
         self.library_code = library_code
@@ -271,6 +272,8 @@ class Location(Record):
     def create(self) -> 'Location':
         """create() -> 'Location'
         Create a new location
+
+        :return: object :class:`almapiwrapper.library.Location`
         """
         r = self._api_call('post',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations',
