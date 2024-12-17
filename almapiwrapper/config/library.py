@@ -418,6 +418,12 @@ class OpenHours(Record):
 
 class Desk(Record):
     """Class representing a desk
+
+    :param zone: zone of the desk
+    :param library_code: code of the library
+    :param code: code of the desk
+    :param env: environment of the desk: 'P' for production and 'S' for sandbox
+
     """
     def __init__(self,
                  zone: str,
