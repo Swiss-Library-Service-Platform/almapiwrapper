@@ -419,10 +419,11 @@ class OpenHours(Record):
 class Desk(Record):
     """Class representing a desk
 
-    :param zone: zone of the desk
-    :param library_code: code of the library
-    :param code: code of the desk
-    :param env: environment of the desk: 'P' for production and 'S' for sandbox
+    :ivar zone: zone of the desk
+    :ivar library_code: code of the library
+    :ivar code: code of the desk
+    :ivar env: environment of the desk: 'P' for production and 'S' for sandbox
+    :ivar data: data of the desk, :class:`almapiwrapper.record.JsonData` object
 
     """
     def __init__(self,
@@ -465,11 +466,11 @@ class Desk(Record):
             self._handle_error(r, 'unable to fetch desk data')
 
     @check_error
-    def get_locations(self):
+    def get_locations(self) -> List[Location]:
         """get_locations(self) -> List[Location]
         Return the list of locations
 
-        :return: list of locations
+        :return: list of :class:`almapiwrapper.library.Location`
         """
 
         locations = [Location(self.zone, self.library_code, location['location_code'], self.env)
@@ -479,7 +480,8 @@ class Desk(Record):
     @check_error
     def save(self) -> 'Desk':
         """save() -> 'Desk'
-        Save a Desk record in the 'records' folder"""
+        Save a Desk record in the 'records' folder
+        """
         filepath = f'records/{self.zone}/desk_{self.zone}_{self.library_code}_{self.code}.json'
         self._save_from_path(filepath)
         return self
