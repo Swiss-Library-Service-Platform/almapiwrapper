@@ -49,7 +49,14 @@ def _handle_error(r: requests.models.Response, msg: str, zone: str, env: Literal
 
 
 class Library(Record):
-    """Class representing a reminder
+    """Class representing a library
+
+    :ivar code: code of the library
+    :ivar zone: zone of the library
+    :ivar env: environment of the library: 'P' for production and 'S' for sandbox
+    :ivar library_id: library id (number)
+    :ivar data: data of the library, :class:`almapiwrapper.record.JsonData` object
+
     """
 
     def __init__(self,
@@ -482,6 +489,6 @@ class Desk(Record):
         """save() -> 'Desk'
         Save a Desk record in the 'records' folder
         """
-        filepath = f'records/{self.zone}/desk_{self.zone}_{self.library_code}_{self.code}.json'
+        filepath = f'records/{self.zone}_{self.library_code}/desk_{self.zone}_{self.library_code}_{self.code}.json'
         self._save_from_path(filepath)
         return self
