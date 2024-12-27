@@ -7,8 +7,7 @@ import almapiwrapper.inventory as inventory
 
 
 class Collection(Record):
-    """
-    Class representing a collection object
+    """Class representing a collection object
 
     Collections can be in NZ and in IZ. They contain list of bibliographic records.
 
@@ -20,7 +19,6 @@ class Collection(Record):
     :ivar pid: collection ID
 
     """
-
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'
 
     def __init__(self,

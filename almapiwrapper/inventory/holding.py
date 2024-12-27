@@ -71,6 +71,7 @@ class Holding(Record):
             # If there is an error in the bibliographic record, it is spread out in the holding record
             if self.bib.error is True:
                 self.error = True
+
         # Create a new holding if 'create_holding' is True
         if self.holding_id is None and data is not None and create_holding is True:
             if data.__class__.__name__ == '_Element':

@@ -203,6 +203,23 @@ class TestBib(unittest.TestCase):
         new_bib.delete()
         self.assertFalse(new_bib.error, 'No error when deleting record in NZ')
 
+    def test_create_local_bib_record(self):
+        data = XmlData(filepath='test/data/bib_local_test.xml')
+        bib = IzBib(zone='UBS', env='S', data=data, create_bib=True)
+
+        self.assertFalse(bib.error, 'No error when creating a local bib record')
+
+        mms_id = bib.mms_id
+
+        new_bib = IzBib(mms_id, 'UBS', 'S')
+
+        self.assertEqual(new_bib.data.find('.//datafield[@tag="245"]/subfield[@code="a"]').text,
+                         'Tierschutz',
+                         'Title not corresponding to "Tierschutz"')
+
+        new_bib.delete()
+        self.assertFalse(new_bib.error, 'No error when deleting record in NZ')
+
     def test_get_records_id(self):
         item = Item(barcode='03124510', zone='HPH', env='S')
 

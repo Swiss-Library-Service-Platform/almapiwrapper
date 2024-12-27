@@ -1,0 +1,62 @@
+<bib>
+  <record_format>marc21</record_format>
+  <title>Tierschutz Magazin</title>
+  <suppress_from_publishing>false</suppress_from_publishing>
+  <suppress_from_external_search>false</suppress_from_external_search>
+  <suppress_from_metadoor>false</suppress_from_metadoor>
+  <cataloging_level desc="BIB cataloger">20</cataloging_level>
+  <brief_level desc="01">01</brief_level>
+  <record>
+    <leader>00820nas a22002057c 4500</leader>
+    <controlfield tag="001">9972873771905504</controlfield>
+    <controlfield tag="008">      c20159999xx |||p|  ||| |    |ger d</controlfield>
+    <controlfield tag="005">20241227115638.0</controlfield>
+    <datafield ind1=" " ind2=" " tag="040">
+      <subfield code="a">CH-ZuSLS</subfield>
+      <subfield code="b">ger</subfield>
+    </datafield>
+    <datafield ind1="0" ind2="0" tag="245">
+      <subfield code="a">Tierschutz</subfield>
+      <subfield code="b">Magazin</subfield>
+      <subfield code="c">Svenja Gruszeczka</subfield>
+    </datafield>
+    <datafield ind1=" " ind2="1" tag="264">
+      <subfield code="a">Krefeld</subfield>
+      <subfield code="b">Svenja Gruszeczka</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="336">
+      <subfield code="b">txt</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="337">
+      <subfield code="b">n</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="338">
+      <subfield code="b">nc</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="700">
+      <subfield code="a">Gruszeczka, Svenja</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="700">
+      <subfield code="a">Freyenmuth, Alexandra</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="700">
+      <subfield code="a">Uhde, Kerstin</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="958">
+      <subfield code="a">Tierschutz Heimtiere Tierheime Tiervermittlung Adoptieren Adoption Deutschland Futtermitteltierversuche Fellnase Nothilfe e.V. Hundezucht Welpenhandel Katzen Struvit Tiergesundheit Veterin&#228;rmedizin Tierqu&#228;lerei Silvester</subfield>
+      <subfield code="9">LOCAL</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="961">
+      <subfield code="a">Tierschutz (Allgemeines / Tierschutzgeschichte)</subfield>
+      <subfield code="2">tir</subfield>
+      <subfield code="9">LOCAL</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="991">
+      <subfield code="a">TIR brief record</subfield>
+      <subfield code="9">LOCAL</subfield>
+    </datafield>
+  </record>
+</bib>

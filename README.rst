@@ -7,7 +7,7 @@ backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
 * Year: 2022
-* Version: 1.1.15
+* Version: 1.1.16
 * License: GNU General Public License v3.0
 * `Documentation <https://almapi-wrapper.readthedocs.io/en/latest/>`_
 

@@ -183,12 +183,14 @@ class IzBib(Bib):
         NZ ID, the CZ record is copied from NZ
 
     """
-    def __init__(self, mms_id: str,
-                 zone: str,
+    def __init__(self,
+                 mms_id: Optional[str] = None,
+                 zone: Optional[str] = None,
                  env: Literal['P', 'S'] = 'P',
                  from_nz_mms_id: Optional[bool] = False,
                  copy_nz_rec: Optional[bool] = False,
-                 data: Optional[XmlData] = None):
+                 data: Optional[Union['XmlData', etree.Element]] = None,
+                 create_bib: Optional[bool] = False) -> None:
         """Constructor of an IZ bibliographic record
         """
 
@@ -197,6 +199,12 @@ class IzBib(Bib):
         if from_nz_mms_id is True:
             self.data = self._fetch_bib_data_from_nz_id(copy_nz_rec)
             self.mms_id = self.get_mms_id()
+
+        # Create a new holding if 'create_holding' is True
+        if self.mms_id is None and data is not None and create_bib is True:
+            if data.__class__.__name__ == '_Element':
+                data = XmlData(etree.tostring(data))
+            self._create_bib(data)
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -234,6 +242,7 @@ class IzBib(Bib):
 
     def _copy_record_from_nz(self) -> Optional[XmlData]:
         """Copy NZ record to IZ. Loads the data in 'data' attribute.
+
         :return: None
         """
         nz_mms_id = self.mms_id
@@ -248,6 +257,24 @@ class IzBib(Bib):
             return XmlData(r.content)
         else:
             self._handle_error(r, 'unable to copy NZ record to IZ')
+
+    def _create_bib(self, data: XmlData) -> None:
+        """Create a new IZ bib record with API.
+
+        :param data: :class:`almapiwrapper.record.XmlData` object
+        """
+
+        r = self._api_call('post',
+                           f'{self.api_base_url_bibs}',
+                           headers=self._get_headers(),
+                           data=bytes(data))
+
+        if r.ok is True:
+            self.data = XmlData(r.content)
+            self.mms_id = self.get_mms_id()
+            logging.info(f'{repr(self)}: IZ bib record created')
+        else:
+            self._handle_error(r, f'unable to create IZ bib record')
 
     @check_error
     def get_nz_mms_id(self) -> Optional[str]:
@@ -384,7 +411,7 @@ class NzBib(Bib):
     :param create_bib: bool, if True, create a new bib record in the NZ
     """
     def __init__(self, mms_id: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[XmlData] = None,
                  create_bib: Optional[bool] = False) -> None:
         """
