@@ -13,5 +13,6 @@ setup(name='almapiwrapper',
       long_description_content_type='text/reST',
       packages=find_packages(),
       py_modules=['almapiwrapper'],
-      author_email='raphael.rey@slsp.ch'
+      author_email='raphael.rey@slsp.ch',
+      license='GPL-3.0-or-later'
       )
