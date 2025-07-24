@@ -236,6 +236,12 @@ class Record(metaclass=abc.ABCMeta):
         :param msg: context message of the error
         :return: None
         """
+        if 'Content-Type' not in r.headers:
+            logging.error(f'{repr(self)} - {r.status_code if r is not None else "unknown"}: '
+                          f'{msg} / no Content-Type header in the response')
+            self.error = True
+            self.error_msg = 'unknown error'
+            return
         if 'json' in r.headers['Content-Type']:
             json_data = r.json()
             try:
