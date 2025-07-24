@@ -1,12 +1,15 @@
 [project]
 name = "almapiwrapper"
-version = "1.1.18"
+version = "1.1.19"
 authors = [
   { name="Raphaël Rey", email="raphael.rey@slsp.ch" },
 ]
 description = "This python module is a tool to use Alma APIs. it manages the logs and the backup of the records."
 readme = "readme.rst"
 requires-python = ">=3.9"
+
+license = {text = "GPL-3.0-or-later"}
+
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
