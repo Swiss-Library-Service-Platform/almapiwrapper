@@ -213,6 +213,25 @@ class Request(Record):
             self._handle_error(r, f'{repr(self)}: unable to cancel request')
 
     @check_error
+    def update(self) -> 'Request':
+        """Update a request
+        :return: object :class:`almapiwrapper.users.Request`
+        """
+
+        r = self._api_call('put',
+                           f'{self.api_base_url}/users/{self.user.primary_id}/requests/{self.request_id}',
+                           headers=self._get_headers(),
+                           data=bytes(self))
+
+        if r.ok is True:
+            self.data = JsonData(r.json())
+            logging.info(f'{repr(self)}: request updated')
+        else:
+            self._handle_error(r, f'{repr(self)}: unable to update request')
+        return self
+
+
+    @check_error
     def save(self) -> 'userslib.Request':
         """Save a user loan record in the 'records' folder
 

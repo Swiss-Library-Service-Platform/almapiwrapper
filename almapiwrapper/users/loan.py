@@ -107,10 +107,6 @@ class Loan(Record):
                     self.zone,
                     self.env)
 
-    @check_error
-    def return_loan(self):
-        pass
-
     def renew_loan(self) -> 'userslib.Loan':
         """Renew the loan
 
@@ -151,10 +147,6 @@ class Loan(Record):
         else:
             self._handle_error(r, f'{repr(self)}: unable to change due date of the loan')
         return self
-
-    @check_error
-    def return_loan(self):
-        pass
 
     @check_error
     def save(self) -> 'userslib.Loan':
