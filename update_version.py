@@ -38,6 +38,7 @@ with open('docs/index.rst') as f:
     content = f.read()
 
 content = re.sub(r'\* Version: \d+\.\d+\.\d+', f'* Version: {version}', content)
+content = re.sub(r'\* Year: \d{4}', f'* Year: {datetime.now().year}', content)
 
 with open('docs/index.rst', 'w') as f:
     f.write(content)
