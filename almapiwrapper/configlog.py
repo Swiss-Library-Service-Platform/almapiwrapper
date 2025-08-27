@@ -8,12 +8,17 @@ import os
 def config_log(file_name: Optional[str] = "") -> None:
     """Set the log configuration for the entire process
 
+    The logs are written in a file located in the log folder. If the folder
+    doesn't exist, it is created. The log file is named "log_<file_name>.txt".
+    If no file_name is provided, the log file is named "log.txt".
+
     :param file_name: name of the log file
+
     :return: None
     """
 
     # Create the log folder if it doesn't exist
-    if os.path.isdir('./log') is False:
+    if not os.path.isdir('./log'):
         os.mkdir('./log')
 
     message_format = "%(asctime)s - %(levelname)s - %(message)s"

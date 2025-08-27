@@ -13,7 +13,11 @@ import pandas as pd
 def check_error(fn: Callable) -> Callable:
     """Prevents operation if the record is containing an error
 
+    This is a decorator function. It is used to skip a method if the record
+    contains an error.
+
     :param fn: method that should not to be executed in case of error
+
     :return: wrapper function
     """
     def wrapper(*args, **kwargs):
@@ -39,7 +43,19 @@ class Record(metaclass=abc.ABCMeta):
     :ivar zone: initial value: zone of the record (can be "NZ")
     :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
     :ivar data: initial value: :class:`almapiwrapper.record.XmlData`
+    :ivar error: initial value: False, set to True if an error occurs during an API call
+    :ivar error_msg: initial value: None, set to the error message if an error occurs during an API call
+
+    :cvar area: area of the record, like 'bibs' or 'users'
+    :cvar format: format of the record, like 'xml' or 'json'
+    :cvar api_base_url: base url of the Alma API
+    :cvar parser: XML parser used to parse XML data
     """
+
+    # Common attributes to all entities
+    area = None
+    format = None
+
     # Used to get API keys
     k: ClassVar[ApiKeys] = ApiKeys()
 
@@ -60,8 +76,6 @@ class Record(metaclass=abc.ABCMeta):
         self.error_msg = None
         self.zone = zone
         self.env = env
-        self.area = None
-        self.format = None
         self._data = data
 
     @abc.abstractmethod
@@ -111,7 +125,7 @@ class Record(metaclass=abc.ABCMeta):
                       zone: str,
                       area: str,
                       rights: Literal['R', 'RW'] = 'RW',
-                      env: Optional[Literal['P', 'S']] = 'P') -> Dict:
+                      env: Literal['P', 'S'] = 'P') -> Dict:
         """Build the headers for the API calls.
 
         :param data_format: "json" or "xml"
@@ -119,6 +133,7 @@ class Record(metaclass=abc.ABCMeta):
         :param area: area of the record, bibs, users for example
         :param rights: "R" for read only or "RW" for write and read rights
         :param env: environment of the api call: 'P' for production, 'S' for sandbox
+
         :return: dict with the headers
         """
 
@@ -142,16 +157,21 @@ class Record(metaclass=abc.ABCMeta):
             else:
                 return self._data.content
 
+        return None
+
     @data.setter
     def data(self, data: Union['JsonData', 'XmlData', pd.DataFrame]) -> None:
         """Property used to set data
-        :param data: xml data or dictionary
+
+        :param data: :class:`almapiwrapper.record.JsonData`, :class:`almapiwrapper.record.XmlData` or pandas DataFrame
+
         :return: None
         """
         self._data = data
 
     def __str__(self) -> str:
         """Return content of data attribute as a string
+
         :return: string data
         """
         if self.data is not None:
@@ -161,6 +181,7 @@ class Record(metaclass=abc.ABCMeta):
 
     def __bytes__(self):
         """Return content of data attribute as bytes
+
         :return: bytes data
         """
         if self.data is not None:
@@ -172,6 +193,7 @@ class Record(metaclass=abc.ABCMeta):
         """Save a record in the 'records' folder. Versioning is supported. A suffix is added to the file path.
 
         :param filepath: initial path of the saved record
+
         :return: None
         """
         # Fetch directory
@@ -211,8 +233,8 @@ class Record(metaclass=abc.ABCMeta):
 
         :param data_format: "json" or "xml" according to the format of the record
         :param zone: optional, if indicated allow to make the query in another IZ
-        que celle de l'objet courant
         :param env: environment of the api call: 'P' for production, 'S' for sandbox
+
         :return: dict with the header
         """
 
@@ -234,6 +256,7 @@ class Record(metaclass=abc.ABCMeta):
 
         :param r: request response of the api
         :param msg: context message of the error
+
         :return: None
         """
         if 'Content-Type' not in r.headers:
@@ -254,8 +277,10 @@ class Record(metaclass=abc.ABCMeta):
                 error_message = xml.find('.//{http://com/exlibris/urm/general/xmlbeans}errorMessage').text
             except etree.XMLSyntaxError:
                 error_message = 'unknown error'
+
         logging.error(f'{repr(self)} - {r.status_code if r is not None else "unknown"}: '
                       f'{msg} / {error_message}')
+
         self.error = True
         self.error_msg = error_message
 
@@ -313,7 +338,7 @@ class XmlData:
             f = open(filepath, 'rb')
         except FileNotFoundError:
             logging.error(f'File not found: {filepath}')
-            return
+            return None
 
         try:
             data = f.read()
@@ -370,7 +395,7 @@ class JsonData:
             f = open(filepath, 'rb')
         except FileNotFoundError:
             logging.error(f'File not found: {filepath}')
-            return
+            return None
 
         try:
             data = json.load(f)

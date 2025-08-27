@@ -60,7 +60,7 @@ Here is a sample without the complete API keys:
     }
 
 
-The API keys are grouped by IZ. Env can be either "p" for production or "S"
+The API keys are grouped by IZ. Env can be either "P" for production or "S"
 for sandbox. Permissions are either "RW" (read and write) or "R" (read). This file
 can be stored anyway on the machine.
 
@@ -79,8 +79,8 @@ It is possible to configure the logs. The log files are stored in the
 
     from almapiwrapper import config_log
 
-    # Will store the logs in the `./log/test.log` file
-    config_log("test.log")
+    # Will store the logs in the `./log/test.txt` file
+    config_log("test")
 
 Records backups
 ---------------
@@ -110,8 +110,22 @@ to the record.
 
 .. code-block:: python
 
-    # get item from barcode
+
+    # Get an item from barcode
     item = Item(barcode='03124510', zone='HPH', env='S')
+
+    # Creat a backup of the record
+    item.save()
+
+    # Update the barcode using the property barcode (library and location also can be changed this way
+    item.barcode = '03124510_NEW'
+
+    # Update the internal note using the data property
+    # We use lxml.etree.ElementTree to find the field and change its value
+    item.data.find('item_data/internal_note_1').text = 'Note for testing'
+
+    # Make the update in Alma
+    item.update()
 
 
 Users

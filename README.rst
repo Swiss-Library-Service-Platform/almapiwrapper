@@ -6,8 +6,8 @@ This python module is a tool to use Alma APIs. it manages the logs and the
 backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
-* Year: 2022
-* Version: 1.2.0
+* Year: 2025
+* Version: 1.2.1
 * License: GNU General Public License v3.0
 * `Documentation <https://almapi-wrapper.readthedocs.io/en/latest/>`_
 

@@ -1,6 +1,7 @@
 import almapiwrapper
 import re
 import os
+from datetime import datetime
 
 version = almapiwrapper.__version__
 
@@ -27,6 +28,7 @@ with open('README.rst') as f:
     content = f.read()
 
 content = re.sub(r'\* Version: \d+\.\d+\.\d+', f'* Version: {version}', content)
+content = re.sub(r'\* Year: \d{4}', f'* Year: {datetime.now().year}', content)
 
 with open('README.rst', 'w') as f:
     f.write(content)
