@@ -8,6 +8,7 @@ import time
 import os
 import requests
 import pandas as pd
+from functools import wraps
 
 
 def check_error(fn: Callable) -> Callable:
@@ -17,20 +18,18 @@ def check_error(fn: Callable) -> Callable:
     contains an error.
 
     :param fn: method that should not to be executed in case of error
-
     :return: wrapper function
     """
+    @wraps(fn)
     def wrapper(*args, **kwargs):
-        """Wrapper function
-        """
         rec = args[0]
         if rec.error is False and rec.data is not None:
             rec = fn(*args, **kwargs)
         else:
-            logging.error(f'{repr(rec)}: due to error to the record, process "{fn.__name__}" skipped.')
+            logging.error(
+                f'{repr(rec)}: due to error in the record, process "{fn.__name__}" skipped.'
+            )
         return rec
-
-    wrapper.__doc__ = fn.__doc__
 
     return wrapper
 

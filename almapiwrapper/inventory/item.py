@@ -26,21 +26,37 @@ class Item(Record):
     :ivar holding: :class:`almapiwrapper.inventory.Holding` object
     :ivar data: :class:`almapiwrapper.record.XmlData` object, useful to force
         update a record from a backup
+    :ivar error: boolean indicating if an error occurred during the last operation
+    :ivar error_msg: string containing the error message if an error occurred during the last operation
+
+    :cvar api_base_url_items: base URL for items API calls
+    :cvar api_base_url_bibs: base URL for bibs API calls
+    :cvar area: area of the API
+    :cvar format: format of the data xml for items
+
     :param barcode: string with barcode of the item
     :param mms_id: bib record mms_id
     :param holding_id: holding record ID
+    :param item_id: numerical ID of the item
+    :param zone: zone of the record
+    :param env: environment of the entity: 'P' for production and 'S' for sandbox
+    :param holding: :class:`almapiwrapper.inventory.Holding` object
+    :param data: :class:`almapiwrapper.record.XmlData` object or etree.Element, useful to force
+        update a record from a backup or to create a new item
     :param create_item: when True, create a new item
     """
 
     api_base_url_items: ClassVar[str] = f'{Record.api_base_url}/items'
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'
+    area = 'Bibs'
+    format = 'xml'
 
     def __init__(self,
                  mms_id: Optional[str] = None,
                  holding_id: Optional[str] = None,
                  item_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Optional[Literal['P', 'S']] = 'P',
+                 env: Literal['P', 'S'] = 'P',
                  holding: Optional[inventory.Holding] = None,
                  barcode: Optional[str] = None,
                  data: Optional[etree.Element] = None,
@@ -57,8 +73,6 @@ class Item(Record):
         self.holding = holding
         self.item_id = item_id
         self._barcode = barcode
-        self.area = 'Bibs'
-        self.format = 'xml'
 
         # Set 'env' and 'zone' either from holding data either from parameters
         if holding is not None:
@@ -82,7 +96,7 @@ class Item(Record):
         # Fetch the item from IDs of item, holding and bibliographic record
         elif self.item_id is not None and mms_id is not None and holding_id is not None and data is None:
             self.holding = inventory.Holding(mms_id, holding_id, self.zone, self.env)
-            if self.holding.error is True:
+            if self.holding.error:
                 self.error = True
             self.data = self._fetch_data()
 
@@ -107,8 +121,8 @@ class Item(Record):
                f"'{self.item_id}', '{self.zone}', '{self.env}')"
 
     def _fetch_data(self, barcode: Optional[str] = None) -> Optional[XmlData]:
-        """
-        Fetch item data and store it in 'data' attribute
+        """Fetch item data and store it in 'data' attribute
+
         :param barcode: barcode of the item
 
         :return: None
@@ -118,18 +132,13 @@ class Item(Record):
                                self.api_base_url_items,
                                params={'item_barcode': barcode},
                                headers=self._get_headers())
-            if r.ok is True:
+            if r.ok:
                 logging.info(f"{repr(self)}: item data fetched with barcode '{barcode}'")
                 return XmlData(r.content)
             else:
                 self._handle_error(r, f"unable to get item data from barcode '{barcode}'")
                 self.error = True
-                return
-
-            # # Fetch holding
-            # self.holding = inventory.Holding(self.data.find('.//mms_id').text,
-            #                                  self.data.find('.//holding_id').text,
-            #                                  self.zone, self.env)
+                return None
 
         # No barcode provided
         else:
@@ -138,26 +147,26 @@ class Item(Record):
                                f'/items/{self.item_id}',
                                headers=self._get_headers())
 
-            if r.ok is True:
+            if r.ok:
 
                 logging.info(f'{repr(self)}: item data available')
                 return XmlData(r.content)
             else:
                 self._handle_error(r, 'unable to fetch item data')
+                return None
 
     def _create_item(self, data: etree.Element):
-        """
-        Create an item to the holding with the provided data.
+        """Create an item to the holding with the provided data.
         :param data: item data
 
-        :return: Item
+        :return: :class:`almapiwrapper.inventory.Item` object
         """
         r = self._api_call('post',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
                            headers=self._get_headers(),
                            data=etree.tostring(data))
 
-        if r.ok is True:
+        if r.ok:
             self.data = XmlData(r.content)
             self.item_id = self.get_item_id()
             logging.info(f'{repr(self)}: item created')
@@ -166,39 +175,33 @@ class Item(Record):
 
     @check_error
     def get_item_id(self) -> str:
-        """get_item_id() -> str
-        Fetch the item ID in the xml data of 'data' attribute. Useful for creating a new item.
+        """Fetch the item ID in the xml data of 'data' attribute. Useful for creating a new item.
 
-        :return: item id
+        :return: str, item id
         """
         return self.data.find('.//pid').text
 
     @check_error
     def get_holding_id(self) -> str:
-        """get_holding_id() -> str:
-        Fetch holding ID
+        """Fetch holding ID
 
-        :return: holding ID
+        :return: str, holding ID
         """
-
         return self.data.find('.//holding_id').text
 
     @check_error
     def get_mms_id(self) -> str:
-        """get_mms_id(self) -> str
-        Fetch IZ MMS ID
+        """Fetch IZ MMS ID
 
-        :return: IZ MMS ID
+        :return: str, IZ MMS ID
         """
-
         return self.data.find('.//mms_id').text
 
     @check_error
     def get_nz_mms_id(self) -> Optional[str]:
-        """get_mms_id(self) -> Optional[str]
-        Fetch NZ MMS ID
+        """Fetch NZ MMS ID
 
-        :return: NZ MMS ID
+        :return: str, NZ MMS ID
         """
 
         nz_number_fields = self.data.findall('.//network_number')
@@ -208,21 +211,22 @@ class Item(Record):
                 return m.group(1)
 
         logging.warning('{repr(self)}: Record not linked with NZ, no NZ MMS ID available')
+        return None
 
     @property
-    def bib(self) -> inventory.IzBib:
-        """
-        Property of the item returning the bibliographic record
+    def bib(self) -> Optional[inventory.IzBib]:
+        """Property of the item returning the :class:`almapiwrapper.inventory.IzBib` object
 
-        :return: IzBib
+        :return: :class:`almapiwrapper.inventory.IzBib` or None
         """
         if self.holding is not None:
             return self.holding.bib
+        else:
+            return None
 
     @property
     def holding(self) -> Optional[inventory.Holding]:
-        """holding(self) -> Optional[inventory.Holding]
-        Property of the item returning the :class:`almapiwrapper.inventory.Holding` object
+        """Property of the item returning the :class:`almapiwrapper.inventory.Holding` object
         related to the item
 
         :return: :class:`almapiwrapper.inventory.Holding`
@@ -235,9 +239,9 @@ class Item(Record):
         # To force fetching holding data
         # _ = self._holding.data
 
-        if self._holding.error is True:
+        if self._holding.error:
             self.error = True
-            return
+            return None
 
         return self._holding
 
@@ -245,7 +249,8 @@ class Item(Record):
     def holding(self, holding: inventory.Holding) -> None:
         """Property of the item containing the holding
 
-        :return: None"""
+        :return: None
+        """
         self._holding = holding
 
     @property
@@ -254,19 +259,18 @@ class Item(Record):
         """barcode(self) -> Optional[str]
         Property of the item returning the barcode
 
-        :return: library code
+        :return: str, library code
         """
         barcode_field = self.data.find('.//barcode')
         if barcode_field is None:
             logging.warning(f'{repr(self)}: no barcode in the item')
-            return
+            return None
         return barcode_field.text
 
     @barcode.setter
     @check_error
     def barcode(self, barcode: str) -> None:
-        """barcode(self, barcode: str) -> None
-        This setter is able to update the barcode of the item. But the field should already exist.
+        """This setter is able to update the barcode of the item. But the field should already exist.
 
         :param barcode: barcode of the item
 
@@ -282,11 +286,11 @@ class Item(Record):
 
     @check_error
     def save(self) -> 'Item':
-        """save(self) -> 'Item'
-        Save a record item in the 'records' folder. Versioning is supported. A suffix is added to the file path.
+        """Save a record item in the 'records' folder. Versioning is supported. A suffix is added to the file path.
+
         Example: records/UBS_9963486250105504/item_22314215800005504_23314215790005504_01.xml
 
-        :return: Item
+        :return: :class:`almapiwrapper.inventory.Item` object
         """
         filepath = f'records/{self.zone}_{self.bib.mms_id}/item_{self.holding.holding_id}_{self.item_id}.xml'
         self._save_from_path(filepath)
@@ -294,10 +298,9 @@ class Item(Record):
 
     @check_error
     def update(self) -> 'Item':
-        """update(self) -> 'Item'
-        Update items data.
+        """Update items data
 
-        :return: Item
+        :return: :class:`almapiwrapper.inventory.Item` object
         """
         r = self._api_call('put',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
@@ -305,7 +308,7 @@ class Item(Record):
                            data=bytes(self),
                            headers=self._get_headers())
 
-        if r.ok is True:
+        if r.ok:
             self.data = XmlData(r.content)
             logging.info(f'{repr(self)}: item data updated')
         else:
@@ -315,8 +318,7 @@ class Item(Record):
 
     @check_error
     def delete(self) -> None:
-        """delete(self) -> None
-        Delete an item.
+        """Delete an item
 
         :return: None
         """
@@ -324,7 +326,7 @@ class Item(Record):
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
                            f'/items/{self.item_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)} deleted')
         else:
             self._handle_error(r, 'unable to delete the item')
@@ -332,24 +334,22 @@ class Item(Record):
     @property
     @check_error
     def library(self) -> Optional[str]:
-        """library(self) -> Optional[str]
-        Property of the holding returning the library code
+        """Property of the holding returning the library code
 
-        :return: library code
+        :return: str, library code
         """
         library = self.data.find('.//item_data/library')
         if library is None:
             logging.warning(f'{repr(self)}: no library in the item')
-            return
+            return None
         return library.text
 
     @library.setter
     @check_error
     def library(self, library_code: str) -> None:
-        """library(self, library_code: str) -> None
-        This setter is able to update the 852$b of the holding. But the field should already exist.
+        """This setter is able to update library at item level
 
-        :param library_code: code of the library to insert in 852$b field
+        :param library_code: code of the library
 
         :return: None
         """
@@ -365,24 +365,22 @@ class Item(Record):
     @property
     @check_error
     def location(self) -> Optional[str]:
-        """location(self) -> Optional[str]
-        Property of the holding returning the library code
+        """Property of the holding returning the library code
 
-        :return: library code
+        :return: str, location code
         """
         location = self.data.find('.//item_data/location')
         if location is None:
             logging.warning(f'{repr(self)}: no location in the item')
-            return
+            return None
         return location.text
 
     @location.setter
     @check_error
     def location(self, location_code: str) -> None:
-        """location(self, location_code: str) -> None
-        This setter is able to update the 852$c of the holding. But the field should already exist.
+        """This setter is able to update the location at item level
 
-        :param location_code:
+        :param location_code: location code to insert in the item record
 
         :return: None
         """
@@ -396,8 +394,9 @@ class Item(Record):
 
     @staticmethod
     def get_data_from_disk(mms_id: str, holding_id: str, item_id: str, zone: str) -> Optional[XmlData]:
-        """get_data_from_disk(mms_id, holding_id, item_id, zone)
-        Fetch the data of the described record
+        """Fetch the data of the described record
+
+        It's useful to restore a record from a backup.
 
         :param mms_id: bib record mms_id
         :param holding_id: holding record ID
@@ -406,23 +405,23 @@ class Item(Record):
 
         :return: :class:`almapiwrapper.record.XmlData` or None
         """
-        if os.path.isdir(f'records/{zone}_{mms_id}') is False:
-            return
+        if not os.path.isdir(f'records/{zone}_{mms_id}'):
+            return None
 
         # Fetch all available filenames related to this record
         file_names = sorted([file_name for file_name in os.listdir(f'records/{zone}_{mms_id}')
                              if file_name.startswith(f'item_{holding_id}_{item_id}') is True])
 
         if len(file_names) == 0:
-            return
+            return None
 
         return XmlData(filepath=f'records/{zone}_{mms_id}/{file_names[-1]}')
 
     @check_error
     def scan_in(self, library: str, circ_desk: str) -> 'Item':
-        """scan_in(self, library: str, circ_desk: str) -> 'Item'
+        """Scan in an item
 
-        Scan in an item
+        The scan operation can be used to advance workflows or to return an item.
 
         :param library: library code
         :param circ_desk: circulation desk code
@@ -434,7 +433,7 @@ class Item(Record):
                            f'items/{self.item_id}',
                            params={'op': 'scan', 'library': library, 'circ_desk': circ_desk},
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: scanned in')
         else:
             self._handle_error(r, 'unable to "scan in" the item')

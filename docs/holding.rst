@@ -1,5 +1,3 @@
-``Holding`` class
------------------
 .. autoclass:: almapiwrapper.inventory.Holding
     :members:
     :show-inheritance:

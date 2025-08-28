@@ -1,5 +1,3 @@
-``Item`` class
------------------
 .. autoclass:: almapiwrapper.inventory.Item
     :members:
     :show-inheritance:

@@ -2,7 +2,7 @@ Inventory submodule
 -------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    bib
    holding

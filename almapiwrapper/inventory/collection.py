@@ -18,27 +18,31 @@ class Collection(Record):
     :ivar error_msg: string containing the error message if an error occurred during the last operation
     :ivar pid: collection ID
 
+    :cvar api_base_url_bibs: base URL for bibs API calls
+    :cvar area: area of the API
+    :cvar format: format of the data json for collections
+
+
+    :param pid: collection ID
+    :param zone: zone of the record
+    :param env: environment of the entity: 'P' for production and 'S' for sandbox
+
     """
     api_base_url_bibs: ClassVar[str] = f'{Record.api_base_url}/bibs'
+    area = 'Bibs'
+    format = 'json'
 
     def __init__(self,
                  pid: str,
                  zone: str,
-                 env: Optional[Literal['P', 'S']] = 'P') -> None:
+                 env: Literal['P', 'S'] = 'P') -> None:
         """Construct a Collection record
-
-        :param pid: collection ID
-        :param zone: zone of the record
-        :param env: environment of the entity: 'P' for production and 'S' for sandbox
-
         """
         self.pid = pid
         self._bibs = None
         self.error = False
         self.error_msg = None
         self._data = None
-        self.area = 'Bibs'
-        self.format = 'json'
         self.zone = zone
         self.env = env
 
@@ -51,27 +55,29 @@ class Collection(Record):
 
     def _fetch_data(self) -> Optional[JsonData]:
         """Fetch holding data via API. Store the data in the 'data' attribute.
+
+        :return: JsonData object containing the data of the collection or None if an error occurred
         """
         r = self._api_call('get',
                            f'{self.api_base_url_bibs}/collections/{self.pid}',
                            headers=self._get_headers())
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: collection data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch collection data')
+            return None
 
 
 
     @check_error
     def save(self) -> 'Collection':
-        """save(self) -> 'Collection'
-        Save collection in a folder.
+        """Save collection in a folder.
 
         Example: records/UBS_9963486250105504/hol_22314215780005504_01.xml
 
-        :return: Collection
+        :return: :class:`almapiwrapper.inventory.Collection` object
         """
         filepath = f'records/{self.zone}_collections/hol_{self.pid}.xml'
         self._save_from_path(filepath)
@@ -106,11 +112,11 @@ class Collection(Record):
 
     @property
     @check_error
-    def bibs(self) -> Optional[List]:
-        """bibs(self) -> Optional[List]
-        Property of the collection returning the list containing bib records
+    def bibs(self) -> Optional[List[Union[inventory.IzBib, inventory.NzBib]]]:
+        """Property of the collection returning the list containing bib records
 
-        :return: List containing bib records
+        :return: List containing :class:`almapiwrapper.inventory.IzBib`
+            objects or :class:`almapiwrapper.inventory.NzBib` objects
         """
         if self._bibs is None:
             self._fetch_bibs()
@@ -118,10 +124,9 @@ class Collection(Record):
         return self._bibs
 
     def add_bib(self, bib: Union[inventory.IzBib, inventory.NzBib, str]) -> None:
-        """add_bib(self, bib: Union[inventory.IzBib, inventory.NzBib]) -> None
-        Add a bib to the collection
+        """Add a bib to the collection
 
-        :param bib: bib to add to the collection
+        :param bib: :class:`almapiwrapper.inventory.IzBib` or :class:`almapiwrapper.inventory.NzBib` to add to the collection
 
         :return: None
         """
@@ -137,18 +142,18 @@ class Collection(Record):
                             data=xml,
                             headers=self._get_headers(data_format='xml'))
 
-        if r.ok is False:
+        if not r.ok:
             self._handle_error(r, f'{repr(self)}: unable to add bib {mms_id} to collection')
             return
         self._bibs = None
+
         logging.info(f'{repr(self)}: bib {mms_id} added to collection')
 
     def remove_bib(self, bib: Union[inventory.IzBib, inventory.NzBib, str]) -> None:
-        """remove_bib(self, bib: Union[inventory.IzBib, inventory.NzBib]) -> None
-        Remove a bib from the collection
+        """Remove a bib from the collection
 
-        :param bib: bib to remove from the collection, can be either a NZ
-            or an IZ bib or a mms_id
+        :param bib: :class:`almapiwrapper.inventory.IzBib` or :class:`almapiwrapper.inventory.NzBib` to remove
+            from the collection, can be either a NZ or an IZ bib or a mms_id
 
         :return: None
         """
@@ -162,7 +167,7 @@ class Collection(Record):
                             f'{self.api_base_url_bibs}/collections/{self.pid}/bibs/{mms_id}',
                             headers=self._get_headers())
 
-        if r.ok is False:
+        if not r.ok:
             self._handle_error(r, f'{repr(self)}: unable to remove bib {mms_id} from collection')
             return
         self._bibs = None
