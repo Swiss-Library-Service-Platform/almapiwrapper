@@ -1,4 +1,8 @@
+``Item`` class
+--------------
+
 .. autoclass:: almapiwrapper.inventory.Item
-    :members:
-    :show-inheritance:
-    :inherited-members:
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :noindex:

@@ -1,7 +1,18 @@
+``IzBib`` class
+---------------
+
 .. autoclass:: almapiwrapper.inventory.IzBib
-    :members:
-    :inherited-members:
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :noindex:
+
+
+``NzBib`` class
+---------------
 
 .. autoclass:: almapiwrapper.inventory.NzBib
-    :members:
-    :inherited-members:
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :noindex:
