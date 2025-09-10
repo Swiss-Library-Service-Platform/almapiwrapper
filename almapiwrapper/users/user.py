@@ -423,9 +423,12 @@ class NewUser(User):
     :var data: initial value: :class:`almapiwrapper.record.JsonData` of the user to create
     """
 
-    def __init__(self, zone: str, env: Literal['P', 'S'], data: JsonData):
+    def __init__(self, zone: str, env: Literal['P', 'S'], data: Union[JsonData, dict]):
         """Constructor to create new users
         """
+        if isinstance(data, dict):
+            data = JsonData(data)
+
         super(User, self).__init__(zone, env, data)
         self._primary_id = self.data['primary_id']
         self.area = 'Users'
