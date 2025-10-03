@@ -42,8 +42,16 @@ class TestVendor(unittest.TestCase):
 
         self.assertEqual('UBS-A100-1021_copy',
                          v_copy.data['code'],
-                         f'Vendor code should be UBS-A100-1021_copy')
+                         f'Vendor code should be UBS-A100-1021')
         self.assertFalse(v.error, f'Vendor update error: {v.error}')
+
+    def test_polines(self):
+        v =  Vendor('UBS-A145-KONSORTIUM', 'UBS', 'S')
+        polines = v.polines
+        self.assertIsInstance(polines, list, 'Vendor polines should be a list')
+        self.assertGreater(len(polines), 0, 'Vendor should have at least one PO Line')
+        self.assertIsInstance(polines[0], POLine, 'Vendor polines should be a list of POLine objects')
+        self.assertEqual(polines[0].data['owner']['value'], 'A100', 'POLine owner should be A100')
 
 if __name__ == '__main__':
     unittest.main()

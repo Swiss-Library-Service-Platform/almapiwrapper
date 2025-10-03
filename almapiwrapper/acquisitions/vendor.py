@@ -28,6 +28,7 @@ class Vendor(Record):
         self.area = 'Acquisitions'
         self.format = 'json'
         self.vendor_code = vendor_code
+        self._polines = None
         if data is not None:
             self._data = data if type(data) is JsonData else JsonData(data)
         elif vendor_code is not None:
@@ -137,3 +138,30 @@ class Vendor(Record):
             logging.info(f'{repr(self)}: Vendor deleted: {self.vendor_code}')
         else:
             self._handle_error(r, 'unable to delete Vendor')
+
+
+    @property
+    def polines(self):
+        """Get the PO Lines associated with the Vendor
+
+        :return: list of :class:`almapiwrapper.acquisitions.PoLine` objects
+        """
+        if self._polines is None:
+            self._polines = []
+            rec_count = None
+            pol_numbers = []
+            while rec_count is None or len(pol_numbers) < rec_count:
+                r = self._api_call('get',
+                                   f'{self.api_base_url_vendors}/{self.vendor_code}/po-lines',
+                                   params={'limit': '100', 'offset': str(len(pol_numbers))},
+                                   headers=self._get_headers())
+                if r.ok is False:
+                    self._handle_error(r, f'{repr(self)}: unable to fetch PO Lines')
+                    return None
+                data = r.json()
+                rec_count = data['total_record_count']
+                if 'po_line' in data:
+                    pol_numbers += [rec['number'] for rec in data['po_line']]
+                    logging.info(f'{repr(self)}: {len(pol_numbers)} / {rec_count} PO Lines fetched')
+            self._polines = [acquisitionslib.POLine(pol_number, zone=self.zone, env=self.env) for pol_number in pol_numbers]
+        return self._polines
