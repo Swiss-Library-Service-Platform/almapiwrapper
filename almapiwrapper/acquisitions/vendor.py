@@ -156,7 +156,7 @@ class Vendor(Record):
                                    params={'limit': '100', 'offset': str(len(pol_numbers))},
                                    headers=self._get_headers())
                 if r.ok is False:
-                    self._handle_error(r, f'{repr(self)}: unable to fetch PO Lines')
+                    self._handle_error(r, f'{reprssh(self)}: unable to fetch PO Lines')
                     return None
                 data = r.json()
                 rec_count = data['total_record_count']

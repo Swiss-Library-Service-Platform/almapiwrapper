@@ -209,7 +209,10 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             # Copy first name and last name
             for field in ['last_name', 'first_name', 'middle_name']:
                 if nz_user.data.get(field, '') != iz_user.data.get(field, ''):
-                    iz_user.data[field] = nz_user.data[field]
+                    if field not in nz_user.data:
+                        del iz_user.data[field]
+                    else:
+                        iz_user.data[field] = nz_user.data[field]
 
             iz_user.update(override=['user_group'])
 
