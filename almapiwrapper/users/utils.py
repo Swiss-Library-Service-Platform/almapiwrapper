@@ -191,10 +191,6 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             if local_user_group != nz_user_group and 'MM-' not in local_user_group_name:
                     iz_user.data['user_group']['value'] = nz_user_group
 
-
-            if iz_user.error is True:
-                error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
-
             # Copy blocks
             local_blocks = [u_block for u_block in iz_user.data['user_block'] if u_block['segment_type'] == 'Internal']
 
@@ -215,6 +211,9 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
                         iz_user.data[field] = nz_user.data[field]
 
             iz_user.update(override=['user_group'])
+
+            if iz_user.error is True:
+                error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
 
     return error_msg
 
