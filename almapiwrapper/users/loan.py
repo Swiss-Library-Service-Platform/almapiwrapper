@@ -129,16 +129,19 @@ class Loan(Record):
         return self
 
     @check_error
-    def change_due_date(self, new_due_date: str) -> 'userslib.Loan':
+    def change_due_date(self, new_due_date: str, notify_user: bool = False) -> 'userslib.Loan':
         """Change due date of the loan
 
         :param new_due_date: str : new due date in format YYYY-MM-DD
+        :param notify_user: bool : whether to notify the user by email about the due date change, default is False
 
         :return: object :class:`almapiwrapper.users.Loan`"""
         # self.data['due_date'] = new_due_date
+        params = {'notify_user': 'true' if notify_user is True else 'false'}
         r = self._api_call('put',
                            f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
                            headers=self._get_headers(),
+                           params=params,
                            data=bytes(JsonData(content={'due_date': new_due_date})))
 
         if r.ok is True:

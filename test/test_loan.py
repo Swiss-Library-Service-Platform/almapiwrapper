@@ -74,6 +74,11 @@ class TestLoan(unittest.TestCase):
         self.assertEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
         self.assertFalse(loan.error, 'Error during due date change')
 
+        new_due_date = due_date - timedelta(days=12)
+        loan = loan.change_due_date(new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), notify_user=True)
+        self.assertEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
+        self.assertFalse(loan.error, 'Error during due date change')
+
         loan = loan.renew_loan()
         self.assertNotEqual(loan.data['due_date'], new_due_date.strftime('%Y-%m-%dT%H:%M:%SZ'), 'Due date mismatch')
         self.assertFalse(loan.error, 'Error during due date change')
