@@ -149,7 +149,7 @@ class Fee(Record):
                                    'method': method,
                                    'reason': reason,
                                    'external_transaction_id': external_transaction_id})
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: fee operation "{op}" succeed')
         else:

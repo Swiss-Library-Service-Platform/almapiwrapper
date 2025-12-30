@@ -5,19 +5,66 @@ from ..record import XmlData, JsonData, Record, check_error
 
 
 class Job(Record):
-    """Class representing a job
-    :param job_id: ID of the job
-    :param zone: zone of the job
-    :param env: environment of the entity: 'P' for production and 'S' for sandbox
-    :param job_type: type of the job: 'M' for manual, 'S' for scheduled
+    """
+    Represents an Alma job and provides access to its execution instances.
 
-    :ivar job_id: initial value: ID of the job
-    :ivar zone: initial value: zone of the fee
-    :ivar env: initial value: environment of the entity: 'P' for production and 'S' for sandbox
-    :ivar job_type: initial value: type of the job: 'M' for manual, 'S' for scheduled
-    :ivar instance_id: initial value: str
-    :ivar area: initial value: 'Conf'
-    :ivar format: initial value: 'xml'
+    This class allows you to:
+    - list job execution instances,
+    - retrieve detailed information about a specific instance,
+    - monitor the execution state of an instance.
+
+    :param job_id: Alma job identifier.
+    :type job_id: str
+    :param zone: Job zone (e.g. ``NZ``).
+    :type zone: str
+    :param env: Entity environment:
+                ``'P'`` for production,
+                ``'S'`` for sandbox.
+    :type env: str
+    :param job_type: Job type:
+                     ``'M'`` for manual,
+                     ``'S'`` for scheduled.
+    :type job_type: str
+
+    :ivar job_id: Job identifier.
+    :ivar zone: Job zone.
+    :ivar env: Environment (``'P'`` or ``'S'``).
+    :ivar job_type: Job type (``'M'`` or ``'S'``).
+    :ivar instance_id: Current instance identifier.
+    :ivar area: API area is ``'Conf'``.
+    :ivar format: API response format (default: ``'xml'``).
+
+    **Example**
+
+    Example showing how to query a job and monitor an execution instance:
+
+    .. code-block:: python
+
+        from almapiwrapper.config import Job
+        from almapiwrapper.configlog import config_log
+
+        # Initialize logging
+        config_log()
+
+        # Create the job
+        job = Job(job_id="135", zone="NZ")
+
+        # Retrieve all job instances
+        instances = job.get_instances()
+        print(instances)
+
+        # Retrieve detailed information for a specific instance
+        instance_id = "55493478870005501"
+        instance = job.get_instance_info(instance_id)
+        print(instance)
+
+        # Access counters returned by the job
+        counters = instance.content["counter"]
+        print(counters)
+
+        # Check execution state of the instance
+        state = job.check_instance_state(instance_id)
+        print(state)
     """
     def __init__(self,
                  job_id: str,
@@ -41,11 +88,12 @@ class Job(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: job data available')
             return XmlData(r.content)
         else:
             self._handle_error(r, 'unable to fetch job data')
+            return None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -79,7 +127,7 @@ class Job(Record):
                            data=parameters,
                            headers=self._get_headers())
 
-        if r.ok is True:
+        if r.ok:
             result = XmlData(r.content)
 
             # Fetch the instance ID
@@ -92,6 +140,7 @@ class Job(Record):
             return result
         else:
             self._handle_error(r, 'unable to run the job')
+            return None
 
     @check_error
     def get_instance_info(self, instance_id: Optional[str] = None) -> Optional['JsonData']:
@@ -113,16 +162,17 @@ class Job(Record):
 
         if instance_id is None:
             logging.error(f'{repr(self)}: No instance job ID available or provided')
-            return
+            return None
 
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}/instances/{instance_id}',
                            headers=self._get_headers(data_format='json'))
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: job information available for instance {instance_id}')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch job data')
+            return None
 
     @check_error
     def check_instance_state(self, instance_id: Optional[str] = None) -> Optional[Dict]:
@@ -142,6 +192,7 @@ class Job(Record):
         if data is not None:
             return {'status': data.content['status']['value'],
                     'progress': data.content['progress']}
+        return None
 
     @check_error
     def get_instances(self) -> Optional['JsonData']:
@@ -158,8 +209,9 @@ class Job(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}/instances',
                            headers=self._get_headers(data_format='json'))
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: job information available for instances')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch job data')
+            return None
