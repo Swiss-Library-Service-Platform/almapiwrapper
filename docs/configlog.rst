@@ -2,3 +2,4 @@
 -----------------------
 
 .. autofunction:: almapiwrapper.config_log
+   :noindex:

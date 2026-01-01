@@ -472,6 +472,7 @@ class NewUser(User):
         :param password: string containing the new password.
 
         :return: object :class:`almapiwrapper.users.NewUser`
+
         .. note::
             If the record encountered an error, this
             method will be skipped.

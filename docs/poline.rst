@@ -4,3 +4,4 @@
     :members:
     :show-inheritance:
     :inherited-members:
+    :noindex:

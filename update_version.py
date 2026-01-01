@@ -48,7 +48,12 @@ os.system(f'{os.getcwd()}/docs/make.bat html')
 os.system(f'{os.getcwd()}/docs/make.bat html')
 
 # Delete all files of dist folder
-files = os.listdir('dist')
+try:
+    files = os.listdir('dist')
+except FileNotFoundError:
+    os.mkdir('dist')
+    files = []
+
 for f in files:
     os.remove(f'dist/{f}')
 

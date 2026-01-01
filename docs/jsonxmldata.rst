@@ -4,6 +4,7 @@
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 ``XmlData`` class
 ------------------
@@ -11,3 +12,4 @@
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:
