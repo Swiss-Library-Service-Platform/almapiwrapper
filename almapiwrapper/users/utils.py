@@ -6,7 +6,6 @@ import requests
 import logging
 import time
 from copy import deepcopy
-import re
 from json import JSONDecodeError
 from lxml import etree
 
@@ -25,7 +24,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
     for z in list_iz:
 
         # Interrupt in case of any error
-        if error is True:
+        if error:
             break
 
         # Init counters
@@ -76,8 +75,19 @@ def fetch_user_in_all_iz(primary_id: str, env: Optional[Literal['P', 'S']] = 'P'
     users = []
     for iz in list_iz:
         users_temp = fetch_users(f'primary_id~{primary_id.replace(" ", "+")}', iz, env)
+
+        users_temp = [user for user in users_temp if user.primary_id.lower() == primary_id.lower()]
+
         if len(users_temp) == 1:
             users += users_temp
+        elif len(users_temp) > 1:
+            logging.error(f'fetch_user_in_all_iz("{primary_id}", "{env}"): '
+                          f'multiple ({len(users_temp)}) users found in IZ {iz} for primary_id {primary_id}')
+        elif len(users_temp) == 0:
+            logging.warning(f'fetch_user_in_all_iz("{primary_id}", "{env}"): '
+                            f'no user found in IZ {iz} for primary_id {primary_id}')
+
+
 
     return users
 
@@ -144,7 +154,7 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
 
     for nz_user in nz_users:
         _ = nz_user.data
-        if nz_user.error is True:
+        if nz_user.error:
             error_msg.append(f'{repr(nz_user)}: no NZ account -> impossible to force synchronization')
             logging.error(f'{repr(nz_user)}: no NZ account -> impossible to force synchronization')
 
@@ -212,7 +222,7 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
 
             iz_user.update(override=['user_group'])
 
-            if iz_user.error is True:
+            if iz_user.error:
                 error_msg.append(f'{repr(iz_user)}: error on update / {iz_user.error_msg}')
 
     return error_msg
