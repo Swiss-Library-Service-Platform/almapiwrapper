@@ -253,5 +253,17 @@ class TestDesk(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
+
+class TestConfigLog(unittest.TestCase):
+    def test_log_config(self):
+        log_file = "custom_test.log"
+        config_log(log_file)
+        logger = config_log.getLogger()
+        handlers = logger.handlers
+        self.assertEqual(len(handlers), 1, "There should be one handler")
+        self.assertTrue(hasattr(handlers[0], 'baseFilename'), "Handler should have baseFilename attribute")
+        self.assertEqual(handlers[0].baseFilename, os.path.abspath(log_file), "Log file path is incorrect")
+
+
 if __name__ == '__main__':
     unittest.main()
