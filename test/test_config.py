@@ -1,5 +1,6 @@
 import unittest
 import sys
+import shutil
 import os
 from datetime import date, timedelta
 
@@ -253,17 +254,36 @@ class TestDesk(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
-
 class TestConfigLog(unittest.TestCase):
-    def test_log_config(self):
-        log_file = "custom_test.log"
-        config_log(log_file)
-        logger = config_log.getLogger()
-        handlers = logger.handlers
-        self.assertEqual(len(handlers), 1, "There should be one handler")
-        self.assertTrue(hasattr(handlers[0], 'baseFilename'), "Handler should have baseFilename attribute")
-        self.assertEqual(handlers[0].baseFilename, os.path.abspath(log_file), "Log file path is incorrect")
+    @classmethod
+    def setUp(cls):
+        if os.path.exists('logs'):
+            shutil.rmtree('logs', ignore_errors=True)
+        if os.path.exists('log/custom_test_log.txt'):
+            os.remove('log/custom_test_log.txt')
 
+    def test_log_config(self):
+        import logging
+        log_file = "custom_test_log.txt"
+        config_log(log_file)
+        logging.info("Test log message")
+
+        self.assertTrue(os.path.isfile(os.path.join('log', log_file)), f"Log file was not created: {log_file}")
+
+        log_file = "logs/custom_test_log.txt"
+        config_log(log_file)
+        logging.info("Test log message")
+
+        self.assertTrue(os.path.isfile(os.path.join(log_file)), f"Log file was not created: {log_file}")
+
+        config_log("test.log")
+
+    @classmethod
+    def tearDown(cls):
+        if os.path.exists('logs'):
+            shutil.rmtree('logs', ignore_errors=True)
+        if os.path.exists('log/custom_test_log.txt'):
+            os.remove('log/custom_test_log.txt')
 
 if __name__ == '__main__':
     unittest.main()

@@ -30,13 +30,19 @@ def config_log(file_name: Optional[str] = "") -> None:
         if not os.path.exists(log_dir):
             os.makedirs(log_dir, exist_ok=True)
     else:
+        # Set default log directory
+        log_dir = 'log'
+        if not os.path.isdir('log'):
+            os.mkdir('log')
+
+        # Set file name, set to default if not provided
         if len(file_name) == 0:
             log_file_name = 'log.txt'
         else:
             log_file_name = file_name
-        if not os.path.isdir('./log'):
-            os.mkdir('./log')
-            log_dir = './log'
+
+    if '.' not in log_file_name:
+        log_file_name += '.txt'
 
     log_file_path = os.path.join(log_dir, log_file_name)
     message_format = "%(asctime)s - %(levelname)s - %(message)s"
