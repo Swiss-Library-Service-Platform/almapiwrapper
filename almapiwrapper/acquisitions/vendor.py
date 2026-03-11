@@ -130,7 +130,9 @@ class Vendor(Record):
 
     @check_error
     def delete(self) -> None:
-        """delete(self) -> None"""
+        """delete(self) -> None
+
+        Delete the Vendor"""
         r = self._api_call('delete',
                            f'{self.api_base_url_vendors}/{self.vendor_code}',
                            headers=self._get_headers())

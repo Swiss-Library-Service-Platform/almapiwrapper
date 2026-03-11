@@ -1,11 +1,9 @@
 import unittest
-import sys
 import os
 import time
-import pandas as pd
 
-from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders
-from almapiwrapper.record import JsonData, XmlData
+from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet
+from almapiwrapper.record import XmlData
 from almapiwrapper import config_log
 
 config_log("test.log")
@@ -133,6 +131,23 @@ class TestNewItemizedSet(unittest.TestCase):
 
         s1.delete()
 
+
+class TestUserRecSet(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        RecSet(name='TEST_RRE_user_123', zone='NZ', env='S').delete()
+
+    def test_create(self):
+        s1 = NewLogicalSet('NZ',
+                           'S',
+                           'TEST_RRE_user_123',
+                           'TEST_RRE_user_123',
+                           'USER where USER ((all_full CONTAIN "test"))',
+                           'admin',
+                           True)
+        s1 = s1.create()
+        members = s1.get_members()
+        self.assertGreaterEqual(len(members), 1, f'It should at least one member, {len(members)} available')
 
 if __name__ == '__main__':
     unittest.main()

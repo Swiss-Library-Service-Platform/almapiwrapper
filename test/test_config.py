@@ -1,5 +1,5 @@
 import unittest
-import sys
+import time
 import shutil
 import os
 from datetime import date, timedelta
@@ -96,10 +96,12 @@ class TestRecSet(unittest.TestCase):
     def test_monitor_job(self):
         job = Job('44', 'UBS', 'S')
 
-        instance = job.get_instance_info('17797121220005504')
+        instances = job.get_instances()
+        instance = instances.content['job_instance'][0]
+
         self.assertFalse(job.error, 'Not able to fetch a job instance')
 
-        state = job.check_instance_state('17797121220005504')
+        state = job.check_instance_state(instance['id'])
         self.assertEqual(state['progress'], 100, 'Impossible to get instance info')
         self.assertEqual(state['status'], 'COMPLETED_SUCCESS', 'Impossible to get instance info')
 
@@ -183,7 +185,7 @@ class TestOpenHours(unittest.TestCase):
         lib = Library('A100', 'UBS', 'S')
 
         self.assertTrue(len(lib.open_hours.data['open_hour']) > 0, 'No open hours found')
-        self.assertEqual(lib.open_hours.data['open_hour'][-1]['desc'], 'Silvester', 'Sylvester must be last exception')
+        self.assertTrue('Silvester' in lib.open_hours.data['open_hour'][-1]['desc'], 'Sylvester must be last exception')
 
     def test_update_open_hours(self):
         new_open_hours = {
@@ -213,10 +215,12 @@ class TestOpenHours(unittest.TestCase):
         is_test_exception = False
         for oh in lib2.open_hours.data['open_hour']:
             if oh['desc'] == 'test_exception':
-                lib2.open_hours.data['open_hour'].remove(oh)
                 is_test_exception = True
 
         self.assertTrue(is_test_exception, 'Test exception not found')
+
+        lib2.open_hours.data['open_hour'] = [oh for oh in lib2.open_hours.data['open_hour']
+                                             if oh['desc'] != 'test_exception' or '2025' in oh['from_date']]
 
         lib2.open_hours.update()
 

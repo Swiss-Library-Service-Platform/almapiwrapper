@@ -8,7 +8,7 @@ backup of the records.
 
 * Author: Raphaël Rey (raphael.rey@slsp.ch)
 * Year: 2026
-* Version: 1.4.0
+* Version: 1.5.0
 * License: GNU General Public License v3.0
 
 Introduction

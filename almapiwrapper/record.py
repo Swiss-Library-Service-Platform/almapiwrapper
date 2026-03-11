@@ -10,6 +10,29 @@ import requests
 import pandas as pd
 from functools import wraps
 
+def remove_apikey_from_url(url: str) -> str:
+    """
+    Remove the 'apikey' parameter from a URL, regardless of its position (beginning, middle, or end).
+    This method ensures that the resulting URL is valid and does not contain redundant separators.
+
+    :param url: URL string from which to remove the 'apikey' parameter
+
+    :return: URL without the 'apikey' parameter and with cleaned separators
+
+    :Example:
+
+        >>> remove_apikey_from_url('https://example.com/api?apikey=XXX&param=1')
+        'https://example.com/api?param=1'
+        >>> remove_apikey_from_url('https://example.com/api?param=1&apikey=XXX')
+        'https://example.com/api?param=1'
+        >>> remove_apikey_from_url('https://example.com/api?apikey=XXX')
+        'https://example.com/api'
+    """
+    import re
+    url = re.sub(r'([&?])apikey=[^&?#]*(&?)', lambda m: m.group(1) if m.group(2) == '' else '', url)
+    url = re.sub(r'[?&]$', '', url)
+    url = url.replace('?&', '?')
+    return url
 
 def check_error(fn: Callable) -> Callable:
     """Prevents operation if the record is containing an error
@@ -103,6 +126,8 @@ class Record(metaclass=abc.ABCMeta):
                 else:
                     return None
 
+                logging.info(f'{method.upper()} : {remove_apikey_from_url(r.url)} {r.status_code}')
+
                 if 'X-Exl-Api-Remaining' in r.headers and int(r.headers['X-Exl-Api-Remaining']) < 5000:
                     logging.critical(f'Limit of the number of requests allowed critical - '
                                      f'{r.headers["X-Exl-Api-Remaining"]} reamaining => exiting of the program')
@@ -151,11 +176,11 @@ class Record(metaclass=abc.ABCMeta):
             self.data = self._fetch_data()
 
         if self._data is not None:
-            if type(self._data) is pd.DataFrame:
+            if isinstance(self._data, pd.DataFrame):
                 return self._data
-            else:
+            if hasattr(self._data, 'content'):
                 return self._data.content
-
+            return None
         return None
 
     @data.setter
