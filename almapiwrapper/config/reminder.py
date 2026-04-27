@@ -1,7 +1,7 @@
 """This module allow to create and manage sets in Alma"""
 from typing import Literal, Optional, List, Dict, Union
 import logging
-from ..record import JsonData, Record, check_error
+from almapiwrapper.record import JsonData, Record, check_error
 import requests
 
 
@@ -25,7 +25,8 @@ def fetch_reminders(zone: str,
     """
 
     # Prepare params and filters
-    params = {'limit': 100}
+    params = dict()
+    params['limit'] = 100
     if reminder_type is not None:
         params['type'] = reminder_type
     if reminder_status is not None:
@@ -55,7 +56,7 @@ def fetch_reminders(zone: str,
                                                       zone=zone, rights='RW', area='Conf'))
 
         # Check result
-        if r.ok is True:
+        if r.ok:
             reminders_list = JsonData(r.json())
             nb_total_records = int(reminders_list.content['total_record_count'])
 
@@ -76,7 +77,7 @@ def fetch_reminders(zone: str,
     return reminders
 
 
-def _handle_error(r: requests.models.Response, msg: str, zone: str, env: str):
+def _handle_error(r: requests.models.Response, msg: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> None:
     """Set the record error attribute to True and write the logs about the error
 
     :param r: request response of the api
@@ -118,7 +119,7 @@ class Reminder(Record):
                 data = JsonData(data)
             self.data = data
 
-        if create_reminder is True:
+        if create_reminder:
             self._create_reminder()
 
     def _fetch_data(self) -> Optional[JsonData]:
@@ -129,11 +130,13 @@ class Reminder(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: reminder data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch reminder data')
+
+        return None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.

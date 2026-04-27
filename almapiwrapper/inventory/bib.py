@@ -47,7 +47,7 @@ class Bib(Record, metaclass=abc.ABCMeta):
     def __init__(self,
                  mms_id: str,
                  zone: str,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[XmlData] = None) -> None:
         """Constructor for bib records
 
@@ -233,7 +233,7 @@ class IzBib(Bib):
     def __init__(self,
                  mms_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  from_nz_mms_id: Optional[bool] = False,
                  copy_nz_rec: Optional[bool] = False,
                  data: Optional[Union['XmlData', etree.Element]] = None,

@@ -1,12 +1,13 @@
 import unittest
-import time
 import shutil
 import os
 from datetime import date, timedelta
 
-from almapiwrapper.config import RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder, fetch_reminders, fetch_libraries, Library, Location, Desk
+from almapiwrapper.config import (RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder,
+                                  fetch_reminders, fetch_libraries, Library, Location, Desk, Department)
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
+from config.library import Department, fetch_departments
 
 config_log("test.log")
 if os.getcwd().endswith('test'):
@@ -120,6 +121,19 @@ class TestLibrary(unittest.TestCase):
         lib = Library('A100', 'UBS', 'S')
         self.assertEqual(lib.data['code'], 'A100', 'Library object corrupted')
         self.assertEqual(lib.data['name'], 'Basel - UB Hauptbibliothek', 'Library name not correct')
+
+    def test_departments(self):
+        lib = Library('A100', 'UBS', 'S')
+        departments = lib.departments
+        self.assertTrue(len(departments) > 0, 'No departments found')
+        self.assertEqual(departments[0].data['code'], departments[0].code, 'Department object corrupted')
+        self.assertEqual(departments[0].data['owner']['value'], 'A100', 'Department linked to the wrong library')
+
+    def test_get_departments(self):
+        lib = Library('A191', 'UBS', 'S')
+        departments = lib.departments
+        self.assertTrue(len(departments) > 0, 'No departments found')
+        self.assertEqual(departments[0].data['type']['value'], 'AcqWorkOrder')
 
 
 class TestLocation(unittest.TestCase):
@@ -288,6 +302,41 @@ class TestConfigLog(unittest.TestCase):
             shutil.rmtree('logs', ignore_errors=True)
         if os.path.exists('log/custom_test_log.txt'):
             os.remove('log/custom_test_log.txt')
+
+class TestDepartment(unittest.TestCase):
+    @classmethod
+    def setUp(cls):
+        pass
+
+    def test_get_department_1(self):
+        department = Department(library_code='A100', code='AcqDeptA100', zone='UBS', env='S')
+        self.assertEqual(department.data['owner']['value'], 'A100')
+        self.assertEqual(department.dep_type, 'AcqWorkOrder')
+
+    def test_get_department_2(self):
+        department = Department(library_code='A100', code='AcqDeptA100_bad', zone='UBS', env='S')
+        _ = department.data
+        self.assertTrue(department.error)
+
+    def test_get_department_3(self):
+        department = Department(code='WOTD-IZ3-01', zone='UBS', env='S')
+        _ = department.data
+        self.assertEqual(department.data['owner']['value'], '41SLSP_UBS')
+        self.assertEqual(department.dep_type, 'WOT-IZ3-01')
+
+    def test_fetch_department_1(self):
+        departments = fetch_departments(zone='UBS', env='S', library_code='A100')
+        for department in departments:
+            self.assertEqual(department.library_code, 'A100')
+        self.assertGreater(len(departments), 0, 'There should be more than 0 departments')
+
+    def test_fetch_department_2(self):
+        departments = fetch_departments(zone='UBS', env='S')
+        for department in departments:
+            self.assertEqual(department.library_code, 'INST')
+        self.assertGreater(len(departments), 0, 'There should be more than 0 departments')
+
+
 
 if __name__ == '__main__':
     unittest.main()

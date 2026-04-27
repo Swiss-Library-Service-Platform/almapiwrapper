@@ -5,6 +5,7 @@ Config submodule
    :maxdepth: 1
 
    desk
+   department
    job
    library
    location

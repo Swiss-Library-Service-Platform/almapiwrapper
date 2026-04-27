@@ -1,9 +1,9 @@
 """This module allow to create and manage sets in Alma"""
 from typing import Literal, Optional, Union, List
 import logging
-from ..record import XmlData, Record, check_error
-from ..inventory import IzBib, NzBib
-from ..users import User
+from almapiwrapper.record import XmlData, Record, check_error
+from almapiwrapper.inventory import IzBib, NzBib
+from almapiwrapper.users import User
 from lxml import etree
 
 
@@ -83,11 +83,12 @@ class RecSet(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/sets/{self.set_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: set data available')
             return XmlData(r.content)
         else:
             self._handle_error(r, 'unable to fetch set data')
+        return None
 
     @property
     def name(self) -> str:
@@ -201,7 +202,7 @@ class RecSet(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = XmlData(r.content)
             logging.info(f'{repr(self)}: set data updated')
         else:
@@ -225,7 +226,7 @@ class RecSet(Record):
         r = self._api_call('delete',
                            f'{self.api_base_url}/conf/sets/{self.set_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: set deleted')
             return
         else:
@@ -255,7 +256,7 @@ class RecSet(Record):
                                    f'{self.api_base_url}/conf/sets/{self.set_id}/members',
                                    params={'limit': '100', 'offset': str(len(self._members))},
                                    headers=self._get_headers())
-                if r.ok is False:
+                if not r.ok:
                     self._handle_error(r, f'{repr(self)}: unable to fetch set members')
                     return self._members
                 else:
@@ -366,7 +367,7 @@ class ItemizedSet(RecSet):
                                params=params,
                                data=bytes(self))
 
-            if r.ok is True:
+            if r.ok:
                 self.data = XmlData(r.content)
                 number_of_members_after_update = self.get_members_number()
                 self._members = None
@@ -470,7 +471,7 @@ class NewLogicalSet(RecSet):
                            f'{self.api_base_url}/conf/sets',
                            headers=self._get_headers(),
                            data=bytes(self))
-        if r.ok is True:
+        if r.ok:
             self._data = XmlData(r.content)
             set_id = self.data.find('.//id').text
             new_rec = RecSet(set_id, self.zone, self.env, data=self._data)
@@ -533,7 +534,7 @@ class NewItemizedSet(RecSet):
 
         # If itemized set is created from a logical set, we can get the name and the content from the logical set
         if  self.from_logical_set is not None and (name is None or content is None):
-            if isinstance(from_logical_set, str) is True:
+            if isinstance(from_logical_set, str):
                 from_logical_set = LogicalSet(from_logical_set, zone, env)
             if name is None:
                 name = from_logical_set.data.find('name').text + '_itemized'
@@ -599,7 +600,7 @@ class NewItemizedSet(RecSet):
                            headers=self._get_headers(),
                            params=params,
                            data=bytes(self))
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: set created')
             self._data = XmlData(r.content)
             set_id = self.data.find('.//id').text

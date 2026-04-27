@@ -1,7 +1,7 @@
 """This module allow to create and manage sets in Alma"""
 from typing import Literal, Optional, Dict, Union
 import logging
-from ..record import XmlData, JsonData, Record, check_error
+from almapiwrapper.record import XmlData, JsonData, Record, check_error
 
 
 class Job(Record):

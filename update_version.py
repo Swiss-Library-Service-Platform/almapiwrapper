@@ -1,9 +1,12 @@
+from pyexpat.errors import messages
+
 import almapiwrapper
 import re
 import os
 from datetime import datetime
 
 version = almapiwrapper.__version__
+message = almapiwrapper.__message__
 
 # docs/conf.py of documentation
 with open('docs/conf.py') as f:
@@ -62,7 +65,7 @@ os.system('python -m build')
 
 # Commit the new version
 os.system('git add .')
-os.system(f'git commit -m "Create version {version}"')
+os.system(f'git commit -m "Create version {version}: {message}"')
 os.system(f'git push')
 
 # Upload the package on pipy

@@ -57,7 +57,7 @@ class ApiKeys:
                 zone: str,
                 area: str,
                 permissions: str,
-                env: str = 'P') -> str:
+                env: Optional[Literal['P', 'S']] = 'P') -> str:
         """Return the API key according to the requested parameters
 
         :param zone: abbreviated form of the IZ or of the NZ

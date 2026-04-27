@@ -90,7 +90,7 @@ class Record(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __init__(self,
                  zone: str,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[Union['JsonData', 'XmlData']] = None) -> None:
         """Abstract constructor, all entities have at least a zone and an environment.
         """
@@ -149,7 +149,7 @@ class Record(metaclass=abc.ABCMeta):
                       zone: str,
                       area: str,
                       rights: Literal['R', 'RW'] = 'RW',
-                      env: Literal['P', 'S'] = 'P') -> Dict:
+                      env: Optional[Literal['P', 'S']] = 'P') -> Dict:
         """Build the headers for the API calls.
 
         :param data_format: "json" or "xml"

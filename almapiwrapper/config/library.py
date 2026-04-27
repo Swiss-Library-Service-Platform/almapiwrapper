@@ -1,7 +1,7 @@
 """This module allow to create and manage sets in Alma"""
 from typing import Literal, Optional, List, Dict, Union
 import logging
-from ..record import JsonData, Record, check_error
+from almapiwrapper.record import JsonData, Record, check_error
 import requests
 
 
@@ -26,7 +26,7 @@ def fetch_libraries(zone: str,
         libraries_list = JsonData(r.json())
         libraries = [Library(code=lib_data['code'], zone=zone, env=env, data=lib_data)
                      for lib_data in libraries_list.content['library']]
-    elif r.ok is True:
+    elif r.ok:
         _handle_error(r, 'no libraries data available', zone, env)
 
     else:
@@ -34,7 +34,42 @@ def fetch_libraries(zone: str,
 
     return libraries
 
-def _handle_error(r: requests.models.Response, msg: str, zone: str, env: Literal['P', 'S']) -> None:
+
+def fetch_departments(zone: str,
+                      library_code: Optional[str] = None,
+                      env: Optional[Literal['P', 'S']] = 'P') -> List['Department']:
+    """This function fetch the data describing the libraries.
+
+    :param zone: institutional zone
+    :param library_code: library code if empty it returns Institution level departments
+    :param env: environment of the entity: 'P' for production and 'S' for sandbox
+
+    :return: List of :class:`almapiwrapper.config.library.Library`
+    """
+
+    departments = []
+
+    r = requests.get(f'{Library.api_base_url}/conf/departments',
+                     params={'library': library_code},
+                     headers=Record.build_headers(data_format='json', env=env,
+                                                  zone=zone, rights='RW', area='Conf'))
+
+    # Check result
+    if r.ok is True and 'department' in r.json():
+
+        department_list = JsonData(r.json())
+        departments = [Department(code=dep_data['code'], library_code=library_code, zone=zone, env=env, data=dep_data)
+                     for dep_data in department_list.content['department']]
+    elif r.ok:
+        _handle_error(r, 'no libraries data available', zone, env)
+
+    else:
+        _handle_error(r, 'unable to fetch libraries data', zone, env)
+
+    return departments
+
+
+def _handle_error(r: requests.models.Response, msg: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> None:
     """Set the record error attribute to True and write the logs about the error
 
     :param r: request response of the api
@@ -81,6 +116,7 @@ class Library(Record):
         self.code = code
         self._locations = None
         self._desks = None
+        self._departments = None
         self._open_hours = None
 
         if data is not None:
@@ -97,11 +133,12 @@ class Library(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.code}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: library data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch library data')
+        return None
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -127,6 +164,7 @@ class Library(Record):
             return []
         else:
             self._handle_error(r, 'unable to fetch locations data')
+        return []
 
     @property
     def locations(self) -> List['Location']:
@@ -158,6 +196,7 @@ class Library(Record):
             return []
         else:
             self._handle_error(r, 'unable to fetch circulation desks data')
+        return []
 
     @property
     def desks(self) -> List['Desk']:
@@ -169,6 +208,38 @@ class Library(Record):
             self._desks = self._fetch_desks()
 
         return self._desks
+
+    @check_error
+    def _fetch_departments(self) -> List['Department']:
+        """get_locations(self) -> List
+        Return the list of departments
+
+        :return: list of departments
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/departments',
+                           params={'library': self.code},
+                           headers=self._get_headers())
+        if r.ok is True and 'department' in r.json():
+            logging.info(f'{repr(self)}: departments data available')
+            return [Department(library_code=self.code, code=department_data['code'], zone=self.zone, env=self.env) for department_data in r.json()['department']]
+        if r.ok and 'department' not in r.json():
+            logging.warning(f'{repr(self)}: no department data available')
+            return []
+        else:
+            self._handle_error(r, 'unable to fetch department data')
+        return []
+
+    @property
+    def departments(self) -> List['Department']:
+        """Property to get the departments of the library
+
+        :return: list of departments of the library
+        """
+        if self._departments is None:
+            self._departments = self._fetch_departments()
+
+        return self._departments
 
     @property
     def open_hours(self) -> 'OpenHours':
@@ -238,11 +309,12 @@ class Location(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: location data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch location data')
+        return None
 
     @check_error
     def save(self) -> 'Location':
@@ -287,7 +359,7 @@ class Location(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: new location created')
         else:
             self._handle_error(r, 'unable to create new location')
@@ -303,7 +375,7 @@ class Location(Record):
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
                            headers=self._get_headers())
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: location deleted')
         else:
             self._handle_error(r, 'unable to create new location')
@@ -380,11 +452,12 @@ class OpenHours(Record):
                            f'{self.api_base_url}/conf/open-hours',
                            params=params,
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: open hours data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch open hours data')
+        return None
 
     @check_error
     def update(self) -> 'OpenHours':
@@ -466,11 +539,12 @@ class Desk(Record):
         r = self._api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/circ-desks/{self.code}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: desk data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, 'unable to fetch desk data')
+        return None
 
     @check_error
     def get_locations(self) -> List[Location]:
@@ -490,5 +564,97 @@ class Desk(Record):
         Save a Desk record in the 'records' folder
         """
         filepath = f'records/{self.zone}_{self.library_code}/desk_{self.zone}_{self.library_code}_{self.code}.json'
+        self._save_from_path(filepath)
+        return self
+
+
+class Department(Record):
+    """
+    Class representing a department
+
+    :ivar zone: zone of the department
+    :ivar library_code: code of the library
+    :ivar code: code of the department
+    :ivar env: environment of the department ('P' or 'S')
+    :ivar data: data of the department, :class:`almapiwrapper.record.JsonData`
+
+    :property dep_type: type of the department (computed dynamically)
+    """
+    def __init__(self,
+                 zone: str,
+                 library_code: Optional[str] = None,
+                 code: Optional[str] = None,
+                 env: Optional[Literal['P', 'S']] = 'P',
+                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+        """Constructor of `Department`
+
+        :param zone: zone of the department
+        :param library_code: code of the library
+        :param code: code of the department
+        :param env: environment of the department: 'P' for production and 'S' for sandbox
+        :param data: data of the department, :class:`almapiwrapper.record.JsonData` object
+        """
+        super().__init__(zone, env, data)
+        self.library_code = library_code if library_code is not None else 'INST'
+        self.area = 'Conf'
+        self.format = 'json'
+        self.code = code
+        if data is not None:
+            if not isinstance(data, JsonData):
+                data = JsonData(data)
+            self.data = data
+
+    def __repr__(self) -> str:
+        """Get a string representation of the object. Useful for logs.
+
+        :return: string
+        """
+        return f"{self.__class__.__name__}('{self.zone}', '{self.library_code}', '{self.code}', '{self.env}')"
+
+    def _fetch_data(self) -> Optional[JsonData]:
+        """This method fetch the data describing the department.
+
+        :return: :class:`almapiwrapper.record.JsonData` object
+        """
+        r = self._api_call('get',
+                           f'{self.api_base_url}/conf/departments',
+                           params={'library': self.library_code if self.library_code != 'INST' else None},
+                           headers=self._get_headers())
+        if r.ok:
+            logging.info(f'{repr(self)}: department data available')
+            try:
+                data = r.json()
+                for department in data['department']:
+                    if department['code'] == self.code:
+                        return JsonData(department)
+            except KeyError:
+                logging.error(f'{repr(self)}: department data not available')
+
+        self._handle_error(r, 'unable to fetch department data')
+        return None
+
+    @property
+    def dep_type(self) -> Optional[str]:
+        """dep_type
+
+        :return: dep_type
+        """
+
+        try:
+            return self.data['type']['value']
+        except KeyError:
+
+            logging.error(f'{repr(self)}: type of department not available')
+            self.error = True
+            self.error_msg = 'Type of department not available'
+
+        return None
+
+    @check_error
+    def save(self) -> 'Department':
+        """save() -> 'Department'
+        Save a Department record in the 'records' folder
+        """
+        filepath = f'records/{self.zone}_{self.library_code}/department_{self.zone}_{self.library_code}_{self.code}.json'
         self._save_from_path(filepath)
         return self
