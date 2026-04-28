@@ -38,13 +38,9 @@ class Collection(Record):
                  env: Literal['P', 'S'] = 'P') -> None:
         """Construct a Collection record
         """
+        super().__init__(zone, env, None)
         self.pid = pid
         self._bibs = None
-        self.error = False
-        self.error_msg = None
-        self._data = None
-        self.zone = zone
-        self.env = env
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
