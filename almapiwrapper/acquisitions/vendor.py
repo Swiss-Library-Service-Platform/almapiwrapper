@@ -1,9 +1,8 @@
 from ..record import Record, check_error, JsonData
 from typing import Optional, Literal,ClassVar, Union
 import almapiwrapper.acquisitions as acquisitionslib
-from lxml import etree
-import pandas as pd
 import logging
+
 
 class Vendor(Record):
     """Class representing a Vendor
@@ -19,21 +18,17 @@ class Vendor(Record):
     def __init__(self,
                  vendor_code: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of Vendor Object
         """
 
-        super().__init__(zone, env)
+        super().__init__(zone, env, data)
         self.area = 'Acquisitions'
         self.format = 'json'
         self.vendor_code = vendor_code
         self._polines = None
-        if data is not None:
-            self._data = data if type(data) is JsonData else JsonData(data)
-        elif vendor_code is not None:
-            pass
-        else:
+        if self._data is None and vendor_code is None:
             self.error = True
             logging.error('Missing information to construct an Vendor')
 
@@ -53,7 +48,7 @@ class Vendor(Record):
         r = self._api_call('get',
                      f'{self.api_base_url_vendors}/{self.vendor_code}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             # Parse data
             json_data = JsonData(r.json())
             logging.debug(f"{self.__class__.__name__} data fetched")
@@ -158,7 +153,7 @@ class Vendor(Record):
                                    params={'limit': '100', 'offset': str(len(pol_numbers))},
                                    headers=self._get_headers())
                 if r.ok is False:
-                    self._handle_error(r, f'{reprssh(self)}: unable to fetch PO Lines')
+                    self._handle_error(r, f'{repr(self)}: unable to fetch PO Lines')
                     return None
                 data = r.json()
                 rec_count = data['total_record_count']

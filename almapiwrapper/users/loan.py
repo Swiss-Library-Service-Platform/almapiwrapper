@@ -75,7 +75,7 @@ class Loan(Record):
         """
         if self._item is None:
             item = self._fetch_item()
-            if self.error is False:
+            if not self.error:
                 self._item = item
 
         return self._item

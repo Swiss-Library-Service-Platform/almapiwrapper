@@ -1,2 +1,2 @@
-__version__ = '1.6.0'
-__message__ = 'Add department feature'
+__version__ = '1.7.0'
+__message__ = 'Refactoring Record class'

@@ -56,16 +56,14 @@ class Item(Record):
                  holding_id: Optional[str] = None,
                  item_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  holding: Optional[inventory.Holding] = None,
                  barcode: Optional[str] = None,
                  data: Optional[etree.Element] = None,
                  create_item: Optional[bool] = False) -> None:
         """Construct an item.
         """
-        self.error = False
-        self.error_msg = None
-        self._data = data
+        super().__init__(zone, env, data)
 
         if holding_id is not None and mms_id is not None and holding is None:
             holding = inventory.Holding(mms_id, holding_id, zone, env)
@@ -83,8 +81,8 @@ class Item(Record):
             self.env = env
 
         # Create a new item if 'create_item' parameter is True
-        if self.item_id is None and data is not None and holding is not None and create_item is True:
-            self._create_item(data)
+        if self.item_id is None and self._data is not None and holding is not None and create_item is True:
+            self._create_item(self._data)
 
         # Fetch the item from the barcode, zone and env must be available
         elif barcode is not None and create_item is False and data is None:
@@ -155,7 +153,7 @@ class Item(Record):
                 self._handle_error(r, 'unable to fetch item data')
                 return None
 
-    def _create_item(self, data: etree.Element):
+    def _create_item(self, data: XmlData):
         """Create an item to the holding with the provided data.
         :param data: item data
 
@@ -164,7 +162,7 @@ class Item(Record):
         r = self._api_call('post',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
                            headers=self._get_headers(),
-                           data=etree.tostring(data))
+                           data=bytes(data))
 
         if r.ok:
             self.data = XmlData(r.content)

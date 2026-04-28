@@ -64,10 +64,8 @@ class Holding(Record):
         if no 'holding_id' is provided, but 'data' is provided and create_holding is True, then
         it creates a new holding.
         """
+        super().__init__(zone, env, data)
         self._items = None
-        self.error = False
-        self.error_msg = None
-        self._data = None
         self.bib = bib
         self.holding_id = holding_id
 
@@ -85,10 +83,8 @@ class Holding(Record):
                 self.error = True
 
         # Create a new holding if 'create_holding' is True
-        if self.holding_id is None and data is not None and create_holding is True:
-            if data.__class__.__name__ == '_Element':
-                data = XmlData(etree.tostring(data))
-            self._create_holding(data)
+        if self.holding_id is None and self._data is not None and create_holding is True:
+            self._create_holding(self._data)
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.

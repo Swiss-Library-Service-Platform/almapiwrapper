@@ -99,7 +99,7 @@ class Library(Record):
                  zone: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
                  library_id: Optional[str] = None,
-                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+                 data: Optional[Union[Dict, JsonData, str]] = None) -> None:
         """Constructor of `Reminder`
 
         :param code: code of the library
@@ -118,11 +118,6 @@ class Library(Record):
         self._desks = None
         self._departments = None
         self._open_hours = None
-
-        if data is not None:
-            if not isinstance(data, JsonData):
-                data = JsonData(data)
-            self.data = data
 
 
     def _fetch_data(self) -> Optional[JsonData]:
@@ -272,7 +267,7 @@ class Location(Record):
                  library_code: str,
                  code: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
-                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+                 data: Optional[Union[Dict, JsonData, str]] = None) -> None:
         """Constructor of `Location`
 
         :param code: code of the location
@@ -287,11 +282,8 @@ class Location(Record):
         self.format = 'json'
         self.code = code
 
-        if data is not None:
-            if not isinstance(data, JsonData):
-                data = JsonData(data)
-            self.code = data.content['code']
-            self.data = data
+        if self._data is not None:
+            self.code = data['code']
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -410,7 +402,7 @@ class OpenHours(Record):
                  zone: str,
                  library_code: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
-                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+                 data: Optional[Union[Dict, JsonData, str]] = None) -> None:
         """Constructor of `OpenHours`
 
         :param zone: zone of the open hours
@@ -423,11 +415,6 @@ class OpenHours(Record):
         self.library_code = library_code
         self.area = 'Conf'
         self.format = 'json'
-
-        if data is not None:
-            if not isinstance(data, JsonData):
-                data = JsonData(data)
-            self.data = data
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.
@@ -503,7 +490,6 @@ class Desk(Record):
     :ivar library_code: code of the library
     :ivar code: code of the desk
     :ivar env: environment of the desk: 'P' for production and 'S' for sandbox
-    :ivar data: data of the desk, :class:`almapiwrapper.record.JsonData` object
 
     """
     def __init__(self,
@@ -518,7 +504,7 @@ class Desk(Record):
         :param code: code of the desk
         :param env: environment of the desk: 'P' for production and 'S' for sandbox
         """
-        super().__init__(zone, env)
+        super().__init__(zone, env, None)
         self.library_code = library_code
         self.area = 'Conf'
         self.format = 'json'
@@ -585,7 +571,7 @@ class Department(Record):
                  library_code: Optional[str] = None,
                  code: Optional[str] = None,
                  env: Optional[Literal['P', 'S']] = 'P',
-                 data: Optional[Union[Dict, JsonData]] = None) -> None:
+                 data: Optional[Union[Dict, JsonData, str]] = None) -> None:
         """Constructor of `Department`
 
         :param zone: zone of the department
@@ -599,10 +585,6 @@ class Department(Record):
         self.area = 'Conf'
         self.format = 'json'
         self.code = code
-        if data is not None:
-            if not isinstance(data, JsonData):
-                data = JsonData(data)
-            self.data = data
 
     def __repr__(self) -> str:
         """Get a string representation of the object. Useful for logs.

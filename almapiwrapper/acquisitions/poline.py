@@ -2,8 +2,6 @@ from ..record import Record, check_error, JsonData
 from ..inventory import Item
 from typing import Optional, Literal,ClassVar, Union, List
 import almapiwrapper.acquisitions as acquisitionslib
-from lxml import etree
-import pandas as pd
 import logging
 
 class POLine(Record):
@@ -16,20 +14,16 @@ class POLine(Record):
     def __init__(self,
                  pol_number: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of POLine Object
         """
 
-        super().__init__(zone, env)
+        super().__init__(zone, env, data)
         self.area = 'Acquisitions'
         self.format = 'json'
         self.pol_number = pol_number
-        if data is not None:
-            self._data = data if type(data) is JsonData else JsonData(data)
-        elif pol_number is not None:
-            pass
-        else:
+        if self._data is None and self.pol_number is None:
             self.error = True
             logging.error('Missing information to construct an POLine')
 
@@ -48,7 +42,7 @@ class POLine(Record):
         r = self._api_call('get',
                      f'{self.api_base_url_acquisitions}/{self.pol_number}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             # Parse data
             json_data = JsonData(r.json())
             logging.debug(f"{self.__class__.__name__} data fetched")
@@ -56,6 +50,8 @@ class POLine(Record):
             return json_data
         else:
             self._handle_error(r, 'unable to fetch POLine data')
+
+        return None
 
     @check_error
     def update(self, update_inventory=True) -> 'acquisitionslib.POLine':
@@ -70,7 +66,7 @@ class POLine(Record):
                            data=bytes(self),
                            params=params)
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: POLine data updated')
         else:
@@ -103,7 +99,7 @@ class POLine(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self._data = JsonData(r.json())
             self.pol_number = self.data['number']
             logging.info(f'{repr(self)}: POLine data created: {self.pol_number}')
@@ -140,15 +136,20 @@ class POLine(Record):
             return None
 
     @check_error
-    def receive_item(self, item: Item, library: Optional[str] = None, department: Optional[str] = None, receive_date: Optional[str] = None) -> 'acquisitionslib.POLine':
+    def receive_item(self, item: Item,
+                     library: Optional[str] = None,
+                     department: Optional[str] = None,
+                     receive_date: Optional[str] = None) -> 'acquisitionslib.POLine':
         """Receive an item of the POLine
 
         :param item: :class:`almapiwrapper.inventory.Item`
+        :param library: str : library of the reception
+        :param department: str : department of the reception
         :param receive_date: str : date of the reception in format YYYY-MM-DDZ
 
         :return: POLine object
         """
-        if item.error is True:
+        if item.error:
             logging.error(f'{repr(self)}: unable to receive item {repr(item)}, item has an error')
             return self
         params = {'op': 'receive'}
@@ -167,7 +168,7 @@ class POLine(Record):
                            headers=headers,
                            data='<item />')
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: Item {repr(item)} received.')
         else:
             self._handle_error(r, 'unable to receive item')

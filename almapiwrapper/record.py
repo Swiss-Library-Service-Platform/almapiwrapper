@@ -57,6 +57,7 @@ def check_error(fn: Callable) -> Callable:
     return wrapper
 
 
+
 class Record(metaclass=abc.ABCMeta):
     """
     This class is representing entities like bibliographic records, items or holdings.
@@ -91,14 +92,14 @@ class Record(metaclass=abc.ABCMeta):
     def __init__(self,
                  zone: str,
                  env: Optional[Literal['P', 'S']] = 'P',
-                 data: Optional[Union['JsonData', 'XmlData']] = None) -> None:
+                 data: Optional[Union['JsonData', 'XmlData', str]] = None) -> None:
         """Abstract constructor, all entities have at least a zone and an environment.
         """
         self.error = False
         self.error_msg = None
         self.zone = zone
         self.env = env
-        self._data = data
+        self._data = self.parse_data(data) if data else None
 
     @abc.abstractmethod
     def _fetch_data(self) -> None:
@@ -192,6 +193,45 @@ class Record(metaclass=abc.ABCMeta):
         :return: None
         """
         self._data = data
+
+    @staticmethod
+    def parse_data(data: Union['JsonData', 'XmlData', Dict, str]) -> Optional[Union['JsonData', 'XmlData']]:
+        """
+        Parse the data and return a parsed data object or None if an error occurs
+
+        :param data: data to be parsed
+
+        :return: parsed data object or None if an error occurs
+        """
+        if data is None:
+            return None
+        elif isinstance(data, JsonData):
+            return data
+        elif isinstance(data, XmlData):
+            return data
+        elif isinstance(data, dict):
+            return JsonData(data)
+        elif data.__class__.__name__ == '_Element':
+            try:
+                return XmlData(etree.tostring(data))
+            except etree.XMLSyntaxError:
+                logging.error('Failed to parse xml data from _Element')
+                return None
+
+        # Test json
+        try:
+            json_data = json.loads(data)
+            return JsonData(json_data)
+        except json.decoder.JSONDecodeError:
+            pass
+
+        # Test xml
+        try:
+            return XmlData(bytes(data, 'utf-8'))
+        except etree.XMLSyntaxError:
+            logging.error('Failed to parse data, not json nor xml')
+
+        return None
 
     def __str__(self) -> str:
         """Return content of data attribute as a string

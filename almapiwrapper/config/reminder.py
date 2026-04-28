@@ -114,11 +114,6 @@ class Reminder(Record):
         self.format = 'json'
         self.reminder_id = reminder_id
 
-        if data is not None:
-            if not isinstance(data, JsonData):
-                data = JsonData(data)
-            self.data = data
-
         if create_reminder:
             self._create_reminder()
 

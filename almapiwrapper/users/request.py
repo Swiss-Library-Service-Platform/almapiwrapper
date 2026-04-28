@@ -2,7 +2,6 @@ from ..record import Record, check_error, JsonData
 from typing import Optional, ClassVar, Literal
 import logging
 import almapiwrapper.users as userslib
-from almapiwrapper.inventory import Item
 from copy import deepcopy
 
 class Request(Record):
@@ -125,66 +124,6 @@ class Request(Record):
         else:
             self._handle_error(r, f'{repr(self)}: unable to create request')
         return self
-
-    # @check_error
-    # def _fetch_item(self) -> Item:
-    #     """Fetch the loaned item
-    #
-    #     :return: :class:`almapiwrapper.inventory.Item`"""
-    #     return Item(self.data['mms_id'],
-    #                 self.data['holding_id'],
-    #                 self.data['item_id'],
-    #                 self.zone,
-    #                 self.env)
-    #
-    # @check_error
-    # def return_loan(self):
-    #     pass
-    #
-    # def renew_loan(self) -> 'userslib.Loan':
-    #     """Renew the loan
-    #
-    #     :return: object :class:`almapiwrapper.users.Loan`"""
-    #     params = {'op': 'renew'}
-    #     r = self._api_call('post',
-    #                        f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
-    #                        headers=self._get_headers(),
-    #                        data='{}',
-    #                        params=params)
-    #
-    #     if r.ok is True:
-    #         self.data = JsonData(r.json())
-    #         if self.data['last_renew_status']['desc'] == 'Renewed Successfully':
-    #             logging.info(f'{repr(self)}: loan renewed => new due date: {self.data["due_date"]}')
-    #         else:
-    #             logging.warning(f'{repr(self)}: loan not renewed: {self.data["last_renew_status"]["desc"]}')
-    #     else:
-    #         self._handle_error(r, f'{repr(self)}: unable to renew loan')
-    #     return self
-    #
-    # @check_error
-    # def change_due_date(self, new_due_date: str) -> 'userslib.Loan':
-    #     """Change due date of the loan
-    #
-    #     :param new_due_date: str : new due date in format YYYY-MM-DD
-    #
-    #     :return: object :class:`almapiwrapper.users.Loan`"""
-    #     # self.data['due_date'] = new_due_date
-    #     r = self._api_call('put',
-    #                        f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
-    #                        headers=self._get_headers(),
-    #                        data=bytes(JsonData(content={'due_date': new_due_date})))
-    #
-    #     if r.ok is True:
-    #         self.data = JsonData(r.json())
-    #         logging.info(f'{repr(self)}: due date changed to {new_due_date}')
-    #     else:
-    #         self._handle_error(r, f'{repr(self)}: unable to change due date of the loan')
-    #     return self
-    #
-    # @check_error
-    # def return_loan(self):
-    #     pass
 
     @check_error
     def cancel(self, reason: Optional[str] = 'CannotBeFulfilled',

@@ -36,6 +36,9 @@ class TestBib(unittest.TestCase):
 
         col = Collection('81369883060005504', 'UBS', 'S')
         col.remove_bib('9966145550105504')
+        Item(barcode='DSVN8068436_test_temp_1', zone='UBS', env='S').delete()
+        Item(barcode='DSVN8068436_test_temp_2', zone='UBS', env='S').delete()
+        Item(barcode='DSVN8068436_test_temp_3', zone='UBS', env='S').delete()
 
     def test_get_bib(self):
 
@@ -317,11 +320,54 @@ class TestBib(unittest.TestCase):
         col.remove_bib('9966145550105504')
 
         self.assertEqual(len(col.bibs), nb_bibs, 'Error when removing a bib to a collection')
+    
+    
+    def test_create_item_data1(self):
+        item1 = Item(barcode='DSVN8068436', zone='UBS', env='S')
+        item1.barcode = 'DSVN8068436_test_temp_1'
+        data2 = str(item1)
+
+        item2 = Item(holding=item1.holding, data=data2, create_item=True)
+
+        self.assertFalse(item2.error, 'No error when creating an item from data')
+
+        item2 = Item(barcode='DSVN8068436_test_temp_1', zone='UBS', env='S')
+        self.assertEqual(item2.holding.holding_id, item1.holding.holding_id)
+
+    def test_create_item_data2(self):
+        item1 = Item(barcode='DSVN8068436', zone='UBS', env='S')
+        item1.barcode = 'DSVN8068436_test_temp_2'
+        data2 = item1.data
+
+        item2 = Item(holding=item1.holding, data=data2, create_item=True)
+
+        self.assertFalse(item2.error, 'No error when creating an item from data')
+
+        item2 = Item(barcode='DSVN8068436_test_temp_2', zone='UBS', env='S')
+        self.assertEqual(item2.holding.holding_id, item1.holding.holding_id)
+
+    def test_create_item_data3(self):
+        item1 = Item(barcode='DSVN8068436', zone='UBS', env='S')
+        item1.barcode = 'DSVN8068436_test_temp_3'
+        data2 = item1._data
+
+        item2 = Item(holding=item1.holding, data=data2, create_item=True)
+
+        self.assertFalse(item2.error, 'No error when creating an item from data')
+
+        item2 = Item(barcode='DSVN8068436_test_temp_3', zone='UBS', env='S')
+        self.assertEqual(item2.holding.holding_id, item1.holding.holding_id)
+
+
 
     @classmethod
     def tearDownClass(cls):
         IzBib('991043825829705501', 'UBS', 'S', from_nz_mms_id=True).delete()
         Item(barcode='03124510_NEW', zone='HPH', env='S').delete()
+        Item(barcode='DSVN8068436_test_temp_1', zone='UBS', env='S').delete()
+        Item(barcode='DSVN8068436_test_temp_2', zone='UBS', env='S').delete()
+        Item(barcode='DSVN8068436_test_temp_3', zone='UBS', env='S').delete()
+
         item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
         if item.error is False:
             item.holding.delete(force=True)

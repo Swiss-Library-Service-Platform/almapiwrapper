@@ -29,7 +29,11 @@ class User(Record):
         """Constructor for user
         """
         super().__init__(zone, env, data)
-        self.primary_id = primary_id
+
+        # In NewUser class we don't want to rewrite data and primary_id
+        if type(self) is User:
+            self.primary_id = primary_id
+
         self.area = 'Users'
         self.format = 'json'
         self._fees = None
@@ -423,16 +427,12 @@ class NewUser(User):
     :var data: initial value: :class:`almapiwrapper.record.JsonData` of the user to create
     """
 
-    def __init__(self, zone: str, env: Literal['P', 'S'], data: Union[JsonData, dict]):
+    def __init__(self, zone: str, env: Literal['P', 'S'], data: Union[JsonData, dict, str]):
         """Constructor to create new users
         """
-        if isinstance(data, dict):
-            data = JsonData(data)
 
-        super(User, self).__init__(zone, env, data)
-        self._primary_id = self.data['primary_id']
-        self.area = 'Users'
-        self.format = 'json'
+        super().__init__('temp_primary_id', zone, env, data)
+        self._primary_id = self._data.content['primary_id']
 
     @check_error
     def create(self, password: Optional[str] = None) -> Union['NewUser', User]:
@@ -456,7 +456,7 @@ class NewUser(User):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: user created')
             self._data = JsonData(r.json())
             return User(self.primary_id, self.zone, self.env, self._data)

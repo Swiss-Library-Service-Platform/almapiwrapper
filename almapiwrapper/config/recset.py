@@ -49,8 +49,8 @@ class RecSet(Record):
         self.area = 'Conf'
         self.format = 'xml'
         self._name = name
-        if data is not None and set_id is None:
-            set_id = data.content.find('.//id').text
+        if self._data is not None and set_id is None:
+            set_id = self.data.find('.//id').text
         self._set_id = set_id
         self._members = None
 

@@ -213,5 +213,103 @@ class TestCreateUser(unittest.TestCase):
             u.delete()
 
 
+class TestUserData(unittest.TestCase):
+    @classmethod
+    def setUp(self):
+        u = User('TestUserA', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserB', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserC', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserD', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserE', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+    def test_data_parameter(self):
+
+        # Create new user
+        data1 = JsonData(filepath='test/data/user_test1.json')
+        data1.content['primary_id'] = 'TestUserA'
+        u1 = NewUser('UBS', 'S', data1)
+        self.assertEqual(u1.primary_id, 'TestUserA', 'Bad primary ID')
+        self.assertIsNotNone(u1.data, 'Unable to load json data')
+        self.assertFalse(u1.error, 'Error in record before creating the user')
+
+        u1 = u1.create()
+
+        self.assertFalse(u1.error, 'Error in record after creating the user')
+        data2 = u1.data
+        data3 = str(u1)
+
+        data2['primary_id'] = 'TestUserB'
+        u2 = NewUser('UBS', 'S', data2)
+        self.assertEqual(u2.primary_id, 'TestUserB', 'Bad primary ID')
+        self.assertIsNotNone(u2.data, 'Unable to load json data')
+        self.assertFalse(u2.error, 'Error in record before creating the user')
+        u2 = u2.create()
+
+        self.assertFalse(u2.error, 'Error in record after creating the user')
+
+        u3 = NewUser('UBS', 'S', data3)
+        u3.data['primary_id'] = 'TestUserC'
+        self.assertIsNotNone(u3.data, 'Unable to load json data')
+        self.assertFalse(u3.error, 'Error in record before creating the user')
+        u3 = u3.create()
+        self.assertFalse(u3.error, 'Error in record after creating the user')
+
+        u3 = User('TestUserC', 'UBS', 'S')
+        self.assertEqual(u3.primary_id, 'TestUserC', 'Bad primary ID')
+
+    def test_change_primary_id(self):
+        data1 = JsonData(filepath='test/data/user_test1.json')
+        data1.content['primary_id'] = 'TestUserD'
+        u1 = NewUser('UBS', 'S', data1)
+        u1.create()
+        u2 = User('TestUserD', 'UBS', 'S')
+        u2.data['primary_id'] = 'TestUserE'
+        u2.update()
+
+        u3 = User('TestUserD', 'UBS', 'S')
+        _ = u3.data
+        self.assertTrue(u3.error)
+
+        u4 = User('TestUserE', 'UBS', 'S')
+        self.assertEqual(u4.data['primary_id'], 'TestUserE', 'Bad primary ID')
+        self.assertFalse(u4.error)
+
+    @classmethod
+    def tearDown(self):
+        u = User('TestUserA', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserB', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserC', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserD', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+        u = User('TestUserE', 'UBS', 'S')
+        if u.data is not None:
+            u.delete()
+
+
 if __name__ == '__main__':
     unittest.main()

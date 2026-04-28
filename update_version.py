@@ -1,5 +1,3 @@
-from pyexpat.errors import messages
-
 import almapiwrapper
 import re
 import os

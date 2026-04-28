@@ -43,7 +43,7 @@ class Fee(Record):
             logging.error('Missing information to construct a Fee')
             self.error = True
 
-        if create_fee is True:
+        if create_fee:
             self._create_fee()
 
     def __repr__(self) -> str:

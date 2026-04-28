@@ -7,7 +7,11 @@ import logging
 from json import JSONDecodeError
 
 
-def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env: str):
+def _handle_error(q: str,
+                  r: requests.models.Response,
+                  msg: str,
+                  zone: str,
+                  env: Optional[Literal['P', 'S']] = 'P') -> None:
     """Set the handle errors of the fetch_invoices function
 
     :param q: str : query to fetch the invoices
@@ -40,18 +44,18 @@ class Invoice(Record):
     def __init__(self,
                  invoice_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  invoice_number: Optional[str] = None,
                  data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of Invoice Object
         """
 
-        super().__init__(zone, env)
+        super().__init__(zone, env, data)
         self.area = 'Acquisitions'
         self.format = 'json'
         self.invoice_id = invoice_id
-        if data is not None:
-            self._data = data if type(data) is JsonData else JsonData(data)
+        if self._data is not None:
+           pass
         elif invoice_number is not None:
             invoices = fetch_invoices(f'invoice_number~{invoice_number}', zone, env)
             if len(invoices) > 0:
@@ -109,7 +113,7 @@ class Invoice(Record):
         r = self._api_call('get',
                      f'{self.api_base_url_invoices}/{self.invoice_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             # Parse data
             json_data = JsonData(r.json())
             logging.debug(f"{self.__class__.__name__} data fetched")
@@ -117,6 +121,8 @@ class Invoice(Record):
             return json_data
         else:
             self._handle_error(r, 'unable to fetch invoice data')
+
+        return None
 
     @check_error
     def update(self) -> 'acquisitionslib.Invoice':
@@ -135,7 +141,7 @@ class Invoice(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: Invoice data updated')
         else:
@@ -172,7 +178,7 @@ class Invoice(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self._data = JsonData(r.json())
             self.invoice_id = self.data['id']
             logging.info(f'{repr(self)}: Invoice created: {self.invoice_id}')
@@ -196,7 +202,7 @@ class Invoice(Record):
                            data=bytes(self),
                            params={'op': op})
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: Invoice processed')
         else:
@@ -204,11 +210,9 @@ class Invoice(Record):
 
         return self
 
-    def get_invoice_lines(self, limit: Optional[int] = None) -> List['InvoiceLine']:
-        """get_invoice_lines(self, limit: Optional[int] = None) -> List['InvoiceLine']
+    def get_invoice_lines(self) -> List['InvoiceLine']:
+        """get_invoice_lines(self) -> List['InvoiceLine']
         Get the invoice lines of the invoice
-
-        :param limit: int : limit of invoice lines to fetch
 
         :return: list of invoice lines
         """
@@ -222,7 +226,7 @@ class Invoice(Record):
 
 def fetch_invoices(q: str,
                    zone: str,
-                   env: Literal['P', 'S'] = 'P',
+                   env: Optional[Literal['P', 'S']] = 'P',
                    limit: Optional[int] = None) -> List['Invoice']:
     """fetch_invoices(q: str, zone: str, env: Literal['P', 'S'] = 'P', limit: Optional[int] = None) -> List['Invoices']
     Fetch invoices from a query
@@ -237,14 +241,14 @@ def fetch_invoices(q: str,
     params = {'q': q}
 
     if limit is not None:
-        params['limit'] = limit
+        params['limit'] = str(limit)
 
     r = Record._api_call('get',
                          f'{Record.api_base_url}/acq/invoices',
                          headers=Record.build_headers(data_format='json', env=env,
                                                       zone=zone, rights='RW', area='Acquisitions'),
                          params=params)
-    if r.ok is True:
+    if r.ok:
         json_data = JsonData(r.json())
         if 'invoice' in json_data.content and json_data.content['invoice'] is not None:
             invoices = [Invoice(invoice['id'], zone=zone, env=env, data=invoice)
@@ -260,6 +264,8 @@ def fetch_invoices(q: str,
     else:
         _handle_error(q, r, 'unable to fetch invoices', zone, env)
 
+    return []
+
 
 class InvoiceLine(Record):
     """Class representing an InvoiceLine"""
@@ -270,13 +276,13 @@ class InvoiceLine(Record):
                  invoice_id: Optional[str] = None,
                  invoice_line_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  invoice_number: Optional[str] = None,
                  data: Optional[Union[dict, JsonData]] = None) -> None:
         """Constructor of InvoiceLine Object
         """
 
-        super().__init__(zone, env)
+        super().__init__(zone, env, data)
         self.area = 'Acquisitions'
         self.format = 'json'
         self.invoice_line_id = invoice_line_id
@@ -287,15 +293,13 @@ class InvoiceLine(Record):
         if invoice_line_id is not None and invoice_id is not None:
             self._data = self._fetch_data()
 
-        if data is not None:
-            self._data = data if type(data) is JsonData else JsonData(data)
-            if 'id' in self.data:
-                self.invoice_line_id = self.data['id']
+        if self._data is not None and 'id' in self._data.content:
+            self.invoice_line_id = self.data['id']
 
         if self.invoice_number is not None:
             invoice = Invoice(invoice_number=self.invoice_number, zone=zone, env=env)
             _ = invoice.data
-            if invoice.error is False:
+            if not invoice.error:
                 self.invoice_id = invoice.invoice_id
             else:
                 self.error = True
@@ -323,7 +327,7 @@ class InvoiceLine(Record):
         r = self._api_call('get',
                      f'{self.api_base_url_invoices}/{self.invoice_id}/lines/{self.invoice_line_id}',
                            headers=self._get_headers())
-        if r.ok is True:
+        if r.ok:
             # Parse data
             json_data = JsonData(r.json())
             logging.debug(f"{self.__class__.__name__} data fetched")
@@ -331,6 +335,8 @@ class InvoiceLine(Record):
             return json_data
         else:
             self._handle_error(r, 'unable to fetch vendor data')
+
+        return None
 
     @check_error
     def update(self) -> 'acquisitionslib.InvoiceLine':
@@ -349,7 +355,7 @@ class InvoiceLine(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: InvoiceLine data updated')
         else:
@@ -374,7 +380,7 @@ class InvoiceLine(Record):
                            headers=self._get_headers(),
                            data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             self.invoice_line_id = self.data['id']
             logging.info(f'{repr(self)}: InvoiceLine added to invoice')
