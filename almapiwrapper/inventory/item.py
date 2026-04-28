@@ -2,7 +2,7 @@
 import os
 from typing import Optional, ClassVar, Literal
 import logging
-from ..record import Record, check_error, XmlData
+from almapiwrapper.record import Record, check_error, XmlData
 import almapiwrapper.inventory as inventory
 from lxml import etree
 import re
@@ -126,10 +126,10 @@ class Item(Record):
         :return: None
         """
         if barcode is not None:
-            r = self._api_call('get',
-                               self.api_base_url_items,
-                               params={'item_barcode': barcode},
-                               headers=self._get_headers())
+            r = self.api_call('get',
+                              self.api_base_url_items,
+                              params={'item_barcode': barcode},
+                              headers=self._get_headers())
             if r.ok:
                 logging.info(f"{repr(self)}: item data fetched with barcode '{barcode}'")
                 return XmlData(r.content)
@@ -140,10 +140,10 @@ class Item(Record):
 
         # No barcode provided
         else:
-            r = self._api_call('get',
+            r = self.api_call('get',
                                f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
                                f'/items/{self.item_id}',
-                               headers=self._get_headers())
+                              headers=self._get_headers())
 
             if r.ok:
 
@@ -159,10 +159,10 @@ class Item(Record):
 
         :return: :class:`almapiwrapper.inventory.Item` object
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/items',
-                           headers=self._get_headers(),
-                           data=bytes(data))
+                          headers=self._get_headers(),
+                          data=bytes(data))
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -300,11 +300,11 @@ class Item(Record):
 
         :return: :class:`almapiwrapper.inventory.Item` object
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
                            f'items/{self.item_id}',
-                           data=bytes(self),
-                           headers=self._get_headers())
+                          data=bytes(self),
+                          headers=self._get_headers())
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -320,10 +320,10 @@ class Item(Record):
 
         :return: None
         """
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}'
                            f'/items/{self.item_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)} deleted')
         else:
@@ -426,11 +426,11 @@ class Item(Record):
 
         :return: Item
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding.holding_id}/'
                            f'items/{self.item_id}',
-                           params={'op': 'scan', 'library': library, 'circ_desk': circ_desk},
-                           headers=self._get_headers())
+                          params={'op': 'scan', 'library': library, 'circ_desk': circ_desk},
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: scanned in')
         else:

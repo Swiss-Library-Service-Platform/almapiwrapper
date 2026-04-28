@@ -107,7 +107,7 @@ class Record(metaclass=abc.ABCMeta):
         return None
 
     @staticmethod
-    def _api_call(method: Literal['get', 'put', 'post', 'delete'], *args, **kwargs) -> Optional[requests.Response]:
+    def api_call(method: Literal['get', 'put', 'post', 'delete'], *args, **kwargs) -> Optional[requests.Response]:
         """Static method to handle http errors. Quit the program after 3 failed tries
 
         :param method: 'get', 'put', 'post' or 'delete' according to the api method call

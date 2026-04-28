@@ -40,7 +40,7 @@ class RecSet(Record):
     def __init__(self,
                  set_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  name: Optional[str] = None,
                  data: Optional[XmlData] = None) -> None:
         """Constructor of `RecSet`
@@ -63,10 +63,10 @@ class RecSet(Record):
         """
         # set_id is not provided. We try to fetch it from the name.
         if self._set_id is None and self._name is not None:
-            r = self._api_call('get',
+            r = self.api_call('get',
                                f'{self.api_base_url}/conf/sets',
-                               params={'q': f'name~{self._name}'},
-                               headers=self._get_headers())
+                              params={'q': f'name~{self._name}'},
+                              headers=self._get_headers())
             if r.ok is True and XmlData(r.content).content.find('.//set') is not None:
                 logging.info(f'{repr(self)}: set data available')
                 set_data = XmlData(r.content).content.find('.//set')
@@ -80,9 +80,9 @@ class RecSet(Record):
                 return None
 
         # set_id is provided. We fetch the data.
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/sets/{self.set_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: set data available')
             return XmlData(r.content)
@@ -197,10 +197,10 @@ class RecSet(Record):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/conf/sets/{self.set_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -223,9 +223,9 @@ class RecSet(Record):
             method will be skipped.
         """
 
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url}/conf/sets/{self.set_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: set deleted')
             return
@@ -252,10 +252,10 @@ class RecSet(Record):
         else:
             self._members = []
             while len(self._members) < self.get_members_number():
-                r = self._api_call('get',
+                r = self.api_call('get',
                                    f'{self.api_base_url}/conf/sets/{self.set_id}/members',
-                                   params={'limit': '100', 'offset': str(len(self._members))},
-                                   headers=self._get_headers())
+                                  params={'limit': '100', 'offset': str(len(self._members))},
+                                  headers=self._get_headers())
                 if not r.ok:
                     self._handle_error(r, f'{repr(self)}: unable to fetch set members')
                     return self._members
@@ -361,11 +361,11 @@ class ItemizedSet(RecSet):
 
             number_of_members_before_update = self.get_members_number()
 
-            r = self._api_call('post',
+            r = self.api_call('post',
                                f'{self.api_base_url}/conf/sets/{self.set_id}',
-                               headers=self._get_headers(),
-                               params=params,
-                               data=bytes(self))
+                              headers=self._get_headers(),
+                              params=params,
+                              data=bytes(self))
 
             if r.ok:
                 self.data = XmlData(r.content)
@@ -417,7 +417,7 @@ class NewLogicalSet(RecSet):
         """
         Constructor of `NewLogicalSet`
         """
-        super(RecSet, self).__init__(zone, env, data)
+        super().__init__(zone=zone, env=env, data=data)
         self.area = 'Conf'
         self.format = 'xml'
         if self._data is None and name is not None and query is not None and created_by is not None:
@@ -457,7 +457,7 @@ class NewLogicalSet(RecSet):
         return XmlData(etree.tostring(root))
 
     @check_error
-    def create(self) -> Union['LogicalSet', 'NewLogicalSet']:
+    def create(self) -> Union['LogicalSet', 'NewLogicalSet', 'RecSet']:
         """create() -> Union['LogicalSet', 'NewLogicalSet']
         Create the logical set
 
@@ -467,10 +467,10 @@ class NewLogicalSet(RecSet):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/conf/sets',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
         if r.ok:
             self._data = XmlData(r.content)
             set_id = self.data.find('.//id').text
@@ -523,7 +523,7 @@ class NewItemizedSet(RecSet):
                  data: Optional[XmlData] = None) -> None:
         """Constructor of `NewItemizedSet`
         """
-        super(RecSet, self).__init__(zone, env, data)
+        super().__init__(zone=zone, env=env, data=data)
         self.area = 'Conf'
         self.format = 'xml'
         self.members = members
@@ -583,7 +583,7 @@ class NewItemizedSet(RecSet):
                f"{self.data.find('private').text == 'true'})"
 
     @check_error
-    def create(self) -> Union['ItemizedSet', 'NewItemizedSet'] :
+    def create(self) -> Union['ItemizedSet', 'NewItemizedSet', 'RecSet'] :
         """create() -> Union['LogicalSet', 'NewLogicalSet']
         Create the itemized set
 
@@ -595,11 +595,11 @@ class NewItemizedSet(RecSet):
         """
         params = {'from_logical_set': self.from_logical_set} if self.from_logical_set is not None else {}
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/conf/sets',
-                           headers=self._get_headers(),
-                           params=params,
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          params=params,
+                          data=bytes(self))
         if r.ok:
             logging.info(f'{repr(self)}: set created')
             self._data = XmlData(r.content)

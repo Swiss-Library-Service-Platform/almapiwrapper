@@ -1,4 +1,4 @@
-from ..record import Record, check_error
+from almapiwrapper.record import Record, check_error
 from typing import Optional, ClassVar, Literal
 import almapiwrapper.analytics as analyticslib
 from lxml import etree
@@ -53,11 +53,11 @@ class AnalyticsReport(Record):
         if self.filter is not None:
             params['filter'] = self.filter
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_analytics}',
-                           params=params,
-                           headers=self._get_headers(rights='R'))
-        if r.ok is False:
+                          params=params,
+                          headers=self._get_headers(rights='R'))
+        if not r.ok:
             self._handle_error(r, f'{repr(self)}: unable to fetch Analytics data')
             return None
 
@@ -88,12 +88,12 @@ class AnalyticsReport(Record):
                 if etree.fromstring(r.content).find('.//IsFinished').text == 'true':
                     break
 
-                r = self._api_call('get',
+                r = self.api_call('get',
                                    f'{self.api_base_url_analytics}',
-                                   params=params,
-                                   headers=self._get_headers(rights='R'))
+                                  params=params,
+                                  headers=self._get_headers(rights='R'))
 
-                if r.ok is False:
+                if not r.ok:
                     self._handle_error(r, f'{repr(self)}: unable to fetch Analytics data')
                     return None
 
@@ -101,8 +101,10 @@ class AnalyticsReport(Record):
             df.drop('0', axis=1, inplace=True)
             return df
 
+        return None
+
     @check_error
-    def save(self, format: Optional[Literal['json', 'csv']] = 'csv') -> 'analyticslib.AnalyticsReport':
+    def save(self, file_format: Optional[Literal['json', 'csv']] = 'csv') -> 'analyticslib.AnalyticsReport':
         """save(self, format: Optional[Literal['json', 'csv']] = 'csv') -> 'analyticslib.AnalyticsReport'
         Save a user fee record in the 'records' folder
 
@@ -111,7 +113,7 @@ class AnalyticsReport(Record):
 
         :return: object :class:`almapiwrapper.analytics.AnalyticsReport`
         """
-        filepath = f'records/report_{self.report_name}/report_{self.report_name}_{self.zone}.{format}'
+        filepath = f'records/report_{self.report_name}/report_{self.report_name}_{self.zone}.{file_format}'
         self._save_from_path(filepath)
         return self
 

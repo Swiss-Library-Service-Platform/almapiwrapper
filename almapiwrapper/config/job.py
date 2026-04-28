@@ -85,9 +85,9 @@ class Job(Record):
 
         :return: :class:`almapiwrapper.record.XmlData`
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: job data available')
             return XmlData(r.content)
@@ -121,11 +121,11 @@ class Job(Record):
         if type(parameters) == XmlData:
             parameters = str(parameters)
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}',
-                           params={'op': 'run'},
-                           data=parameters,
-                           headers=self._get_headers())
+                          params={'op': 'run'},
+                          data=parameters,
+                          headers=self._get_headers())
 
         if r.ok:
             result = XmlData(r.content)
@@ -164,9 +164,9 @@ class Job(Record):
             logging.error(f'{repr(self)}: No instance job ID available or provided')
             return None
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}/instances/{instance_id}',
-                           headers=self._get_headers(data_format='json'))
+                          headers=self._get_headers(data_format='json'))
         if r.ok:
             logging.info(f'{repr(self)}: job information available for instance {instance_id}')
             return JsonData(r.json())
@@ -206,9 +206,9 @@ class Job(Record):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/jobs/{self.job_type}{self.job_id}/instances',
-                           headers=self._get_headers(data_format='json'))
+                          headers=self._get_headers(data_format='json'))
         if r.ok:
             logging.info(f'{repr(self)}: job information available for instances')
             return JsonData(r.json())

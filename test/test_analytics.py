@@ -1,7 +1,6 @@
 import unittest
 
 from almapiwrapper.analytics import AnalyticsReport
-from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
 
 config_log("test.log")

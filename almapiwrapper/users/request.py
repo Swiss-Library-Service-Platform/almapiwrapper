@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 from typing import Optional, ClassVar, Literal
 import logging
 import almapiwrapper.users as userslib
@@ -70,7 +70,7 @@ class Request(Record):
         It fetches it in a private attribute if not available
         in the data property.
         """
-        if self._data is not None and 'request_id' in self.data:
+        if self._data is not None and self.data.get('request_id'):
             return self.data['request_id']
         else:
             return self._request_id
@@ -79,12 +79,12 @@ class Request(Record):
         """Fetch the json data of the loan
 
         :return: :class:`almapiwrapper.record.JsonData`"""
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/users/'
                            f'{self.user.primary_id if self._user_id is not None else "ALL"}/requests/'
                            f'{self.request_id}',
-                           headers=self._get_headers())
-        if r.ok is True:
+                          headers=self._get_headers())
+        if r.ok:
 
             request_data = r.json()
             if self._user_id is None:
@@ -95,6 +95,8 @@ class Request(Record):
 
         else:
             self._handle_error(r, f'{repr(self)}: unable to fetch user request')
+
+        return None
 
     @check_error
     def create(self) -> 'userslib.Request':
@@ -107,18 +109,18 @@ class Request(Record):
         :return: object :class:`almapiwrapper.users.Request`"""
 
         # Decides if request is on item or on title level
-        if 'item_id' in self.data and len(self.data['item_id']) > 0:
+        if  self.data.get('item_id') and len(self.data['item_id']) > 0:
             params = {'item_pid': self.data['item_id']}
         else:
             params = {'mms_id': self.data['mms_id']}
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/users/{self.user.primary_id}/requests',
-                           params=params,
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          params=params,
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: request created')
         else:
@@ -141,12 +143,12 @@ class Request(Record):
                   'notify_user': notify_user}
         if note is not None:
             params['note'] = note
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url}/users/{self.user.primary_id}/requests/{self.request_id}',
-                           headers=self._get_headers(),
-                           params=params)
+                          headers=self._get_headers(),
+                          params=params)
 
-        if r.ok is True:
+        if r.ok:
             logging.info(f'{repr(self)}: request cancelled')
         else:
             self._handle_error(r, f'{repr(self)}: unable to cancel request')
@@ -157,12 +159,12 @@ class Request(Record):
         :return: object :class:`almapiwrapper.users.Request`
         """
 
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/users/{self.user.primary_id}/requests/{self.request_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: request updated')
         else:

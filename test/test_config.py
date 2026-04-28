@@ -260,9 +260,8 @@ class TestDesk(unittest.TestCase):
 
         locations = desk1.get_locations()
         self.assertGreater(len(locations), 10, 'There should be more than 10 locations')
-        for location in locations:
-            if location.code == '100FH':
-                break
+
+        location = next((loc for loc in locations if loc.code == '100FH'), locations[0])
 
         self.assertEqual(location.data['accession_placement']['value'],
                          '852j',

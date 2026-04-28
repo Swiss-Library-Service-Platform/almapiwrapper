@@ -1,9 +1,6 @@
 import unittest
-from dateutil import parser
-from datetime import timedelta
-from almapiwrapper.users import User, NewUser, Loan, Request
+from almapiwrapper.users import User, NewUser, Request
 from almapiwrapper.record import JsonData
-from almapiwrapper.inventory import Item
 from almapiwrapper import config_log
 import os
 

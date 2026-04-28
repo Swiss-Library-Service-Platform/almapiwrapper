@@ -9,7 +9,7 @@ from typing import Optional, ClassVar, Literal, Union, List
 from lxml import etree
 
 import almapiwrapper.inventory as inventory
-from ..record import Record, check_error, XmlData
+from almapiwrapper.record import Record, check_error, XmlData
 
 
 class Bib(Record, metaclass=abc.ABCMeta):
@@ -62,9 +62,9 @@ class Bib(Record, metaclass=abc.ABCMeta):
 
         :return: None or :class:`almapiwrapper.record.XmlData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)}: bib data available')
@@ -114,10 +114,10 @@ class Bib(Record, metaclass=abc.ABCMeta):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
-                           data=bytes(self),
-                           headers=self._get_headers())
+                          data=bytes(self),
+                          headers=self._get_headers())
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -270,9 +270,9 @@ class IzBib(Bib):
         nz_mms_id = self.mms_id
 
         # Fetch data from nz mms_id
-        r = self._api_call('get', f'{self.api_base_url_bibs}',
-                           params={'nz_mms_id': nz_mms_id},
-                           headers=self._get_headers())
+        r = self.api_call('get', f'{self.api_base_url_bibs}',
+                          params={'nz_mms_id': nz_mms_id},
+                          headers=self._get_headers())
 
         if r.ok:
             # Data found in the IZ for the NZ MMS ID provided
@@ -296,10 +296,10 @@ class IzBib(Bib):
         """
         nz_mms_id = self.mms_id
 
-        r = self._api_call('post', f'{self.api_base_url_bibs}',
-                           params={'from_nz_mms_id': nz_mms_id},
-                           data='<bib/>',
-                           headers=self._get_headers())
+        r = self.api_call('post', f'{self.api_base_url_bibs}',
+                          params={'from_nz_mms_id': nz_mms_id},
+                          data='<bib/>',
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'Record {repr(self)} copied from NZ record {nz_mms_id}')
@@ -316,10 +316,10 @@ class IzBib(Bib):
         :param data: :class:`almapiwrapper.record.XmlData` object
         """
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}',
-                           headers=self._get_headers(),
-                           data=bytes(data))
+                          headers=self._get_headers(),
+                          data=bytes(data))
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -365,11 +365,11 @@ class IzBib(Bib):
         # Unlink NZ and IZ record
         error_message = None
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
-                           params={'op': 'unlink_from_nz'},
-                           data='<bib/>',
-                           headers=self._get_headers())
+                          params={'op': 'unlink_from_nz'},
+                          data='<bib/>',
+                          headers=self._get_headers())
 
         # Manage case when record is not linked to NZ => try to unlink it and check error message.
         if not r.ok:
@@ -389,9 +389,9 @@ class IzBib(Bib):
 
             # Delete the record in the IZ
             # Delete all holdings and items if 'force' is True
-            r = self._api_call('delete',
+            r = self.api_call('delete',
                                f'{self.api_base_url_bibs}/{self.mms_id}',
-                               headers=self._get_headers(), params={'override': 'true' if force is True else 'false'})
+                              headers=self._get_headers(), params={'override': 'true' if force is True else 'false'})
             if r.ok:
                 logging.info(f'{repr(self)} deleted')
                 return None
@@ -415,9 +415,9 @@ class IzBib(Bib):
         if self._holdings is not None:
             return self._holdings
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_bibs}/{self.mms_id}/holdings',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         root = etree.fromstring(r.content, parser=self.parser)
         holdings_data = root.findall('.//holding')
 
@@ -501,7 +501,7 @@ class NzBib(Bib):
     """
 
     def __init__(self, mms_id: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  data: Optional[XmlData] = None,
                  create_bib: bool = False) -> None:
         """
@@ -540,10 +540,10 @@ class NzBib(Bib):
         """
 
         # Delete record
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url_bibs}/{self.mms_id}',
-                           params={'override': 'true' if force is True else 'false'},
-                           headers=self._get_headers())
+                          params={'override': 'true' if force is True else 'false'},
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)} deleted')
@@ -562,10 +562,10 @@ class NzBib(Bib):
             method will be skipped.
         """
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = XmlData(r.content)

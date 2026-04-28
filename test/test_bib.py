@@ -1,10 +1,9 @@
 import unittest
-import sys
 import os
 import shutil
 
 from almapiwrapper.inventory import IzBib, NzBib, Holding, Item, Collection
-from almapiwrapper.record import JsonData, XmlData
+from almapiwrapper.record import XmlData
 from almapiwrapper import config_log
 from lxml import etree
 
@@ -24,7 +23,7 @@ class TestBib(unittest.TestCase):
              if hol.holding_id != '2234409340005520']
 
         item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
-        if item.error is False:
+        if not item.error:
             item.holding.delete(force=True)
 
         shutil.rmtree('records/UBS_9966145550105504', ignore_errors=True)
@@ -369,7 +368,7 @@ class TestBib(unittest.TestCase):
         Item(barcode='DSVN8068436_test_temp_3', zone='UBS', env='S').delete()
 
         item = Item(barcode='03124510_NEW_2', zone='HPH', env='S')
-        if item.error is False:
+        if not item.error:
             item.holding.delete(force=True)
 
         _ = [hol.delete() for hol in IzBib('991000975799705520', zone='HPH', env='S').get_holdings()

@@ -122,9 +122,9 @@ class Reminder(Record):
 
         :return: :class:`almapiwrapper.record.JsonData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: reminder data available')
             return JsonData(r.json())
@@ -159,10 +159,10 @@ class Reminder(Record):
         """update() -> 'Reminder'
         Update the reminder
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             logging.info(f'{repr(self)}: reminder updated.')
@@ -178,9 +178,9 @@ class Reminder(Record):
 
         :return: None
         """
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url}/conf/reminders/{self.reminder_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)}: reminder deleted.')
@@ -203,10 +203,10 @@ class Reminder(Record):
 
         :return: object :class:`almapiwrapper.reminder.Reminder`
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/conf/reminders',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = JsonData(r.json())

@@ -2,7 +2,7 @@
 
 from typing import Optional, Literal, List, ClassVar, Union
 import logging
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 import almapiwrapper.inventory as inventory
 
 
@@ -58,9 +58,9 @@ class Collection(Record):
 
         :return: JsonData object containing the data of the collection or None if an error occurred
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_bibs}/collections/{self.pid}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)}: collection data available')
@@ -92,10 +92,10 @@ class Collection(Record):
         rec_count = None
         mms_ids = []
         while rec_count is None or len(mms_ids) < rec_count:
-            r = self._api_call('get',
+            r = self.api_call('get',
                                f'{self.api_base_url_bibs}/collections/{self.pid}/bibs',
-                               params={'limit': '100', 'offset': str(len(mms_ids))},
-                               headers=self._get_headers())
+                              params={'limit': '100', 'offset': str(len(mms_ids))},
+                              headers=self._get_headers())
             if r.ok is False:
                 self._handle_error(r, f'{repr(self)}: unable to fetch set members')
                 return
@@ -137,10 +137,10 @@ class Collection(Record):
             mms_id = bib
         xml = f'<bib><mms_id>{mms_id}</mms_id></bib>'
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                             f'{self.api_base_url_bibs}/collections/{self.pid}/bibs',
-                            data=xml,
-                            headers=self._get_headers(data_format='xml'))
+                          data=xml,
+                          headers=self._get_headers(data_format='xml'))
 
         if not r.ok:
             self._handle_error(r, f'{repr(self)}: unable to add bib {mms_id} to collection')
@@ -163,9 +163,9 @@ class Collection(Record):
         else:
             mms_id = bib
 
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                             f'{self.api_base_url_bibs}/collections/{self.pid}/bibs/{mms_id}',
-                            headers=self._get_headers())
+                          headers=self._get_headers())
 
         if not r.ok:
             self._handle_error(r, f'{repr(self)}: unable to remove bib {mms_id} from collection')

@@ -2,7 +2,7 @@
 
 from typing import Optional, Literal, List, ClassVar, Union
 import logging
-from ..record import Record, check_error, XmlData
+from almapiwrapper.record import Record, check_error, XmlData
 import almapiwrapper.inventory as inventory
 from lxml import etree
 import os
@@ -50,7 +50,7 @@ class Holding(Record):
                  mms_id: Optional[str] = None,
                  holding_id: Optional[str] = None,
                  zone: Optional[str] = None,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  bib: Optional[inventory.IzBib] = None,
                  data: Optional[Union['XmlData', etree.Element]] = None,
                  create_holding: Optional[bool] = False) -> None:
@@ -100,9 +100,9 @@ class Holding(Record):
 
         :return: None
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)}: holding data available')
@@ -118,10 +118,10 @@ class Holding(Record):
 
         :return: None
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings',
-                           headers=self._get_headers(),
-                           data=bytes(data))
+                          headers=self._get_headers(),
+                          data=bytes(data))
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -170,10 +170,10 @@ class Holding(Record):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
-                           data=etree.tostring(self.data),
-                           headers=self._get_headers())
+                          data=etree.tostring(self.data),
+                          headers=self._get_headers())
 
         if r.ok:
             self.data = XmlData(r.content)
@@ -196,9 +196,9 @@ class Holding(Record):
         if force:
             self.delete_items()
 
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)} deleted')
         else:
@@ -222,10 +222,10 @@ class Holding(Record):
             return self._items
 
         # Fetch the item's data through apis
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_bibs}/{self.bib.mms_id}/holdings/{self.holding_id}/items',
-                           params={'limit': '100'},
-                           headers=self._get_headers())
+                          params={'limit': '100'},
+                          headers=self._get_headers())
 
         if r.ok:
             root = etree.fromstring(r.content, parser=self.parser)

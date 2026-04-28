@@ -1,7 +1,7 @@
 import almapiwrapper.users as userslib
 from typing import List, Optional, Literal, Union
-from ..apikeys import ApiKeys
-from ..record import Record, JsonData
+from almapiwrapper.apikeys import ApiKeys
+from almapiwrapper.record import Record, JsonData
 import requests
 import logging
 import time
@@ -41,7 +41,7 @@ def fetch_users(q: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> Li
                                                           zone=z, rights='RW', area='Users'))
 
             # Check result
-            if r.ok is True:
+            if r.ok:
                 users_list = JsonData(r.json())
                 nb_total_records = int(users_list.content['total_record_count'])
 
@@ -215,7 +215,7 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
             # Copy first name and last name
             for field in ['last_name', 'first_name', 'middle_name']:
                 if nz_user.data.get(field, '') != iz_user.data.get(field, ''):
-                    if field not in nz_user.data:
+                    if not nz_user.data.get(field):
                         del iz_user.data[field]
                     else:
                         iz_user.data[field] = nz_user.data[field]
@@ -227,7 +227,7 @@ def force_synchro(nz_users: Union[List[userslib.User], userslib.User]) -> List[s
 
     return error_msg
 
-def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env: str):
+def _handle_error(q: str, r: requests.models.Response, msg: str, zone: str, env: Optional[Literal['P', 'S']] = 'P'):
     """Set the record error attribute to True and write the logs about the error
 
     :param r: request response of the api

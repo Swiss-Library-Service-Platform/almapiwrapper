@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 from typing import Optional, Literal,ClassVar, List, Union
 import almapiwrapper.acquisitions as acquisitionslib
 from lxml import etree
@@ -97,7 +97,7 @@ class Invoice(Record):
 
         :return: None
         """
-        if 'number' not in self.data:
+        if not self.data.get('number'):
             logging.error(f'{repr(self)}: no number field in the invoice -> not possible to update it')
             self.error = True
         else:
@@ -110,9 +110,9 @@ class Invoice(Record):
         :return: :class:`almapiwrapper.record.JsonData` if no error else None
         """
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                      f'{self.api_base_url_invoices}/{self.invoice_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             # Parse data
             json_data = JsonData(r.json())
@@ -136,10 +136,10 @@ class Invoice(Record):
         :return: Vendor object
         """
 
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_invoices}/{self.invoice_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = JsonData(r.json())
@@ -173,10 +173,10 @@ class Invoice(Record):
         Create a Invoice
 
         :return: Invoice object"""
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_invoices}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self._data = JsonData(r.json())
@@ -196,11 +196,11 @@ class Invoice(Record):
 
         :return: object :class:`almapiwrapper.acquisitions.Invoice`
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_invoices}/{self.invoice_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self),
-                           params={'op': op})
+                          headers=self._get_headers(),
+                          data=bytes(self),
+                          params={'op': op})
 
         if r.ok:
             self.data = JsonData(r.json())
@@ -216,7 +216,8 @@ class Invoice(Record):
 
         :return: list of invoice lines
         """
-        if 'invoice_lines' not in self.data:
+        if not self.data.get('invoice_lines'):
+            self.data['invoice_lines'] = []
             logging.warning(f'{repr(self)}: No invoice lines found')
             return []
         invoice_lines = [InvoiceLine(data=invoice_line_data, invoice_id=self.invoice_id, zone=self.zone, env=self.env)
@@ -243,11 +244,11 @@ def fetch_invoices(q: str,
     if limit is not None:
         params['limit'] = str(limit)
 
-    r = Record._api_call('get',
+    r = Record.api_call('get',
                          f'{Record.api_base_url}/acq/invoices',
-                         headers=Record.build_headers(data_format='json', env=env,
+                        headers=Record.build_headers(data_format='json', env=env,
                                                       zone=zone, rights='RW', area='Acquisitions'),
-                         params=params)
+                        params=params)
     if r.ok:
         json_data = JsonData(r.json())
         if 'invoice' in json_data.content and json_data.content['invoice'] is not None:
@@ -324,9 +325,9 @@ class InvoiceLine(Record):
         :return: :class:`almapiwrapper.record.JsonData` if no error else None
         """
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                      f'{self.api_base_url_invoices}/{self.invoice_id}/lines/{self.invoice_line_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             # Parse data
             json_data = JsonData(r.json())
@@ -350,10 +351,10 @@ class InvoiceLine(Record):
         :return: Vendor object
         """
 
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_invoices}/{self.invoice_id}/lines/{self.invoice_line_id}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = JsonData(r.json())
@@ -375,10 +376,10 @@ class InvoiceLine(Record):
             if 'amount' in fund and 'percent' in fund:
                 del fund['percent']
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_invoices}/{self.invoice_id}/lines',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self.data = JsonData(r.json())

@@ -1,11 +1,7 @@
 import unittest
-import sys
 import os
-import time
-import pandas as pd
 
 from almapiwrapper.acquisitions import POLine, Vendor
-from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
 
 config_log("test.log")

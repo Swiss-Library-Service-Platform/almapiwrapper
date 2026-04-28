@@ -39,9 +39,9 @@ class POLine(Record):
         :return: :class:`almapiwrapper.record.JsonData` if no error else None
         """
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                      f'{self.api_base_url_acquisitions}/{self.pol_number}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             # Parse data
             json_data = JsonData(r.json())
@@ -60,11 +60,11 @@ class POLine(Record):
         :return: POLine object
         """
         params = {'update_inventory': 'true'} if update_inventory is True else {'update_inventory': 'false'}
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_acquisitions}/{self.pol_number}',
-                           headers=self._get_headers(),
-                           data=bytes(self),
-                           params=params)
+                          headers=self._get_headers(),
+                          data=bytes(self),
+                          params=params)
 
         if r.ok:
             self.data = JsonData(r.json())
@@ -94,10 +94,10 @@ class POLine(Record):
 
     @check_error
     def create(self):
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_acquisitions}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             self._data = JsonData(r.json())
@@ -128,7 +128,7 @@ class POLine(Record):
 
         :return: :class:`almapiwrapper.acquisitions.Vendor` or None if not available
         """
-        if 'vendor' in self.data and 'value' in self.data['vendor']:
+        if self.data.get('vendor') and 'value' in self.data['vendor']:
             return acquisitionslib.Vendor(vendor_code=self.data['vendor']['value'],
                                           zone=self.zone,
                                           env=self.env)
@@ -162,11 +162,11 @@ class POLine(Record):
         headers = self._get_headers()
         headers['content-type'] = 'application/xml'
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_acquisitions}/{self.pol_number}/items/{item.item_id}',
-                           params=params,
-                           headers=headers,
-                           data='<item />')
+                          params=params,
+                          headers=headers,
+                          data='<item />')
 
         if r.ok:
             logging.info(f'{repr(self)}: Item {repr(item)} received.')

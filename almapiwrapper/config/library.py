@@ -125,9 +125,9 @@ class Library(Record):
 
         :return: :class:`almapiwrapper.record.JsonData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.code}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: library data available')
             return JsonData(r.json())
@@ -148,9 +148,9 @@ class Library(Record):
 
         :return: list of locations
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.code}/locations',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok is True and 'location' in r.json():
             logging.info(f'{repr(self)}: locations data available')
             return [Location(library_code=self.code, zone=self.zone, env=self.env, data=location_data) for location_data in r.json()['location']]
@@ -180,9 +180,9 @@ class Library(Record):
 
         :return: list of locations
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.code}/circ-desks',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok is True and 'circ_desk' in r.json():
             logging.info(f'{repr(self)}: circulation desks data available')
             return [Desk(library_code=self.code, code=desk_data['code'], zone=self.zone, env=self.env) for desk_data in r.json()['circ_desk']]
@@ -211,10 +211,10 @@ class Library(Record):
 
         :return: list of departments
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/departments',
-                           params={'library': self.code},
-                           headers=self._get_headers())
+                          params={'library': self.code},
+                          headers=self._get_headers())
         if r.ok is True and 'department' in r.json():
             logging.info(f'{repr(self)}: departments data available')
             return [Department(library_code=self.code, code=department_data['code'], zone=self.zone, env=self.env) for department_data in r.json()['department']]
@@ -298,9 +298,9 @@ class Location(Record):
 
         :return: :class:`almapiwrapper.record.JsonData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: location data available')
             return JsonData(r.json())
@@ -327,10 +327,10 @@ class Location(Record):
         """update() -> Location
         Update the location
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             logging.info(f'{repr(self)}: location updated.')
@@ -346,10 +346,10 @@ class Location(Record):
 
         :return: object :class:`almapiwrapper.library.Location`
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             logging.info(f'{repr(self)}: new location created')
@@ -363,9 +363,9 @@ class Location(Record):
         """create() -> None
         Delete a location
         """
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/locations/{self.code}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
 
         if r.ok:
             logging.info(f'{repr(self)}: location deleted')
@@ -435,10 +435,10 @@ class OpenHours(Record):
             params = {'scope': self.library_code}
         else:
             params = {}
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/open-hours',
-                           params=params,
-                           headers=self._get_headers())
+                          params=params,
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: open hours data available')
             return JsonData(r.json())
@@ -453,10 +453,10 @@ class OpenHours(Record):
 
         :return: object :class:`almapiwrapper.library.OpenHours`
         """
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/conf/open-hours',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             logging.info(f'{repr(self)}: open hours updated.')
@@ -522,9 +522,9 @@ class Desk(Record):
 
         :return: :class:`almapiwrapper.record.JsonData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/libraries/{self.library_code}/circ-desks/{self.code}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: desk data available')
             return JsonData(r.json())
@@ -598,10 +598,10 @@ class Department(Record):
 
         :return: :class:`almapiwrapper.record.JsonData` object
         """
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/conf/departments',
-                           params={'library': self.library_code if self.library_code != 'INST' else None},
-                           headers=self._get_headers())
+                          params={'library': self.library_code if self.library_code != 'INST' else None},
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: department data available')
             try:

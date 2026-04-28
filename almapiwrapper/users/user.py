@@ -5,7 +5,7 @@ import logging
 
 import almapiwrapper.inventory
 
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 import almapiwrapper.users as users
 from datetime import datetime
 
@@ -52,25 +52,27 @@ class User(Record):
         :return: json data or None if no data is available
         """
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/{self.primary_id}',
-                           headers=self._get_headers())
-        if r.ok is True:
+                          headers=self._get_headers())
+        if r.ok:
             logging.info(f'{repr(self)}: user data available')
             return JsonData(r.json())
         else:
             self._handle_error(r, f'unable to fetch user data')
+
+        return None
 
     def _fetch_fees(self) -> Optional[List['users.Fee']]:
         """Fetch fee data of the current user
 
         :return: list of :class:`almapiwrapper.users.Fee` objects"""
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/{self.primary_id}/fees',
-                           # params={'status': 'EXPORTED'},
-                           headers=self._get_headers())
-        if r.ok is True:
+                          # params={'status': 'EXPORTED'},
+                          headers=self._get_headers())
+        if r.ok:
 
             logging.info(f'{repr(self)}: fees data available')
             fees_data = r.json()
@@ -84,16 +86,18 @@ class User(Record):
         else:
             self._handle_error(r, f'unable to fetch user fees')
 
+        return None
+
     def _fetch_loans(self) -> Optional[List['users.Loan']]:
         """Fetch loan data of the current user
 
         :return: list of :class:`almapiwrapper.users.Loan` objects"""
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/{self.primary_id}/loans',
-                           params={'limit': '100'},
-                           headers=self._get_headers())
-        if r.ok is True:
+                          params={'limit': '100'},
+                          headers=self._get_headers())
+        if r.ok:
 
             logging.info(f'{repr(self)}: loans data available')
             loans_data = r.json()
@@ -107,17 +111,18 @@ class User(Record):
         else:
             self._handle_error(r, f'unable to fetch user loans')
 
+        return None
+
     def _fetch_requests(self) -> Optional[List['users.Request']]:
         """Fetch request data of the current user
 
         :return: list of :class:`almapiwrapper.users.Request` objects"""
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url}/{self.primary_id}/requests',
-                           params={'limit': '100'},
-                           headers=self._get_headers())
-        if r.ok is True:
-
+                          params={'limit': '100'},
+                          headers=self._get_headers())
+        if r.ok:
             logging.info(f'{repr(self)}: requests data available')
             request_data = r.json()
             if 'user_request' not in request_data or request_data['user_request'] is None:
@@ -129,6 +134,8 @@ class User(Record):
             return user_requests
         else:
             self._handle_error(r, f'unable to fetch user requests')
+
+        return None
 
     def save(self) -> 'User':
         """save() -> 'User'
@@ -161,11 +168,11 @@ class User(Record):
         else:
             params = {}
 
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url}/{self.primary_id}',
-                           data=bytes(self),
-                           params=params,
-                           headers=self._get_headers())
+                          data=bytes(self),
+                          params=params,
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: user updated.')
             self.data = JsonData(r.json())
@@ -185,9 +192,9 @@ class User(Record):
             If the record encountered an error, this
             method will be skipped.
         """
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url}/{self.primary_id}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             logging.info(f'{repr(self)}: user deleted.')
         else:
@@ -293,12 +300,12 @@ class User(Record):
 
         params = {'item_barcode': item_barcode} if item_barcode is not None else {'item_pid': item_id}
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}/{self.primary_id}/loans',
-                           params=params,
-                           data=bytes(JsonData(loan_data)),
-                           headers=self._get_headers())
-        if r.ok is True:
+                          params=params,
+                          data=bytes(JsonData(loan_data)),
+                          headers=self._get_headers())
+        if r.ok:
             loan_data = JsonData(r.json())
 
             loan = users.Loan(user=self, data=loan_data)
@@ -310,6 +317,7 @@ class User(Record):
             self._handle_error(r, f'unable to create loan for '
                                   f'{item_barcode if item_barcode is not None else item_id} '
                                   f'on {circ_desk} at {library}')
+        return None
 
     @check_error
     def set_password(self, password: Optional[str] = '123pw123') -> 'User':
@@ -343,7 +351,7 @@ class User(Record):
                 "segment_type": "Internal"}
         self.data['user_note'].append(note)
         self.update()
-        if self.error is False:
+        if not self.error:
             logging.info(f'{repr(self)}: synchronization test note added')
 
         return self
@@ -361,7 +369,7 @@ class User(Record):
 
         if nb_sup_notes > 0:
             self.update()
-            if self.error is False:
+            if not self.error:
                 logging.info(f'{repr(self)}: {nb_sup_notes} synchronization test note(s) deleted')
         else:
             logging.warning(f'{repr(self)}: NO synchronization test note deleted')
@@ -377,7 +385,7 @@ class User(Record):
         """
         has_synchro_note = len([note for note in self.data['user_note']
                                 if note['note_text'].startswith('SLSP Test-synchronisation')]) > 0
-        if has_synchro_note is True:
+        if has_synchro_note:
             logging.info(f'{repr(self)}: a synchronization test note exists')
         else:
             logging.warning(f'{repr(self)}: NO synchronization test note exists')
@@ -395,10 +403,10 @@ class User(Record):
         """
         notes_to_be_kept = []
         for note in self.data['user_note']:
-            found = False
+            is_note_to_be_kept_found = False
             for note_to_be_kept in notes_to_be_kept:
                 if note_to_be_kept['note_text'] == note['note_text']:
-                    found = True
+                    is_note_to_be_kept_found = True
 
                     # Prefer external note
                     if note['segment_type'] == 'External' and note_to_be_kept['segment_type'] == 'Internal':
@@ -408,7 +416,7 @@ class User(Record):
                     break
 
             # Add the current tested note if no corresponding note is found
-            if found is False:
+            if not is_note_to_be_kept_found:
                 notes_to_be_kept.append(note)
         self.data['user_note'] = notes_to_be_kept
         return self
@@ -451,10 +459,10 @@ class NewUser(User):
         """
         self.set_password(password)
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
         if r.ok:
             logging.info(f'{repr(self)}: user created')

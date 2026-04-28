@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 from typing import Optional, Literal,ClassVar, Union
 import almapiwrapper.acquisitions as acquisitionslib
 import logging
@@ -45,9 +45,9 @@ class Vendor(Record):
         :return: :class:`almapiwrapper.record.JsonData` if no error else None
         """
 
-        r = self._api_call('get',
+        r = self.api_call('get',
                      f'{self.api_base_url_vendors}/{self.vendor_code}',
-                           headers=self._get_headers())
+                          headers=self._get_headers())
         if r.ok:
             # Parse data
             json_data = JsonData(r.json())
@@ -56,6 +56,8 @@ class Vendor(Record):
             return json_data
         else:
             self._handle_error(r, 'unable to fetch vendor data')
+
+        return None
 
     @check_error
     def update(self) -> 'acquisitionslib.Vendor':
@@ -69,12 +71,12 @@ class Vendor(Record):
         :return: object :class:`almapiwrapper.acquisitions.Vendor`
         """
 
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_vendors}/{self.vendor_code}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: Vendor data updated')
         else:
@@ -109,12 +111,12 @@ class Vendor(Record):
 
         :return: object :class:`almapiwrapper.acquisitions.Vendor`
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_vendors}',
-                           headers=self._get_headers(),
-                           data=bytes(self))
+                          headers=self._get_headers(),
+                          data=bytes(self))
 
-        if r.ok is True:
+        if r.ok:
             self._data = JsonData(r.json())
             self.vendor_code = self.data['code']
             logging.info(f'{repr(self)}: Vendor created: {self.vendor_code}')
@@ -128,10 +130,10 @@ class Vendor(Record):
         """delete(self) -> None
 
         Delete the Vendor"""
-        r = self._api_call('delete',
+        r = self.api_call('delete',
                            f'{self.api_base_url_vendors}/{self.vendor_code}',
-                           headers=self._get_headers())
-        if r.ok is True:
+                          headers=self._get_headers())
+        if r.ok:
             logging.info(f'{repr(self)}: Vendor deleted: {self.vendor_code}')
         else:
             self._handle_error(r, 'unable to delete Vendor')
@@ -148,11 +150,11 @@ class Vendor(Record):
             rec_count = None
             pol_numbers = []
             while rec_count is None or len(pol_numbers) < rec_count:
-                r = self._api_call('get',
+                r = self.api_call('get',
                                    f'{self.api_base_url_vendors}/{self.vendor_code}/po-lines',
-                                   params={'limit': '100', 'offset': str(len(pol_numbers))},
-                                   headers=self._get_headers())
-                if r.ok is False:
+                                  params={'limit': '100', 'offset': str(len(pol_numbers))},
+                                  headers=self._get_headers())
+                if not r.ok:
                     self._handle_error(r, f'{repr(self)}: unable to fetch PO Lines')
                     return None
                 data = r.json()

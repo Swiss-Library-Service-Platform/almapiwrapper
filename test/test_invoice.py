@@ -1,8 +1,5 @@
 import unittest
-import sys
 import os
-import time
-import pandas as pd
 
 from almapiwrapper.acquisitions import POLine, Vendor, Invoice, InvoiceLine, fetch_invoices
 from almapiwrapper.inventory import Item
@@ -19,7 +16,7 @@ class TestInvoice(unittest.TestCase):
         pol_number = 'POL-UBS-2024-148772'
         pol = POLine(pol_number, zone='UBS', env='S')
         _ = pol.data
-        if pol.error is True:
+        if pol.error:
             data = JsonData(filepath='test/data/pol_test3.json')
             pol = POLine(data=data, zone='UBS', env='S').create()
             item = Item(barcode='UBS-S-1044370', zone='UBS', env='S')
@@ -28,11 +25,11 @@ class TestInvoice(unittest.TestCase):
 
         invoice = Invoice(invoice_number='20000077919999', zone='UBS', env='S')
         _ = invoice.data
-        if invoice.error is True:
+        if invoice.error:
             data = JsonData(filepath='test/data/invoice_test1.json')
             invoice = Invoice(data=data, zone='UBS', env='S').create()
 
-        if 'invoice_lines' not in invoice.data or invoice.data['invoice_lines']['total_record_count'] == 0:
+        if  not invoice.data.get('invoice_lines') or invoice.data['invoice_lines']['total_record_count'] == 0:
             data = JsonData(filepath='test/data/invoice_test1.json')
             invoice_line_data = data.content['invoice_lines']['invoice_line'][0]
             invoice_line = InvoiceLine(invoice_id=invoice.invoice_id,

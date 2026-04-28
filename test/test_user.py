@@ -215,7 +215,7 @@ class TestCreateUser(unittest.TestCase):
 
 class TestUserData(unittest.TestCase):
     @classmethod
-    def setUp(self):
+    def setUp(cls):
         u = User('TestUserA', 'UBS', 'S')
         if u.data is not None:
             u.delete()
@@ -289,7 +289,7 @@ class TestUserData(unittest.TestCase):
         self.assertFalse(u4.error)
 
     @classmethod
-    def tearDown(self):
+    def tearDown(cls):
         u = User('TestUserA', 'UBS', 'S')
         if u.data is not None:
             u.delete()

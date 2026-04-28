@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 from typing import Optional, ClassVar, Literal
 import logging
 import almapiwrapper.users as userslib
@@ -84,10 +84,10 @@ class Loan(Record):
         """Fetch the json data of the loan
 
         :return: :class:`almapiwrapper.record.JsonData`"""
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
-                           headers=self._get_headers())
-        if r.ok is True:
+                          headers=self._get_headers())
+        if r.ok:
             logging.info(f'{repr(self)}: loan data available')
             loan_data = r.json()
 
@@ -95,6 +95,8 @@ class Loan(Record):
 
         else:
             self._handle_error(r, f'{repr(self)}: unable to fetch user loan')
+
+        return None
 
     @check_error
     def _fetch_item(self) -> Item:
@@ -112,13 +114,13 @@ class Loan(Record):
 
         :return: object :class:`almapiwrapper.users.Loan`"""
         params = {'op': 'renew'}
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
-                           headers=self._get_headers(),
-                           data='{}',
-                           params=params)
+                          headers=self._get_headers(),
+                          data='{}',
+                          params=params)
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             if self.data['last_renew_status']['desc'] == 'Renewed Successfully':
                 logging.info(f'{repr(self)}: loan renewed => new due date: {self.data["due_date"]}')
@@ -138,13 +140,13 @@ class Loan(Record):
         :return: object :class:`almapiwrapper.users.Loan`"""
         # self.data['due_date'] = new_due_date
         params = {'notify_user': 'true' if notify_user is True else 'false'}
-        r = self._api_call('put',
+        r = self.api_call('put',
                            f'{self.api_base_url_users}/{self.user.primary_id}/loans/{self.loan_id}',
-                           headers=self._get_headers(),
-                           params=params,
-                           data=bytes(JsonData(content={'due_date': new_due_date})))
+                          headers=self._get_headers(),
+                          params=params,
+                          data=bytes(JsonData(content={'due_date': new_due_date})))
 
-        if r.ok is True:
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: due date changed to {new_due_date}')
         else:

@@ -1,4 +1,4 @@
-from ..record import Record, check_error, JsonData
+from almapiwrapper.record import Record, check_error, JsonData
 from typing import Optional, ClassVar, Literal
 import logging
 import almapiwrapper.users as userslib
@@ -56,10 +56,10 @@ class Fee(Record):
         """Fetch the json data of the fee
 
         :return: :class:`almapiwrapper.record.JsonData`"""
-        r = self._api_call('get',
+        r = self.api_call('get',
                            f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
-                           headers=self._get_headers())
-        if r.ok is True:
+                          headers=self._get_headers())
+        if r.ok:
             logging.info(f'{repr(self)}: fee data available')
             fee_data = r.json()
 
@@ -67,6 +67,8 @@ class Fee(Record):
 
         else:
             self._handle_error(r, f'{repr(self)}: unable to fetch user fee')
+
+        return None
 
     @property
     def fee_id(self) -> str:
@@ -85,11 +87,11 @@ class Fee(Record):
 
         :return: object :class:`almapiwrapper.users.Fee`
         """
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_users}/{self.user.primary_id}/fees',
-                           headers=self._get_headers(),
-                           data=bytes(self))
-        if r.ok is True:
+                          headers=self._get_headers(),
+                          data=bytes(self))
+        if r.ok:
             self.data = JsonData(r.json())
             logging.info(f'{repr(self)}: fee created')
         else:
@@ -139,11 +141,11 @@ class Fee(Record):
         if op == 'waive' and reason is None:
             reason = 'OTHER'
 
-        r = self._api_call('post',
+        r = self.api_call('post',
                            f'{self.api_base_url_users}/{self.user.primary_id}/fees/{self.fee_id}',
-                           headers=self._get_headers(),
-                           data=None,
-                           params={'op': op,
+                          headers=self._get_headers(),
+                          data=None,
+                          params={'op': op,
                                    'amount': str(amount),
                                    'comment': comment,
                                    'method': method,
