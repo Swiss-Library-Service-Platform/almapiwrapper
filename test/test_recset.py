@@ -70,6 +70,10 @@ class TestNewItemizedSet(unittest.TestCase):
                     env='S',
                     name='TEST_RRE_123456_itemized')
         s3.delete()
+        s4 = RecSet(zone='NZ',
+                    env='S',
+                    name='TEST_RRE_users_itemized')
+        s4.delete()
 
 
     def test_create(self):
@@ -130,6 +134,29 @@ class TestNewItemizedSet(unittest.TestCase):
         self.assertEqual(len(members), len(mms_ids), f'It should {len(mms_ids)} members, {len(members)} available')
 
         s1.delete()
+
+    def test_itemized_set(self):
+        zone = 'NZ'
+        env = 'S'
+        content = 'USER'
+        name = 'TEST_RRE_users_itemized'
+
+        set_users = NewItemizedSet(
+            zone=zone,
+            env=env,
+            name=name,
+            content=content
+        ).create()
+
+        set_users.add_members(['0000568060088800@test.eduid.ch'])
+        members = set_users.get_members()
+
+        self.assertEqual(type(set_users).__name__, 'ItemizedSet')
+        self.assertEqual(set_users.get_content_type(), 'USER')
+        self.assertEqual(len(members), 1, f'It should one member, {len(members)} available')
+
+        set_users.delete()
+
 
 
 class TestUserRecSet(unittest.TestCase):

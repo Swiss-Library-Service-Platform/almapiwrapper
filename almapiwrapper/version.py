@@ -1,2 +1,2 @@
-__version__ = '1.7.3'
-__message__ = 'Clean code'
+__version__ = '1.7.4'
+__message__ = 'Clean documentation'

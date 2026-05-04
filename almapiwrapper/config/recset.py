@@ -513,7 +513,7 @@ class NewItemizedSet(RecSet):
         return object.__new__(cls)
     def __init__(self,
                  zone: str,
-                 env: Literal['P', 'S'] = 'P',
+                 env: Optional[Literal['P', 'S']] = 'P',
                  name: Optional[str] = None,
                  content: Optional[str] = None,
                  description: Optional[str] = None,

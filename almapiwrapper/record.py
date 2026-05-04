@@ -1,5 +1,5 @@
 import abc
-from .apikeys import ApiKeys
+from almapiwrapper.apikeys import ApiKeys
 from typing import Optional, Callable, ClassVar, Literal, Dict, Union
 import logging
 import json
@@ -144,6 +144,8 @@ class Record(metaclass=abc.ABCMeta):
                 logging.critical(f'HTTP error: try {api_try} => exiting of the program')
                 exit()
             time.sleep(3)
+
+        return None
 
     @staticmethod
     def build_headers(data_format: Literal['json', 'xml'],
