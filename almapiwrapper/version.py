@@ -1,2 +1,2 @@
-__version__ = '1.7.6'
-__message__ = 'Clean documentation'
+__version__ = '1.8.0'
+__message__ = 'Add integration profile'
