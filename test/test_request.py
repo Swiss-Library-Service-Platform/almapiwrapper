@@ -21,7 +21,7 @@ class TestRequest(unittest.TestCase):
                 # Create new user
                 data = JsonData(filepath=f'test/data/user_{primary_id}.json')
 
-                user = NewUser('UBS', 'S', data).create()
+                _ = NewUser('UBS', 'S', data).create()
 
 
         # Item('996259850105504', '22202377380005504', '23202377370005504', 'UBS', 'S').scan_in('A100', 'A100_KUR')

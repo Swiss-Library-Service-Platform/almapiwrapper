@@ -9,6 +9,7 @@ import os
 import requests
 import pandas as pd
 from functools import wraps
+import sys
 
 def remove_apikey_from_url(url: str) -> str:
     """
@@ -55,7 +56,6 @@ def check_error(fn: Callable) -> Callable:
         return rec
 
     return wrapper
-
 
 
 class Record(metaclass=abc.ABCMeta):
@@ -132,7 +132,7 @@ class Record(metaclass=abc.ABCMeta):
                 if 'X-Exl-Api-Remaining' in r.headers and int(r.headers['X-Exl-Api-Remaining']) < 5000:
                     logging.critical(f'Limit of the number of requests allowed critical - '
                                      f'{r.headers["X-Exl-Api-Remaining"]} reamaining => exiting of the program')
-                    exit()
+                    sys.exit(1)
 
                 # Retry later if threshold of 25 requests per second exceeded
                 if r.status_code != 429:
@@ -142,7 +142,7 @@ class Record(metaclass=abc.ABCMeta):
                 logging.error(f'HTTP error: try {api_try} - message: {str(err)}')
             if api_try == 3:
                 logging.critical(f'HTTP error: try {api_try} => exiting of the program')
-                exit()
+                sys.exit(1)
             time.sleep(3)
 
         return None
@@ -170,7 +170,7 @@ class Record(metaclass=abc.ABCMeta):
                 'Authorization': 'apikey ' + ApiKeys().get_key(zone, area, rights, env)}
 
     @property
-    def data(self) -> Optional[Union[Dict, etree.Element, pd.DataFrame]]:
+    def data(self) -> Optional[Union[Dict, etree.Element, pd.DataFrame, JsonData, XmlData]]:
         """Property that get xml data with API call. If not available, make an api call
 
         :return: xml data, dictionary or pandas dataframe
@@ -429,7 +429,7 @@ class JsonData:
 
     :Example:
 
-    >>> from almapiwrapper.record import JsonData
+    >>> from record import JsonData
     >>> data = JsonData(filepath='path_to_some_json_file')
     >>> print(data)
 

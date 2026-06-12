@@ -1,9 +1,9 @@
 import unittest
 import os
 
-from almapiwrapper.acquisitions import POLine, Vendor, Invoice, InvoiceLine, fetch_invoices
+from almapiwrapper.acquisitions import POLine, Invoice, InvoiceLine
 from almapiwrapper.inventory import Item
-from almapiwrapper.record import JsonData, XmlData
+from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
 
 config_log("test.log")
@@ -32,7 +32,7 @@ class TestInvoice(unittest.TestCase):
         if  not invoice.data.get('invoice_lines') or invoice.data['invoice_lines']['total_record_count'] == 0:
             data = JsonData(filepath='test/data/invoice_test1.json')
             invoice_line_data = data.content['invoice_lines']['invoice_line'][0]
-            invoice_line = InvoiceLine(invoice_id=invoice.invoice_id,
+            _ = InvoiceLine(invoice_id=invoice.invoice_id,
                                        data=invoice_line_data,
                                        zone='UBS',
                                        env='S').create()

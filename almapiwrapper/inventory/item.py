@@ -1,6 +1,6 @@
 """This module allows getting information and changing Alma item records"""
 import os
-from typing import Optional, ClassVar, Literal
+from typing import Optional, ClassVar, Literal, Union
 import logging
 from almapiwrapper.record import Record, check_error, XmlData
 import almapiwrapper.inventory as inventory
@@ -59,7 +59,7 @@ class Item(Record):
                  env: Optional[Literal['P', 'S']] = 'P',
                  holding: Optional[inventory.Holding] = None,
                  barcode: Optional[str] = None,
-                 data: Optional[etree.Element] = None,
+                 data: Optional[Union[etree.Element, XmlData, str]] = None,
                  create_item: Optional[bool] = False) -> None:
         """Construct an item.
         """

@@ -6,6 +6,7 @@ Config submodule
 
    desk
    department
+   integrationprofile
    job
    library
    location

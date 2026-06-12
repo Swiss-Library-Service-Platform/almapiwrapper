@@ -3,11 +3,10 @@ import shutil
 import os
 from datetime import date, timedelta
 
-from almapiwrapper.config import (RecSet, NewLogicalSet, NewItemizedSet, Job, Reminder,
-                                  fetch_reminders, fetch_libraries, Library, Location, Desk, Department)
+from almapiwrapper.config import (RecSet, Job, Reminder, fetch_reminders, fetch_libraries, Library,
+                                  Location, Desk, Department, fetch_departments)
 from almapiwrapper.record import JsonData, XmlData
 from almapiwrapper import config_log
-from config.library import Department, fetch_departments
 
 config_log("test.log")
 if os.getcwd().endswith('test'):
@@ -23,7 +22,7 @@ class TestReminder(unittest.TestCase):
 
         data = JsonData(filepath='test/data/reminder_test1.json')
 
-        r = Reminder(zone='NZ', env='S', data=data, create_reminder=True)
+        _ = Reminder(zone='NZ', env='S', data=data, create_reminder=True)
 
     def test_get_reminder(self):
         reminders = fetch_reminders(zone='NZ', env='S', entity_id='991170687152205501')
@@ -107,7 +106,7 @@ class TestRecSet(unittest.TestCase):
         self.assertEqual(state['status'], 'COMPLETED_SUCCESS', 'Impossible to get instance info')
 
         instances = job.get_instances()
-        self.assertTrue(instances.content['total_record_count'] > 20)
+        self.assertGreater(instances.content['total_record_count'], 20)
 
 
 class TestLibrary(unittest.TestCase):

@@ -2,8 +2,8 @@ import unittest
 import os
 
 from almapiwrapper.inventory import Item
-from almapiwrapper.acquisitions import POLine, Vendor, Invoice, fetch_invoices
-from almapiwrapper.record import JsonData, XmlData
+from almapiwrapper.acquisitions import POLine, Vendor
+from almapiwrapper.record import JsonData
 from almapiwrapper import config_log
 
 config_log("test.log")
