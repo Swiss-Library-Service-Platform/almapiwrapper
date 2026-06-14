@@ -8,6 +8,7 @@ Config submodule
    department
    integrationprofile
    job
+   letter
    library
    location
    recset

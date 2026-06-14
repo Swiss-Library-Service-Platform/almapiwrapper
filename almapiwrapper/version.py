@@ -1,2 +1,2 @@
-__version__ = '1.8.0'
-__message__ = 'Add integration profile'
+__version__ = '1.9.0'
+__message__ = 'Add letter'

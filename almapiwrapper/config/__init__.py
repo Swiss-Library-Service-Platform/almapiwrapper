@@ -4,3 +4,4 @@ from .reminder import Reminder, fetch_reminders
 
 from .library import Library, fetch_libraries, fetch_departments, Location, OpenHours, Desk, Department
 from .integrationprofile import IntegrationProfile, fetch_integration_profiles
+from .letter import Letter
