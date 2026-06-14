@@ -1,2 +1,2 @@
-__version__ = '1.9.1'
-__message__ = 'Fix doc issue'
+__version__ = '1.9.3'
+__message__ = 'Deploy letter'
