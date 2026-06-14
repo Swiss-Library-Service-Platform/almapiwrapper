@@ -1,6 +1,6 @@
 ``Letter`` class
 -----------------
-.. autoclass:: almapiwrapper.config.Library
+.. autoclass:: almapiwrapper.config.Letter
     :members:
     :show-inheritance:
     :inherited-members:
