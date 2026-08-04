@@ -21,7 +21,7 @@ project = 'Almapi Wrapper'
 author = 'Raphaël Rey'
 
 # The full version, including alpha/beta/rc tags
-release = '1.9.4'
+release = '1.9.5'
 
 
 # -- General configuration ---------------------------------------------------

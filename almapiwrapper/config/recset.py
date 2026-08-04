@@ -247,8 +247,9 @@ class RecSet(Record):
 
         # Prevent to fetch data twice, if already available
         if self._members is not None:
-            members = self._members
-            return members
+
+            return self._members
+
         else:
             self._members = []
             while len(self._members) < self.get_members_number():
@@ -261,6 +262,10 @@ class RecSet(Record):
                     return self._members
                 else:
                     rec_ids = [rec_id.text for rec_id in XmlData(r.content).content.findall('.//member/id')]
+
+                    if len(rec_ids) == 0 and len(self._members) < self.get_members_number():
+                        logging.error(f'{repr(self)}: unable to fetch some of the set members set members')
+                        break
 
                     # Build members -> IZ mms_id
                     if self.get_content_type() in ['BIB_MMS', 'IEP'] and self.zone != 'NZ':
