@@ -1,2 +1,2 @@
-__version__ = '1.9.5'
-__message__ = 'Avoid infinite loog when fetching sets members'
+__version__ = '1.9.6'
+__message__ = 'Add fetch collections function'

@@ -223,7 +223,7 @@ class Record(metaclass=abc.ABCMeta):
         self.error_msg = None
         self.zone = zone
         self.env = env
-        self._data = self.parse_data(data) if data else None
+        self._data = self.parse_data(data) if data is not None else None
 
     @abc.abstractmethod
     def _fetch_data(self) -> None:

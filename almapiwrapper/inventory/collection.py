@@ -1,9 +1,85 @@
 """This module allows to get and update information about collections"""
 
-from typing import Optional, Literal, List, ClassVar, Union
+from typing import Optional, Literal, List, ClassVar, Union, Dict
 import logging
 from almapiwrapper.record import Record, check_error, JsonData
 import almapiwrapper.inventory as inventory
+
+
+def _handle_error(r, msg: str, zone: str, env: Optional[Literal['P', 'S']] = 'P') -> None:
+    """Log errors for top-level collection fetch functions."""
+    try:
+        json_data = r.json()
+        error_message = json_data['errorList']['error'][0]['errorMessage']
+    except Exception:
+        error_message = r.text if r is not None and hasattr(r, 'text') else 'unknown error'
+
+    status_code = r.status_code if r is not None and hasattr(r, 'status_code') else 'unknown'
+    logging.error(f'fetch_collections({zone}, {env}) - {status_code}: {msg} / {error_message}')
+
+
+def fetch_collections(zone: str,
+                     env: Literal['P', 'S'] = 'P',
+                     level: Optional[int] = 1,
+                     q: Optional[str] = None) -> List['Collection']:
+    """Fetch a list of collections from Alma
+
+    :param level: level of the collection, 1 for top-level collections, 2 for sub-collections
+    :param q: query to filter collections, for example 'name~"test"'
+    :param zone: zone of the record
+    :param env: environment of the entity: 'P' for production and 'S' for sandbox
+
+    :return: list of :class:`almapiwrapper.inventory.Collection` objects
+    """
+    if level is not None and level < 1:
+        raise ValueError('level must be >= 1')
+
+    # Alma API does not support using both query and level together.
+    if level is not None and q is not None:
+        raise ValueError('Parameters "level" and "q" cannot be used together')
+
+    params = {}
+    if level is not None:
+        params['level'] = str(level)
+    if q is not None:
+        params['q'] = q
+
+    collections = []
+    r = Record.api_call('get',
+                        f'{Record.api_base_url}/bibs/collections',
+                        params=params,
+                        headers=Record.build_headers(data_format='json', env=env,
+                                                     zone=zone, rights='RW', area='Bibs'))
+
+    if r is None or not r.ok:
+        _handle_error(r, 'unable to fetch collections data', zone, env)
+        return collections
+
+    collections_list = r.json()
+
+    def get_collections(collections, data):
+        if 'collection' in data:
+            for col_data in data['collection']:
+                pid = col_data.get('pid')
+                if isinstance(pid, dict):
+                    pid = pid.get('value')
+                if pid is None:
+                    logging.warning(f'fetch_collections("{zone}", "{env}"): collection without pid skipped')
+                    continue
+                collection = {'collection': Collection(str(pid), zone, env), 'children': []}
+                collections.append(collection)
+                if 'collection' in col_data:
+                    get_collections(collection['children'], col_data)
+        return None
+
+
+    total_record_count = collections_list.get('total_record_count', 0)
+    collections = []
+    get_collections(collections, collections_list)
+
+    logging.info(f'fetch_collections("{zone}", "{env}", level={level}, q="{q}"): '
+                 f'{len(collections)} / {total_record_count} collections data available')
+    return collections
 
 
 class Collection(Record):
@@ -35,10 +111,11 @@ class Collection(Record):
     def __init__(self,
                  pid: str,
                  zone: str,
-                 env: Literal['P', 'S'] = 'P') -> None:
+                 env: Literal['P', 'S'] = 'P',
+                 data: Optional[Dict] = None) -> None:
         """Construct a Collection record
         """
-        super().__init__(zone, env, None)
+        super().__init__(zone, env, data)
         self.pid = pid
         self._bibs = None
 
