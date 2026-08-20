@@ -1,7 +1,10 @@
-``Collection`` class
+Collection submodule
 --------------------
 
 .. autofunction:: almapiwrapper.inventory.fetch_collections
+
+``Collection`` class
+--------------------
 
 .. autoclass:: almapiwrapper.inventory.Collection
    :members:

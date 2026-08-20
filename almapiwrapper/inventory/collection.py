@@ -109,8 +109,8 @@ class Collection(Record):
     format = 'json'
 
     def __init__(self,
-                 pid: str,
-                 zone: str,
+                 pid: Optional[str] = None,
+                 zone: str = None,
                  env: Literal['P', 'S'] = 'P',
                  data: Optional[Dict] = None) -> None:
         """Construct a Collection record
@@ -127,10 +127,16 @@ class Collection(Record):
         return f"{self.__class__.__name__}('{self.pid}', '{self.zone}', '{self.env}')"
 
     def _fetch_data(self) -> Optional[JsonData]:
-        """Fetch holding data via API. Store the data in the 'data' attribute.
+        """Fetch collection data via API. Store the data in the 'data' attribute.
 
         :return: JsonData object containing the data of the collection or None if an error occurred
         """
+        if self.pid is None:
+            self.error = True
+            self.error_msg = 'Collection ID is required to fetch collection data'
+            logging.error(f'{repr(self)}: collection ID is required to fetch collection data')
+            return None
+
         r = self.api_call('get',
                            f'{self.api_base_url_bibs}/collections/{self.pid}',
                           headers=self._get_headers())
@@ -141,6 +147,90 @@ class Collection(Record):
         else:
             self._handle_error(r, 'unable to fetch collection data')
             return None
+
+    @check_error
+    def create(self) -> 'Collection':
+        """Create a new collection in Alma from ``self.data``.
+
+        :return: :class:`almapiwrapper.inventory.Collection` object
+        """
+        if self.data is None:
+            self.error = True
+            self.error_msg = 'Collection data is required to create a collection'
+            logging.error(f'{repr(self)}: collection data is required to create a collection')
+            return self
+
+        r = self.api_call('post',
+                          f'{self.api_base_url_bibs}/collections',
+                          data=bytes(self),
+                          headers=self._get_headers())
+
+        if r.ok:
+            self.data = JsonData(r.json())
+            pid = self.data.get('pid')
+            if isinstance(pid, dict):
+                pid = pid.get('value')
+            if pid is not None:
+                self.pid = str(pid)
+            logging.info(f'{repr(self)}: collection created')
+        else:
+            self._handle_error(r, 'unable to create collection')
+
+        return self
+
+    @check_error
+    def update(self) -> 'Collection':
+        """Update an existing collection in Alma.
+
+        :return: :class:`almapiwrapper.inventory.Collection` object
+        """
+        if self.pid is None:
+            self.error = True
+            self.error_msg = 'Collection ID is required to update a collection'
+            logging.error(f'{repr(self)}: collection ID is required to update a collection')
+            return self
+
+        if self.data is None:
+            self.error = True
+            self.error_msg = 'Collection data is required to update a collection'
+            logging.error(f'{repr(self)}: collection data is required to update a collection')
+            return self
+
+        r = self.api_call('put',
+                          f'{self.api_base_url_bibs}/collections/{self.pid}',
+                          data=bytes(self),
+                          headers=self._get_headers())
+
+        if r.ok:
+            self.data = JsonData(r.json())
+            logging.info(f'{repr(self)}: collection updated')
+        else:
+            self._handle_error(r, 'unable to update collection')
+
+        return self
+
+    @check_error
+    def delete(self) -> None:
+        """Delete a collection in Alma.
+
+        :return: None
+        """
+        if self.pid is None:
+            self.error = True
+            self.error_msg = 'Collection ID is required to delete a collection'
+            logging.error(f'{repr(self)}: collection ID is required to delete a collection')
+            return None
+
+        r = self.api_call('delete',
+                          f'{self.api_base_url_bibs}/collections/{self.pid}',
+                          headers=self._get_headers())
+
+        if r.ok:
+            logging.info(f'{repr(self)}: collection deleted')
+            return None
+
+        self._handle_error(r, 'unable to delete collection')
+        return None
 
 
 
